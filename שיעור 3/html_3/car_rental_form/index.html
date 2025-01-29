@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Order a Car</h1>
+
+    <form action="./order.html">
+        <div class="input-name">
+            <label>Name:</label>
+            <input type="text" name="fullname" placeholder="Enter your full name">
+        </div>
+        <br><br>
+        <div>
+            <label>E-mail:</label>
+            <input type="email" name="usermail" placeholder="Enter your email">
+        </div>
+        <br><br>
+        <div>
+            <label>Phone Number:</label>
+            <input type="tel" name="usertel" placeholder="Enter your phone number">
+        </div>
+        <br><br>
+        <div>
+            <label>Pickup Date</label>
+            <input type="date" name="pickdate">
+        </div>
+
+        <div>
+            <label>Return Date</label>
+            <input type="date" name="returndate">
+        </div>
+        <div>
+            <br>
+            <label>Car Type</label>
+            <br>
+            <input type="radio" name="cartype" value="sedan" id="sedanbox">
+            <label for="sedanbox">Sedan</label>
+            <br>
+            <input type="radio" name="cartype" value="suv" id="suvbox">
+            <label for="suvbox">SUV</label>
+            <br>
+            <input type="radio" name="cartype" value="truck" id="truckbox">
+            <label for="truckbox">Truck</label>
+            <br>
+            <input type="radio" name="cartype" value="conv" id="convbox">
+            <label for="convbox">Convertible</label>
+        </div>
+        <div>
+            <br>
+            <label>Extras:</label>
+            <br>
+            <input type="checkbox" name="extras" id="gpsbox">
+            <label for="gpsbox">GPS</label>
+            <br>
+            <input type="checkbox" name="extras" id="childbox">
+            <label for="childbox">Child Seat</label>
+            <br>
+            <input type="checkbox" name="extras" id="addbox">
+            <label for="addbox">Additional Driver</label>
+        </div>
+        <div>
+            <br>
+            <label>Pickup Location:</label>
+            <input type="text" name="pickup" placeholder="Enter Pickup Location">
+        </div>
+        <div>
+            <br>
+            <label>Special Requests:</label>
+            <br>
+            <textarea name="comments" placeholder="Enter any special requists"></textarea>
+        </div> 
+        <div>
+            <br>
+            <label>Pickup From:</label>
+            <select name="picklocation">
+                <option>Airport</option>
+                <option>City</option>
+                <option>Mall</option>
+            </select>
+        </div>
+
+        <br><br><br>
+        <button type="submit">Send</button>
+    </form>
+
+</body>
+</html>

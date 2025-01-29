@@ -1,0 +1,19 @@
+h1{
+    text-align: center;
+}
+
+.table-main{
+    width: 500px;
+    background-color:burlywood;
+    margin-left: 25%;
+    margin-right: 25%;
+}
+
+.table-main tbody{
+    background-color: antiquewhite;
+    text-align: center;
+}
+.image-food{
+    width: 80px;
+    height: 80px;
+}

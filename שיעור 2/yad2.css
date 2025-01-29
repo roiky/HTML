@@ -1,0 +1,9 @@
+.firstRule{
+    border: 1px solid green;
+}
+
+span{
+    background-color: black;
+    color: white;
+    display:block;
+}

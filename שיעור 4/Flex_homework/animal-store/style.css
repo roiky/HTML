@@ -1,0 +1,87 @@
+
+.container{
+    height: 700px;
+    width: 800px;
+    border: 5px solid black;
+    border-radius: 10px;
+    background-color: bisque;
+    color: brown;
+}
+
+.item{
+    height: 150px;
+    width: 150px;
+    background-color: pink;
+    margin-top: 5px;
+    border: 2px solid brown
+}
+
+/* END OF BASIC STYLE */
+
+.container{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: flex-start;
+}
+
+.shop-head{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 40px;
+    text-align: center;
+    border-bottom: 1px solid black;
+}
+
+.full-site{
+    display: flex;
+    height: 600px;
+}
+
+.sidebar{
+    width: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    text-align: center;
+    border-right: 1px solid black;
+}
+/*
+.content{
+    display: flex;
+    gap: 5px;
+    justify-content: space-evenly;
+    flex-direction: column;
+    flex-wrap: wrap;
+    background-color: gray;
+}
+*/
+.content{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    
+}
+.content-text{
+    text-align: center;
+}
+.content-image{
+    display: flex;
+    gap: 5px;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+
+}
+.shop-foot{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 40px;
+    margin-top: auto;
+    text-align: center;
+    border-top: 1px solid black;
+
+}

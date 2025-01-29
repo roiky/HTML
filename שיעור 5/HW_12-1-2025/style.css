@@ -1,0 +1,102 @@
+.page-top{
+    width: 100%;
+    height: 100px;
+    position: fixed;
+    top:0px;
+    display: flex;
+    flex-direction: column;
+}
+
+.header-one{
+    background-color: white;
+    height: 66%;
+    display: flex;
+    align-items: center;
+    gap:20px;
+    border-bottom: 1px solid gainsboro;
+}
+
+.header-two{
+    background-color:rgb(240, 240, 240);
+    height: 33%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid gainsboro;
+
+}
+.head-link{
+    color: gray;
+}
+
+.slide-left{
+    width: 15%;
+    height: 100%;
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    gap:10px;
+    padding-top: 50px;
+    padding-left: 30px;
+
+}
+
+.slide-right{
+    width: 15%;
+    height: 100%;
+    position: fixed;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    gap:10px;
+}
+
+.side-item{
+    color: gray;
+}
+
+.container{
+    height: 2000px; /* just to make it scrollable */
+    width: 70%;
+    background-color: red;
+    margin-left: 15%;
+    margin-top: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.page-bottom{
+    background-color: white;
+    height: 150px;
+    width: 100%;
+    z-index: 1;
+    display: flex;
+    justify-content: space-around;
+    padding-top: 10px;
+    bottom: 0;
+}
+
+.bottom-item{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.bottom-link{
+    color: red;
+    padding-top: 5px;
+    text-align: center;
+}
+
+.main-table{
+    height: 50px;
+    width: 50%;
+    text-align: center;
+    border: 1px solid black;
+    margin-top: auto;
+}
+
+.text{
+    text-align: center;
+}

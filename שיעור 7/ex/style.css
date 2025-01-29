@@ -1,0 +1,17 @@
+.apple-logo{
+    object-fit: contain;
+    width: 100%;  
+}
+
+.apple-carousel img{
+    object-fit: contain;
+    width: 100%;  
+}
+
+.apple-carousel, .apple-accordion, .apple-cards, .apple-footer{
+    border: 1px solid black;
+}
+
+.apple-cards{
+    gap: 10px;
+}

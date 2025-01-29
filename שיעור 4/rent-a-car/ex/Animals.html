@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    #main-page {
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        margin-left: 10%;
+        margin-right: 10%;
+    }
+
+    #head {
+        display: flex;
+        height: 50px;
+        border-bottom: 2px solid black;
+        background-color: crimson;
+        flex-direction: row;
+        justify-content: space-evenly;
+        align-content: center;
+        flex-wrap: wrap;
+    }
+
+    #foot {
+        display: flex;
+        height: 50px;
+        border-top: 2px solid black;
+        background-color: crimson;
+        flex-direction: row;
+        justify-content: space-evenly;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    #main-content {
+        display: flex;
+        flex: 1;
+        width: 100%;
+    }
+
+    .main-content-sidebar {
+        width: 12%;
+        border: 1px solid red;
+        height: 500px;
+    }
+
+    #sidebar-text {
+        display: flex;
+        height: 100%;
+        flex-direction: column;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+        background-color: crimson;
+    }
+
+    #text {
+        display: flex;
+        flex-grow: 1;
+        flex-shrink: 1;
+        background-color: crimson;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        margin: 0 auto;
+    }
+
+    #pets-images {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .card {
+        height: auto;
+        max-width: 150px;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        background-color: aquamarine;
+        border: 1px solid black;
+        flex-direction: column;
+    }
+</style>
+
+<body>
+    <div id="main-page">
+        <header>
+            <div>
+                <div id="head">Animal Store</div>
+            </div>
+        </header>
+        <div id="main-content">
+            <div class="main-content-sidebar">
+                <div id="sidebar-text">
+                    <div><a href="home.html">Home</a></div>
+                    <div><a href="Animals.html">Animals</a></div>
+                    <div><a href="Contact.html">Contact Us</a></div>
+                </div>
+            </div>
+            <div id="text">
+                <div id="pets-images">
+                    <div class="card">
+                        <img height="100px" src="https://www.alleycat.org/wp-content/uploads/2019/03/FELV-cat.jpg">
+                    </div>
+                    <div class="card">
+                        <img height="100px"
+                            src="https://hips.hearstapps.com/hmg-prod/images/dog-puppy-on-garden-royalty-free-image-1586966191.jpg?crop=0.752xw:1.00xh;0.175xw,0&resize=1200:*">
+
+                    </div>
+                    <div class="card">
+                        <img height="100px"
+                            src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Oryctolagus_cuniculus_Tasmania_2_%28cropped%29.jpg">
+
+                    </div>
+                    <div class="card">
+                        <img height="100px"
+                            src="https://i.natgeofe.com/k/327b01e8-be2e-4694-9ae9-ae7837bd8aea/mallard-male-swimming.jpg">
+
+                    </div>
+                </div>
+
+                <div id="pets-images">
+                    <div class="card">
+                        <img height="100px" src="https://www.alleycat.org/wp-content/uploads/2019/03/FELV-cat.jpg">
+                    </div>
+                    <div class="card">
+                        <img height="100px"
+                            src="https://hips.hearstapps.com/hmg-prod/images/dog-puppy-on-garden-royalty-free-image-1586966191.jpg?crop=0.752xw:1.00xh;0.175xw,0&resize=1200:*">
+
+                    </div>
+                    <div class="card">
+                        <img height="100px"
+                            src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Oryctolagus_cuniculus_Tasmania_2_%28cropped%29.jpg">
+
+                    </div>
+                    <div class="card">
+                        <img height="100px"
+                            src="https://i.natgeofe.com/k/327b01e8-be2e-4694-9ae9-ae7837bd8aea/mallard-male-swimming.jpg">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer>
+            <div id="foot">
+                All Rights Reserved
+            </div>
+        </footer>
+    </div>
+</body>
+
+
+</html>

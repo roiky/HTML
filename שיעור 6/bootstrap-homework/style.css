@@ -1,0 +1,70 @@
+.page-head{
+    background-color:darkgrey;
+    display: flex;
+    justify-content: space-between;
+}
+
+.notifications {
+    display: flex;
+    gap: 3%; 
+    align-items: center; 
+  }
+
+  .page-head img {
+    width: 25px; 
+    height: auto; 
+    object-fit: contain; 
+  }
+
+.username {
+    display: flex;
+    align-items: center;
+    gap: 10px; 
+  }
+
+.board-head{
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    text-align: center; 
+    gap: 20px; 
+    height: 14dvh;
+    position: relative; 
+
+}
+
+.board-head img {
+    object-fit: contain;
+    /* height: 40%; */
+    max-width: 40%;
+
+  }
+  
+
+.board-text{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.play-links{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: auto; /* הסר מגבלות ברירת מחדל */
+    flex-grow: 1; /* מלא את השטח הפנוי */
+}
+
+.list-group-item{
+    margin-bottom: 10%;
+}
+
+.btn{
+    border: 1px solid black;
+    background-color: unset;
+}
+
+
+  

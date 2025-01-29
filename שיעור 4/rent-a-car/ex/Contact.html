@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    #main-page {
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        margin-left: 10%;
+        margin-right: 10%;
+    }
+
+    #head {
+        display: flex;
+        height: 50px;
+        border-bottom: 2px solid black;
+        background-color: crimson;
+        flex-direction: row;
+        justify-content: space-evenly;
+        align-content: center;
+        flex-wrap: wrap;
+    }
+
+    #foot {
+        display: flex;
+        height: 50px;
+        border-top: 2px solid black;
+        background-color: crimson;
+        flex-direction: row;
+        justify-content: space-evenly;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    #main-content {
+        display: flex;
+        flex: 1;
+    }
+
+    .main-content-sidebar {
+        width: 12%;
+        border: 1px solid red;
+        height: 500px;
+    }
+
+    #sidebar-text {
+        display: flex;
+        height: 100%;
+        flex-direction: column;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+        background-color: crimson;
+    }
+
+    #text {
+        display: flex;
+        flex-grow: 2;
+        background-color: crimson;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+</style>
+
+<body>
+    <div id="main-page">
+        <header>
+            <div>
+                <div id="head">Animal Store</div>
+            </div>
+        </header>
+        <div id="main-content">
+            <div class="main-content-sidebar">
+                <div id="sidebar-text">
+                    <div><a href="home.html">Home</a></div>
+                    <div><a href="Animals.html">Animals</a></div>
+                    <div><a href="Contact.html">Contact Us</a></div>
+                </div>
+            </div>
+            <div id="text">
+                <div>
+                    <form>
+                        <div class="input-name">
+                            <label>Name:</label>
+                            <input type="text" name="fullname" placeholder="Enter your full name">
+                        </div>
+                        <div class="input-message">
+                            <lable>Message:</lable>
+                            <textarea name="messages" placeholder="Enter a Message"></textarea>
+                        </div>
+                        <button type="submit">Send</button>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+        <footer>
+            <div id="foot">
+                All Rights Reserved
+            </div>
+        </footer>
+    </div>
+</body>
+
+
+</html>
