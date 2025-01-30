@@ -179,5 +179,3 @@ while(i < 5){
 console.log(`Highest price product: ${maxProduct}, with the price of ${maxPrice}`)
 
 console.log(`script end`)
-
-//git test2221
