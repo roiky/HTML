@@ -163,7 +163,7 @@ let producrName = prompt(`Enter name:`);
 let producrPrice = +prompt(`Enter price for ${producrName}:`);
 let maxPrice = 0;
 let maxProduct = "";
-let i = 0;
+let i = 1;
 
 while(i < 5){
     if(producrPrice > maxPrice){
