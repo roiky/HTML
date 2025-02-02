@@ -154,7 +154,7 @@ console.log(`max: ${max}`)
 
 console.log(`script end`)
 
-*/
+
 
 //readme assagement
 console.log(`script start`)
@@ -177,5 +177,29 @@ while(i < 5){
 }
 
 console.log(`Highest price product: ${maxProduct}, with the price of ${maxPrice}`)
+
+console.log(`script end`)
+
+*/
+
+//Page 27 ex 9
+console.log(`script start`)
+
+let userNumber = +prompt(`Enter nuber:`);
+let max = 0;
+let HighIndex = 0;
+let counter = 0;
+
+while(userNumber > 0 ){
+    if(userNumber > max){
+        max = userNumber;
+        HighIndex = counter;
+    }
+    counter++;
+    userNumber = +prompt(`Enter nuber:`);
+
+}
+
+console.log(`higest number: ${max}, index: ${HighIndex}`)
 
 console.log(`script end`)
