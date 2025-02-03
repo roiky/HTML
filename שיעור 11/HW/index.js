@@ -87,6 +87,6 @@ console.log(`Days above average:`)
 
 for (let index = 0; index < july2001.length; index++) {
     if(july2001[index] > avgJuly2000)
-    console.log(`${index} of July 2001 => ${july2001[index]}`)
+    console.log(`${index + 1} of July 2001 => ${july2001[index]}`)
     
 }
