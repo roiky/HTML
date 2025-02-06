@@ -1,59 +1,58 @@
-//page 28 ex 12
 /*
-console.log(`script start`)
 
-let userNumber = +prompt(`Enter number:`);
-let sum = 0;
+//ex 1 
 
-while(userNumber >= 1){
-    sum = sum + parseInt(userNumber%10)
-    userNumber = userNumber/10
+myCar = {
+    type: "family",
+    engine: "big",
+    color: "white",
+    doors: 4,
+    model: "TT",
+    year: 2022,
+    km: 22
 }
 
-console.log(`sum of number: ${sum}`)
-
-console.log(`script end`)
-
-//////////////
-console.log(`script start`)
-
-let userNumber = prompt(`Enter number:`);
-let sum = 0;
-let NumLen = userNumber.length;
-
-for(let i=0; i<NumLen ; i++){
-    sum=sum + parseInt(userNumber[i])
-
+function addKM(car,num){
+    car.km = car.km+num
 }
 
-console.log(`sum of number: ${sum}`)
+console.log(`car color: ${myCar.color}`)
 
-console.log(`script end`)
+myCar.color = "red"
+console.log(`car color: ${myCar.color}`)
+myCar["color"] = "RED"
+console.log(`car color: ${myCar.color}`)
+
+console.log("Whole car:")
+console.log(myCar)
+
+
+console.log(`car km: ${myCar.km}`)
+addKM(myCar,30)
+console.log(`car km: ${myCar.km}`)
 
 */
 
-//////////////
-//page 28 ex 13
+//ex2
+let myCart = [];
 
-console.log(`script start`)
-
-let userNumber = prompt(`Enter number:`);
-const userDig = prompt(`enter a single dig:`)
-let NumLen = userNumber.length;
-let counter = 0;
-
-if(isNaN(userNumber) || isNaN(userDig) || userDig < 0 || userDig > 9){
-    console.log(`error`)
-    throw new Error(`Error!`)
-}
-
-for(let i=0; i < NumLen ; i++){
-    if(userNumber[i] == userDig){
-        counter++;
+function addProduct(productName, productPrice, productID){
+    let newProduct = {
+        name: productName,
+        price: productPrice,
+        ID: productID,
+        date: new Date().toString()
     }
 
+    return newProduct;
+}
+for (let index = 0; index < 3; index++) {
+    
+    let productName = prompt(`please enter product name:`)
+    let productPrice = +prompt(`please enter ${productName} price:`)
+    let productID = prompt(`please enter ${productName} ID:`)
+    myCart.push(addProduct(productName, productPrice, productID))
 }
 
-console.log(`count of dig: ${counter}`)
 
-console.log(`script end`)
+console.log(myCart)
