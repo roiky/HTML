@@ -58,8 +58,8 @@ function carsByProperty(carsArr, prop, num){
 
     if (!Array.isArray(carsArr) || typeof prop !== 'string' || typeof num !== 'number') return;
 
-    if(!PROPERTIES.includes(prop)){ //used ChatGPT for this line otherwise it would be alot of OR to check and it was too long..
-        console.log(`please enter valid property!`);
+    while(!PROPERTIES.includes(prop)){ //used ChatGPT for this line otherwise it would be alot of OR to check and it was too long..
+        console.log(`invalid property!`);
         return;
     }
     const CarsResult = [];
