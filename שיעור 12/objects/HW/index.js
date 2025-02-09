@@ -52,8 +52,6 @@ console.log(`Q3 Start`);
 
 const PROPERTIES =[ "Miles_per_Gallon","Cylinders","Displacement","Horsepower","Weight_in_lbs","Acceleration" ]
 
-
-
 function carsByProperty(carsArr, prop, num){
 
     if (!Array.isArray(carsArr) || typeof prop !== 'string' || typeof num !== 'number') return;
