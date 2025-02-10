@@ -1,10 +1,19 @@
 // if(!Array.isArray(products)) return;
+
 function cleanCards(){
-    document.getElementById("cardsHolder").innerHTML = ""
+    let allDivs = document.getElementsByTagName("div");
+    //console.log(allDivs);
+    for (let index = allDivs.length -1; index >= 0; index--) {
+        if(allDivs[index].id === "cardsHolder"){
+            allDivs[index].remove();
+        }
+    }
 }
 
 
 function createCards(CardsArr){
+    if (!Array.isArray(CardsArr)) return console.log(`${CardsArr} is not an Array!`);
+
     const mainContainer = window.document.getElementsByClassName(`container`)[0];
     const newRow = window.document.createElement("div");
     newRow.id = "cardsHolder";
@@ -47,15 +56,24 @@ function createCards(CardsArr){
     
         const prodDelete = window.document.createElement("button");
         prodDelete.classList.add("btn", "btn-danger");
-        prodDelete.textContent = "Delete";
+        const DeleteIcon = `<i class="bi bi-trash"></i>`
+        prodDelete.innerHTML = DeleteIcon;
         prodDelete.onclick = function(){
             col.remove();
             console.log(`Deleted card with ID: ${currentProduct.id}`);
         }
+
+        const prodBuy = window.document.createElement("button");
+        prodBuy.classList.add("btn", "btn-success","m-2");
+        const BuyIcon = `<i class="bi bi-bag"></i>`
+        prodBuy.innerHTML = BuyIcon;
+        // prodBuy.onclick = function(){
+        //     showAlert(`Added ${currentProduct.title} to cart!`, "success");
+        // };
     
     
         //add to body
-        cardBody.append(title, prodID, prodDesc, prodPrice, prodDelete);
+        cardBody.append(title, prodID, prodDesc, prodPrice, prodBuy, prodDelete);
     
         //add body to card
         card.append(img, cardBody);
@@ -70,3 +88,17 @@ function createCards(CardsArr){
     //add row to container
     mainContainer.append(newRow);
 }
+
+// function showAlert(message, type) {
+//     const alertDiv = document.createElement("div");
+//     alertDiv.classList.add("alert", `alert-${type}`, "fade", "show", "text-center");
+//     alertDiv.setAttribute("role", "alert");
+//     alertDiv.innerHTML = message;
+
+//     document.getElementById("alertContainer").appendChild(alertDiv);
+
+//     setTimeout(function() {
+//         alertDiv.classList.remove("show");
+//         setTimeout(() => alertDiv.remove(), 500);
+//     }, 3000);
+// }
