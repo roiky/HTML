@@ -4,7 +4,7 @@ let allCarsArray = [...carsForSale, ...carsForRental]
 function init(){
     loadTable([...carsForSale, ...carsForRental]);
 
-
+    clearAllInputs();
 
     document.getElementById("SaleCars")?.addEventListener("click",function(){
         loadTable(carsForSale);
@@ -17,8 +17,10 @@ function init(){
     })
     document.getElementById("DeleteAll")?.addEventListener("click",function(){
         clearTable();
+        clearAllInputs();
     })
-    //Listener for buttons
+
+    //Listener for search buttons
     document.getElementById("searchByHPButton")?.addEventListener("click",function(){
         const inputTextElement = document.getElementById("searchTextHP")
         const result = searchCars(allCarsArray, inputTextElement?.value,"Horsepower")
@@ -42,13 +44,13 @@ function init(){
     })
     document.getElementById("searchByNameButton")?.addEventListener("click",function(){
         const inputTextElement = document.getElementById("searchTextNAME")
-        const result = searchCarsByName(allCarsArray, inputTextElement?.value,"Name")
+        const result = searchCars(allCarsArray, inputTextElement?.value,"Name")
         loadTable(result)
     })
 
     document.getElementById("searchTextNAME")?.addEventListener("input",function(){
         const inputTextElement = document.getElementById("searchTextNAME")
-        const result = searchCarsByName(allCarsArray, inputTextElement?.value,"Name")
+        const result = searchCars(allCarsArray, inputTextElement?.value,"Name")
         loadTable(result)
     })
 }
@@ -56,8 +58,8 @@ function init(){
 init();
 
 
-function searchCars(carsArray, searchText,field) {
-    if (!Array.isArray(carsArray)) return; // validate that arrayOfCars is array
+function searchCars(carsArray, searchText, field) {
+    if (!Array.isArray(carsArray)) return; 
     if (typeof searchText !== 'string') return;
     if (!searchText.length) return carsArray;
 
@@ -67,43 +69,27 @@ function searchCars(carsArray, searchText,field) {
     for (let index = 0; index < carsArray.length; index++) {
         const currentCar = carsArray[index];
         let tempValue = 0;
-        if (typeof currentCar[field] === 'number') tempValue = currentCar[field];
-        if (String(tempValue).toLowerCase() === toLowerSearchText) {
-            result.push(currentCar);    
+        if (typeof currentCar[field] === 'number'){
+            tempValue = currentCar[field];
+            if (String(tempValue).toLowerCase() === toLowerSearchText) {
+                result.push(currentCar);    
+            }
+        } 
+        else if(typeof currentCar[field] === 'string'){
+            if (currentCar[field].toLowerCase().includes(toLowerSearchText)) {
+                result.push(currentCar);
+            }
         }
-
     }
     return result;
 }
 
-function searchCarsByName(carsArray, searchText,field) {
-    if (!Array.isArray(carsArray)) return; // validate that arrayOfCars is array
-    if (typeof searchText !== 'string') return;
-    if (!searchText.length) return carsArray;
-
-    let result = [];
-    const toLowerSearchText = searchText.toLowerCase()
-    
-    for (let index = 0; index < carsArray.length; index++) {
-        const currentCar = carsArray[index];
-
-        if (currentCar[field].toLowerCase().includes(toLowerSearchText)) {
-            result.push(currentCar);
-        }
-
+function clearAllInputs(){
+    allInputs = document.getElementsByTagName("input");
+    for (let index = 0; index < allInputs.length; index++) {
+        allInputs[index].value = "";
     }
-    return result;
 }
-
-
-
-
-
-
-
-
-
-
 
 function clearTable() {
     document.getElementById("table-cars-headers").innerHTML = ""
