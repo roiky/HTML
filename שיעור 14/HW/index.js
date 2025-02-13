@@ -38,6 +38,17 @@ function init(){
         const result = searchCars(allCarsArray, inputTextElement?.value,"Weight_in_lbs")
         loadTable(result)
     })
+    document.getElementById("searchByNameButton")?.addEventListener("click",function(){
+        const inputTextElement = document.getElementById("searchTextNAME")
+        const result = searchCarsByName(allCarsArray, inputTextElement?.value,"Name")
+        loadTable(result)
+    })
+
+    document.getElementById("searchTextNAME")?.addEventListener("input",function(){
+        const inputTextElement = document.getElementById("searchTextNAME")
+        const result = searchCarsByName(allCarsArray, inputTextElement?.value,"Name")
+        loadTable(result)
+    })
 }
 
 init();
@@ -73,9 +84,8 @@ function searchCarsByName(carsArray, searchText,field) {
     
     for (let index = 0; index < carsArray.length; index++) {
         const currentCar = carsArray[index];
-        let tempValue = 0;
-        if (typeof currentCar[field] === 'number') tempValue = currentCar[field];
-        if (String(tempValue).toLowerCase().includes(toLowerSearchText)) {
+
+        if (currentCar[field].toLowerCase().includes(toLowerSearchText)) {
             result.push(currentCar);
         }
 
