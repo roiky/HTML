@@ -19,27 +19,31 @@ function init(){
     //Listener for buttons
     document.getElementById("searchByHPButton")?.addEventListener("click",function(){
         const inputTextElement = document.getElementById("searchTextHP")
-        const result = searchCars(allCarsArray, inputTextElement?.value)
+        const result = searchCars(allCarsArray, inputTextElement?.value,"Horsepower")
         loadTable(result)
-        //console.log(result)
-
     })
 
     document.getElementById("searchByAccelerationButton")?.addEventListener("click",function(){
-        console.log("searchByAccelerationButton");
+        const inputTextElement = document.getElementById("searchTextACC")
+        const result = searchCars(allCarsArray, inputTextElement?.value,"Acceleration")
+        loadTable(result)
     })
     document.getElementById("searchByCylindersButton")?.addEventListener("click",function(){
-        console.log("searchByCylindersButton");
+        const inputTextElement = document.getElementById("searchTextCYL")
+        const result = searchCars(allCarsArray, inputTextElement?.value,"Cylinders")
+        loadTable(result)
     })
     document.getElementById("searchByWeightButton")?.addEventListener("click",function(){
-        console.log("searchByWeightButton");
+        const inputTextElement = document.getElementById("searchTextWEIGHT")
+        const result = searchCars(allCarsArray, inputTextElement?.value,"Weight_in_lbs")
+        loadTable(result)
     })
 }
 
 init();
 
 
-function searchCars(carsArray, searchText) {
+function searchCars(carsArray, searchText,field) {
     if (!Array.isArray(carsArray)) return; // validate that arrayOfCars is array
     if (typeof searchText !== 'string') return;
     if (!searchText.length) return carsArray;
@@ -50,9 +54,27 @@ function searchCars(carsArray, searchText) {
     for (let index = 0; index < carsArray.length; index++) {
         const currentCar = carsArray[index];
         let tempValue = 0;
-        if (typeof currentCar.Horsepower === 'number') {
-            tempValue = currentCar.Horsepower;
+        if (typeof currentCar[field] === 'number') tempValue = currentCar[field];
+        if (String(tempValue).toLowerCase() === toLowerSearchText) {
+            result.push(currentCar);    
         }
+
+    }
+    return result;
+}
+
+function searchCarsByName(carsArray, searchText,field) {
+    if (!Array.isArray(carsArray)) return; // validate that arrayOfCars is array
+    if (typeof searchText !== 'string') return;
+    if (!searchText.length) return carsArray;
+
+    let result = [];
+    const toLowerSearchText = searchText.toLowerCase()
+    
+    for (let index = 0; index < carsArray.length; index++) {
+        const currentCar = carsArray[index];
+        let tempValue = 0;
+        if (typeof currentCar[field] === 'number') tempValue = currentCar[field];
         if (String(tempValue).toLowerCase().includes(toLowerSearchText)) {
             result.push(currentCar);
         }
