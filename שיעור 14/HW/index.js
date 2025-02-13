@@ -1,8 +1,10 @@
 let allCarsArray = [...carsForSale, ...carsForRental]
-
+//document.getElementById("searchTextHP").value = ""
 
 function init(){
     loadTable([...carsForSale, ...carsForRental]);
+
+
 
     document.getElementById("SaleCars")?.addEventListener("click",function(){
         loadTable(carsForSale);
