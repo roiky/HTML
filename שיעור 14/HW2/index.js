@@ -38,8 +38,8 @@ function init(){
     document.getElementById("searchButton")?.addEventListener("click",function(){
         const inputTextElement = document.getElementById("searchText")
         const result = searchCars(allCarsArray, inputTextElement?.value,dropdownButton.textContent)
-        updateResult(result)
         loadTable(result)
+        updateResult(result)
         
     })
 
@@ -47,8 +47,8 @@ function init(){
         if(dropdownButton.textContent != "Name" && dropdownButton.textContent != "Origin") return;
         const inputTextElement = document.getElementById("searchText")
         const result = searchCars(allCarsArray, inputTextElement?.value,dropdownButton.textContent)
-        updateResult(result)
         loadTable(result)
+        updateResult(result)
         
     })
 
@@ -68,8 +68,14 @@ function loadDropdown(fieldArr){
 
 function updateResult(arr){
     resultItem = document.getElementById("resultCounter");
-    if (typeof arr[0] === 'undefined') {resultItem.innerHTML = `no results were found!`; }
-    else {resultItem.innerHTML = `${arr.length} results were found!`}
+    if (typeof arr[0] === 'undefined') {
+        resultItem.classList.add("fw-bold","text-danger")
+        resultItem.innerHTML = `no results were found!`; 
+    }
+    else {
+        resultItem.classList.remove("fw-bold","text-danger");
+        resultItem.innerHTML = `${arr.length} results were found!`
+    }
 }
 
 function searchCars(carsArray, searchText, field) {
@@ -115,8 +121,8 @@ function loadTable(CarsArr) {
     const firstElement = CarsArr[0]
     if(typeof firstElement === 'undefined') return;
     const fields = Object.keys(firstElement)
-    console.log(firstElement)
-    console.log(fields)
+    // console.log(firstElement)
+    // console.log(fields)
     const theadTr = document.getElementById("table-cars-headers")
     if (theadTr) {
         for (let index = 0; index < fields.length; index++) {
