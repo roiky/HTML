@@ -38,14 +38,18 @@ function init(){
     document.getElementById("searchButton")?.addEventListener("click",function(){
         const inputTextElement = document.getElementById("searchText")
         const result = searchCars(allCarsArray, inputTextElement?.value,dropdownButton.textContent)
+        updateResult(result)
         loadTable(result)
+        
     })
 
     document.getElementById("searchText")?.addEventListener("input",function(){
         if(dropdownButton.textContent != "Name" && dropdownButton.textContent != "Origin") return;
         const inputTextElement = document.getElementById("searchText")
         const result = searchCars(allCarsArray, inputTextElement?.value,dropdownButton.textContent)
+        updateResult(result)
         loadTable(result)
+        
     })
 
 }
@@ -53,13 +57,19 @@ function init(){
 init();
 
 function loadDropdown(fieldArr){
-    dropdownContent = document.getElementsByClassName("searchDropdown")[0]
-    dropdownContent.innerHTML = ""
-    const firstElement = fieldArr[0]
-    const fields = Object.keys(firstElement)
+    dropdownContent = document.getElementById("searchDropdown");
+    dropdownContent.innerHTML = "";
+    const firstElement = fieldArr[0];
+    const fields = Object.keys(firstElement);
     for (let index = 0; index < fields.length; index++) {
         dropdownContent.innerHTML +=  `<li><a class="dropdown-item" href="#">${fields[index]}</a></li>`        
     }
+}
+
+function updateResult(arr){
+    resultItem = document.getElementById("resultCounter");
+    if (typeof arr[0] === 'undefined') {resultItem.innerHTML = `no results were found!`; }
+    else {resultItem.innerHTML = `${arr.length} results were found!`}
 }
 
 function searchCars(carsArray, searchText, field) {
@@ -103,6 +113,7 @@ function clearTable() {
 function loadTable(CarsArr) {
     clearTable()
     const firstElement = CarsArr[0]
+    if(typeof firstElement === 'undefined') return;
     const fields = Object.keys(firstElement)
     console.log(firstElement)
     console.log(fields)
