@@ -1,6 +1,7 @@
 const carsForSale = [
     {
         "Name": "tesla model s performance",
+        "Miles_per_Gallon": 18,
         "Displacement": 18,
         "Cylinders": 8,
         "Displacement": 307,
