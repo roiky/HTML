@@ -1,14 +1,16 @@
-const jokes = allJokes
-let pageJokes = jokes
+const allFavJokes = getJokesFromLS()
+let pageFavJokes = allFavJokes
 
 function init(){
-    console.log(jokes);
+    // console.log(jokes);
+    // console.log(getJokesFromLS())
+    loadFavCards(pageFavJokes)
+    console.log("loaded all favorites cards")
 
     document.getElementById("createCardsButton")?.addEventListener("click",function(){
-        loadCards(jokes)
-        console.log("loaded all cards")
-
-        allFavs = document.getElementsByClassName("favBtn")
+        loadFavCards(jokes)
+        
+        allFavs = document.getElementsByClassName("delBtn")
         for (let index = 0; index < allFavs.length; index++) {
             allFavs[index].addEventListener("click",function(){
             let currentJokeID = allFavs[index].id
@@ -18,15 +20,16 @@ function init(){
             
         }
     })
-
-    document.getElementById("cleanButton")?.addEventListener("click",function(){
-        cleanPage()
-        console.log("cleaned all cards")
-
-    })
 }
 
 init();
+
+
+function getJokesFromLS(){
+    let allFavorites = localStorage.getItem("favoritesJokes")
+    if(!allFavorites) return [];
+    else return JSON.parse(allFavorites)
+}
 
 function findJokeByID(jokeID){
     for (let index = 0; index < jokes.length; index++) {
@@ -63,9 +66,6 @@ function addJokeToLS(jokeObj){
         localStorage.setItem("favoritesJokes", allFavoritesSTR)
         console.log(`Joke ${jokeObj.id} added to favorites!`)
     }
-        
-
-
 }
 
 function getCardTemplate(id, setup, type, punch) {
@@ -73,16 +73,11 @@ function getCardTemplate(id, setup, type, punch) {
                 <h5>${type} - ${id}</h5>
                 <p>Setup: ${setup}</p>
                 <p>Punchline: ${punch}</p>
-                <h3> <button class="btn btn-warning favBtn" id=${id}> add to favorites </button> </h3>
+                <h3> <button class="btn btn-danger delBtn" id=${id}> delete from favorites </button> </h3>
                 </div>`
 }
 
-function cleanPage(){
-    const content = document.getElementById("hold-cards")
-    content.innerHTML = ""
-}
-
-function loadCards(cardsArr){
+function loadFavCards(cardsArr){
     if (!Array.isArray(cardsArr)) return; // validate that arrayOfCars is array
      const content = document.getElementById("hold-cards")
      cleanPage()
