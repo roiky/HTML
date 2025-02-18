@@ -7,18 +7,7 @@ function init(){
     loadFavCards(pageFavJokes)
     console.log("loaded all favorites cards")
 
-    allFavs = document.getElementsByClassName("delBtn")
-    for (let index = 0; index < allFavs.length; index++) {
-        allFavs[index].addEventListener("click",function(){
-            let currentJokeID = allFavs[index].id
-            // let tempJokeObj = findJokeByID(Number(currentJokeID))
-            // addJokeToLS(tempJokeObj)
-            deleteJokeFromLS(currentJokeID)
-            loadFavCards(pageFavJokes)
 
-        })
-        
-    }
 }
 
 init();
@@ -105,6 +94,17 @@ function loadFavCards(cardsArr){
         let currectItem = cardsArr[index]
         const cardHTML = getCardTemplate(currectItem.id, currectItem.setup,currectItem.type,currectItem.punchline)
         content.innerHTML += cardHTML
+    }
+
+    allFavs = document.getElementsByClassName("delBtn")
+    for (let index = 0; index < allFavs.length; index++) {
+        allFavs[index].addEventListener("click",function(){
+            let currentJokeID = allFavs[index].id
+            // let tempJokeObj = findJokeByID(Number(currentJokeID))
+            // addJokeToLS(tempJokeObj)
+            deleteJokeFromLS(currentJokeID)
+            loadFavCards(pageFavJokes)
+        })
     }
 }
 
