@@ -38,10 +38,10 @@ function deleteJokeFromLS(jokeID,deleteFromArr) {
 }
 
 function getCardTemplate(id, setup, type, punch) {
-    return `<div id="${id}" class="card card-width col-4 mt-1">
+    return `<div id="${id}" class="card card-width col-4 mt-1 text-center ">
                 <h5>${type} - ${id}</h5>
-                <p>Setup: ${setup}</p>
-                <p>Punchline: ${punch}</p>
+                <p><b>Setup:</b> <br> ${setup}</p>
+                <p><b>Punchline:</b> <br> ${punch}</p>
                 <h3> <button class="btn btn-danger delBtn" id=${id}> <i class="bi bi-trash"></i> </button> </h3>
                 </div>`
 }
