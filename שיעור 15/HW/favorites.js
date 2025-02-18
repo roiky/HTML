@@ -2,12 +2,9 @@ const allFavJokes = getJokesFromLS()
 let pageFavJokes = allFavJokes
 
 function init(){
-    // console.log(jokes);
-    // console.log(getJokesFromLS())
+    console.log(pageFavJokes)
     loadFavCards(pageFavJokes)
     console.log("loaded all favorites cards")
-
-
 }
 
 init();
@@ -19,60 +16,24 @@ function getJokesFromLS(){
     else return JSON.parse(allFavorites)
 }
 
-function findJokeByID(jokeID){
-    for (let index = 0; index < jokes.length; index++) {
-        if(jokes[index].id === jokeID){
-            //console.log(jokes[index])
-            return jokes[index]
-        }
-        
-    }
-    return null;
-}
-
-function deleteJokeFromLS(jokeID) {
+function deleteJokeFromLS(jokeID,deleteFromArr) {
+    if (!Array.isArray(deleteFromArr)) return; 
     jokeID = Number(jokeID);
 
-    let jokeIndex = pageFavJokes.findIndex(function(joke) {
+    let jokeIndex = deleteFromArr.findIndex(function(joke) {
         return joke.id === jokeID;
     });
 
-    if (jokeIndex) {
-        pageFavJokes.splice(jokeIndex, 1);
+    if (jokeIndex > -1) {
+        deleteFromArr.splice(jokeIndex, 1);
         localStorage.removeItem("favoritesJokes")
 
-        let allFavoritesSTR = JSON.stringify(pageFavJokes)
+        let allFavoritesSTR = JSON.stringify(deleteFromArr)
         localStorage.setItem("favoritesJokes", allFavoritesSTR)
         console.log(`Joke ID ${jokeID} removed from LS`);
 
     } else {
-        console.log(`Joke with ID ${jokeID} not found in pageFavJokes`);
-    }
-}
-
-function addJokeToLS(jokeObj){
-    let allFavorites = localStorage.getItem("favoritesJokes")
-    if (allFavorites) {
-        allFavorites = JSON.parse(allFavorites)
-    }
-    else{
-        allFavorites = [];
-    }
-
-    let isExists = false;
-
-    for (let index = 0; index < allFavorites.length; index++) {
-        if(allFavorites[index].id === jokeObj.id){
-            isExists = true;
-            console.log(`Joke ${jokeObj.id} Already in favorites!`)
-        }
-    }
-
-    if(!isExists){
-        allFavorites.push(jokeObj)
-        let allFavoritesSTR = JSON.stringify(allFavorites)
-        localStorage.setItem("favoritesJokes", allFavoritesSTR)
-        console.log(`Joke ${jokeObj.id} added to favorites!`)
+        console.log(`Joke with ID ${jokeID} not found in the array!`);
     }
 }
 
@@ -81,12 +42,12 @@ function getCardTemplate(id, setup, type, punch) {
                 <h5>${type} - ${id}</h5>
                 <p>Setup: ${setup}</p>
                 <p>Punchline: ${punch}</p>
-                <h3> <button class="btn btn-danger delBtn" id=${id}> delete from favorites </button> </h3>
+                <h3> <button class="btn btn-danger delBtn" id=${id}> <i class="bi bi-trash"></i> </button> </h3>
                 </div>`
 }
 
 function loadFavCards(cardsArr){
-    if (!Array.isArray(cardsArr)) return; // validate that arrayOfCars is array
+    if (!Array.isArray(cardsArr)) return; 
      const content = document.getElementById("hold-cards")
      cleanPage()
 
@@ -100,9 +61,7 @@ function loadFavCards(cardsArr){
     for (let index = 0; index < allFavs.length; index++) {
         allFavs[index].addEventListener("click",function(){
             let currentJokeID = allFavs[index].id
-            // let tempJokeObj = findJokeByID(Number(currentJokeID))
-            // addJokeToLS(tempJokeObj)
-            deleteJokeFromLS(currentJokeID)
+            deleteJokeFromLS(currentJokeID,pageFavJokes)
             loadFavCards(pageFavJokes)
         })
     }

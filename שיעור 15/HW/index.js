@@ -3,20 +3,13 @@ let pageJokes = jokes
 
 function init(){
     console.log(jokes);
+    loadCards(jokes)
 
     document.getElementById("createCardsButton")?.addEventListener("click",function(){
         loadCards(jokes)
         console.log("loaded all cards")
 
-        allFavs = document.getElementsByClassName("favBtn")
-        for (let index = 0; index < allFavs.length; index++) {
-            allFavs[index].addEventListener("click",function(){
-            let currentJokeID = allFavs[index].id
-            let tempJokeObj = findJokeByID(Number(currentJokeID))
-            addJokeToLS(tempJokeObj)
-            })
-            
-        }
+
     })
 
     document.getElementById("cleanButton")?.addEventListener("click",function(){
@@ -73,7 +66,7 @@ function getCardTemplate(id, setup, type, punch) {
                 <h5>${type} - ${id}</h5>
                 <p>Setup: ${setup}</p>
                 <p>Punchline: ${punch}</p>
-                <h3> <button class="btn btn-warning favBtn" id=${id}> add to favorites </button> </h3>
+                <h3> <button class="btn btn-warning favBtn" id=${id}> <i class="bi bi-star"></i> </button> </h3>
                 </div>`
 }
 
@@ -91,5 +84,15 @@ function loadCards(cardsArr){
         let currectItem = cardsArr[index]
         const cardHTML = getCardTemplate(currectItem.id, currectItem.setup,currectItem.type,currectItem.punchline)
         content.innerHTML += cardHTML
+    }
+
+    allFavs = document.getElementsByClassName("favBtn")
+    for (let index = 0; index < allFavs.length; index++) {
+        allFavs[index].addEventListener("click",function(){
+        let currentJokeID = allFavs[index].id
+        let tempJokeObj = findJokeByID(Number(currentJokeID))
+        addJokeToLS(tempJokeObj)
+        })
+        
     }
 }
