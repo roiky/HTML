@@ -7,19 +7,18 @@ function init(){
     loadFavCards(pageFavJokes)
     console.log("loaded all favorites cards")
 
-    document.getElementById("createCardsButton")?.addEventListener("click",function(){
-        loadFavCards(jokes)
-        
-        allFavs = document.getElementsByClassName("delBtn")
-        for (let index = 0; index < allFavs.length; index++) {
-            allFavs[index].addEventListener("click",function(){
+    allFavs = document.getElementsByClassName("delBtn")
+    for (let index = 0; index < allFavs.length; index++) {
+        allFavs[index].addEventListener("click",function(){
             let currentJokeID = allFavs[index].id
-            let tempJokeObj = findJokeByID(Number(currentJokeID))
-            addJokeToLS(tempJokeObj)
-            })
-            
-        }
-    })
+            // let tempJokeObj = findJokeByID(Number(currentJokeID))
+            // addJokeToLS(tempJokeObj)
+            deleteJokeFromLS(currentJokeID)
+            loadFavCards(pageFavJokes)
+
+        })
+        
+    }
 }
 
 init();
@@ -40,6 +39,26 @@ function findJokeByID(jokeID){
         
     }
     return null;
+}
+
+function deleteJokeFromLS(jokeID) {
+    jokeID = Number(jokeID);
+
+    let jokeIndex = pageFavJokes.findIndex(function(joke) {
+        return joke.id === jokeID;
+    });
+
+    if (jokeIndex) {
+        pageFavJokes.splice(jokeIndex, 1);
+        localStorage.removeItem("favoritesJokes")
+
+        let allFavoritesSTR = JSON.stringify(pageFavJokes)
+        localStorage.setItem("favoritesJokes", allFavoritesSTR)
+        console.log(`Joke ID ${jokeID} removed from LS`);
+
+    } else {
+        console.log(`Joke with ID ${jokeID} not found in pageFavJokes`);
+    }
 }
 
 function addJokeToLS(jokeObj){
@@ -87,4 +106,9 @@ function loadFavCards(cardsArr){
         const cardHTML = getCardTemplate(currectItem.id, currectItem.setup,currectItem.type,currectItem.punchline)
         content.innerHTML += cardHTML
     }
+}
+
+function cleanPage(){
+    const content = document.getElementById("hold-cards")
+    content.innerHTML = ""
 }
