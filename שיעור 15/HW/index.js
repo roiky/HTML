@@ -8,8 +8,6 @@ function init(){
     document.getElementById("createCardsButton")?.addEventListener("click",function(){
         loadCards(jokes)
         console.log("loaded all cards")
-
-
     })
 
     document.getElementById("cleanButton")?.addEventListener("click",function(){
