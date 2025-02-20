@@ -1,3 +1,17 @@
+
+function isInLS(jid){
+    const favoritesJokesString = localStorage.getItem("TempfavoritesJokes")
+    const TempFavArr = JSON.parse(favoritesJokesString)
+    if(!TempFavArr) return ;
+    
+    for (let index = 0; index < TempFavArr.length; index++) {
+        const currentObj = TempFavArr[index];
+        if(currentObj.id === jid){
+            return true;
+        }
+    }
+}
+
 function drawLenghtOfJokes(array, targetContent){
     if (!Array.isArray(array)) return; // validate that arrayOfCars is array
     const content = document.getElementById(targetContent)
@@ -52,7 +66,12 @@ function loadCards(array, targetContent, action = "add") {
 
 function getCardTemplate(j, action) {
     const { id, punchline, type, setup } = j
-    let button = `<h3> <button class="btn btn-primary" onClick="addToFavorites(${id})"> Add </button> </h3>`
+    let button = `<h3> <button class="btn btn-primary" onClick="addOrRemoveFromTempFav(${id})"> Add </button> </h3>`
+
+    if(isInLS(id)){
+        button = `<h3> <button class="btn btn-warning" onClick="addOrRemoveFromTempFav(${id})"> Add </button> </h3>`
+    }
+
     if (action === 'remove') {
         button = `<h3> <button class="btn btn-danger" onClick="removeFromFavorites(${id})"> Remove </button> </h3>`
     }

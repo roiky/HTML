@@ -13,30 +13,47 @@ function init() {
     })
     loadCards(jokes, "jokesContent")
     console.log(countTypes(jokes))
+
+    isInLS()
 }
 
-function addToTempFavorites(id){
+
+
+function addOrRemoveFromTempFav(id){
     const jokeToFavorite = getJokeObjById(id, jokes)
     if (jokeToFavorite) {
         const favoritesJokesString = localStorage.getItem("TempfavoritesJokes")  
         if(favoritesJokesString){
+            //console.log(favoritesJokesString)
             const favoritesJokesArray = JSON.parse(favoritesJokesString)
-            const found = getJokeObjById(jokeToFavorite.id, favoritesJokesArray)
+            const found = getJokeObjById(id, favoritesJokesArray)
+            
             if(!found){
                 favoritesJokesArray.push(jokeToFavorite)
                 const favoritesJokesArrayString = JSON.stringify(favoritesJokesArray)
+                console.log(favoritesJokesArray)
                 localStorage.setItem("TempfavoritesJokes", favoritesJokesArrayString)
                 console.log(`joke id: ${id} added to temp favorites!`)
             }
             else{
-                //some code to remove from temp 
+                const jokeIndex = getJokeIndexById(id, favoritesJokesArray)
+                favoritesJokesArray.splice(jokeIndex, 1)
+                const favoritesJokesArrayString = JSON.stringify(favoritesJokesArray)
+                localStorage.setItem("TempfavoritesJokes", favoritesJokesArrayString)
                 //in the loadCards add a feature that identify if the id is in the temp, if so change the icon so the user will know its already in the temp list.
                 console.log(`joke id: ${id} removed from temp favorites!`)
             }
         }
-
+        else{
+            const favoritesJokesArray = []
+            const favoritesJokesArrayString = JSON.stringify(favoritesJokesArray)
+            localStorage.setItem("TempfavoritesJokes", favoritesJokesArrayString)
+            addOrRemoveFromTempFav(id)
+        }
+        loadCards(jokes, "jokesContent")
     }
 }
+
 
 function addToFavorites(id) {
     const jokeToFavorite = getJokeObjById(id, jokes)
