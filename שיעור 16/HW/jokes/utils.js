@@ -19,6 +19,89 @@ function isInLS(jid, LSName){
     }
 }
 
+function removeFromLS(id, LSName) {
+    const favoritesJokesString = localStorage.getItem(LSName)
+    if (favoritesJokesString) {
+        const favoritesJokesArray = JSON.parse(favoritesJokesString)
+        const jokeIndex = getJokeIndexById(id, favoritesJokesArray)
+        
+        if (jokeIndex !== undefined) {
+            favoritesJokesArray.splice(jokeIndex, 1)
+            const favoritesJokesArrayString = JSON.stringify(favoritesJokesArray)
+            localStorage.setItem(LSName, favoritesJokesArrayString)
+            init()
+        }
+
+    }
+}
+
+
+function moveFromLStoLS(moveFrom, moveTo){
+    const favoritesJokesString = localStorage.getItem(moveTo)
+
+    if(!favoritesJokesString){
+        const emptyJokesArray = []
+        const emptyJokesArrayString = JSON.stringify(emptyJokesArray)
+        localStorage.setItem(moveTo, emptyJokesArrayString)
+        moveFromLStoLS(moveFrom, moveTo)
+    }
+    else{
+        const favoritesJokesArray = JSON.parse(favoritesJokesString)
+
+        const tempFavoritesJokesString = localStorage.getItem(moveFrom)
+        const tempFavoritesJokesArray = JSON.parse(tempFavoritesJokesString)
+
+        for (let index = 0; index < tempFavoritesJokesArray.length; index++) {
+            const currentTempJoke = tempFavoritesJokesArray[index];
+
+            const found = getJokeObjById(currentTempJoke.id, favoritesJokesArray)
+            if(!found){
+                favoritesJokesArray.push(currentTempJoke)
+            }
+            
+        }
+        const jokesToLoad = JSON.stringify(favoritesJokesArray)
+        localStorage.setItem(moveTo, jokesToLoad)
+        localStorage.setItem(moveFrom, "[]")
+    }
+
+
+}
+
+function addOrRemoveFromTempFav(id,LSName){
+    const jokeToFavorite = getJokeObjById(id, jokes)
+    if (jokeToFavorite) {
+        const favoritesJokesString = localStorage.getItem(LSName)  
+        if(favoritesJokesString){
+            //console.log(favoritesJokesString)
+            const favoritesJokesArray = JSON.parse(favoritesJokesString)
+            const found = getJokeObjById(id, favoritesJokesArray)
+            
+            if(!found){
+                favoritesJokesArray.push(jokeToFavorite)
+                const favoritesJokesArrayString = JSON.stringify(favoritesJokesArray)
+                console.log(favoritesJokesArray)
+                localStorage.setItem(LSName, favoritesJokesArrayString)
+                console.log(`joke id: ${id} added to ${LSName}!`)
+            }
+            else{
+                const jokeIndex = getJokeIndexById(id, favoritesJokesArray)
+                favoritesJokesArray.splice(jokeIndex, 1)
+                const favoritesJokesArrayString = JSON.stringify(favoritesJokesArray)
+                localStorage.setItem(LSName, favoritesJokesArrayString)
+                console.log(`joke id: ${id} removed from ${LSName}!`)
+            }
+        }
+        else{
+            const favoritesJokesArray = []
+            const favoritesJokesArrayString = JSON.stringify(favoritesJokesArray)
+            localStorage.setItem(LSName, favoritesJokesArrayString)
+            addOrRemoveFromTempFav(id)
+        }
+        loadCards(jokes, "jokesContent")
+    }
+}
+
 function drawLenghtOfJokes(array, targetContent){
     if (!Array.isArray(array)) return; // validate that arrayOfCars is array
     const content = document.getElementById(targetContent)
@@ -76,7 +159,7 @@ function getCardTemplate(j, action) {
     let button = `<h3> <button class="btn btn-success" onClick="addOrRemoveFromTempFav(${id}, 'TempfavoritesJokes')"> ${BSIcons.PLUS} </button> </h3>`;
 
     if(isInLS(id,"TempfavoritesJokes")){
-        button = `<h3> <button class="btn btn-warning" onClick="addOrRemoveFromTempFav(${id}, 'TempfavoritesJokes')"> ${BSIcons.WAIT} </button> </h3>`
+        button = `<h3> <button class="btn btn-primary" onClick="addOrRemoveFromTempFav(${id}, 'TempfavoritesJokes')"> ${BSIcons.WAIT} </button> </h3>`
     }
 
     if(isInLS(id,"favoritesJokes")){
@@ -84,14 +167,13 @@ function getCardTemplate(j, action) {
     }
 
     if (action === 'remove') {
-        button = `<h3> <button class="btn btn-danger" onClick="removeFromFavorites(${id})"> Remove </button> </h3>`
+        button = `<h3> <button class="btn btn-danger" onClick="removeFromLS(${id},'favoritesJokes')">  ${BSIcons.TRASH} </button> </h3>`
     }
 
     return `<div id="${id}" class="card card-width">
-                <h3>${id}</h3>
-                <h2><span class="badge badge-light" style="background:blue">${type}</span></h2>
-                <h2>${setup}</h2>
-                <h2>${punchline}</h2>
+                <h5><span class="badge badge-light" style="background:gray">${type} (${id})</span></h5>
+                <p><b>Setup:</b> <br> ${setup}</p>
+                <p><b>Punchline:</b> <br> ${punchline}</p>
                 ${button}
                 </div>`
 }
