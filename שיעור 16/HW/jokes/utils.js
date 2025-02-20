@@ -1,6 +1,13 @@
 
-function isInLS(jid){
-    const favoritesJokesString = localStorage.getItem("TempfavoritesJokes")
+const BSIcons = {
+    PLUS: '<i class="bi bi-plus"></i>',
+    STAR: '<i class="bi bi-star-fill"></i>',
+    TRASH: '<i class="bi bi-trash3-fill"></i>',
+    WAIT: '<i class="bi bi-clock"></i>'
+}
+
+function isInLS(jid, LSName){
+    const favoritesJokesString = localStorage.getItem(LSName)
     const TempFavArr = JSON.parse(favoritesJokesString)
     if(!TempFavArr) return ;
     
@@ -66,10 +73,14 @@ function loadCards(array, targetContent, action = "add") {
 
 function getCardTemplate(j, action) {
     const { id, punchline, type, setup } = j
-    let button = `<h3> <button class="btn btn-primary" onClick="addOrRemoveFromTempFav(${id})"> Add </button> </h3>`
+    let button = `<h3> <button class="btn btn-success" onClick="addOrRemoveFromTempFav(${id}, 'TempfavoritesJokes')"> ${BSIcons.PLUS} </button> </h3>`;
 
-    if(isInLS(id)){
-        button = `<h3> <button class="btn btn-warning" onClick="addOrRemoveFromTempFav(${id})"> Add </button> </h3>`
+    if(isInLS(id,"TempfavoritesJokes")){
+        button = `<h3> <button class="btn btn-warning" onClick="addOrRemoveFromTempFav(${id}, 'TempfavoritesJokes')"> ${BSIcons.WAIT} </button> </h3>`
+    }
+
+    if(isInLS(id,"favoritesJokes")){
+        button = `<h3> <button class="btn btn-warning" disabled onClick="addOrRemoveFromTempFav(${id}, 'TempfavoritesJokes')"> ${BSIcons.STAR} </button> </h3>`
     }
 
     if (action === 'remove') {

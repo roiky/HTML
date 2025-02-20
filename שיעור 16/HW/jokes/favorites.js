@@ -4,6 +4,7 @@ function init() {
     loadCards(favoritesJokesArray, "jokesContentFavorites", "remove")
     console.log(countTypes(favoritesJokesArray))
 
+    
 }
 
 init()

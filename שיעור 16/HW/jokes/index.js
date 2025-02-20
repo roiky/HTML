@@ -9,20 +9,51 @@ try {
 function init() {
 
     document.getElementById("allToFavButton")?.addEventListener("click",function(){
-        //console.log("test")
+        moveFromLStoLS("TempfavoritesJokes", "favoritesJokes")
+        loadCards(jokes, "jokesContent")
     })
-    loadCards(jokes, "jokesContent")
-    console.log(countTypes(jokes))
 
-    isInLS()
+    loadCards(jokes, "jokesContent")
+
+    //isInLS()
 }
 
+function moveFromLStoLS(moveFrom, moveTo){
+    const favoritesJokesString = localStorage.getItem(moveTo)
+
+    if(!favoritesJokesString){
+        const emptyJokesArray = []
+        const emptyJokesArrayString = JSON.stringify(emptyJokesArray)
+        localStorage.setItem(moveTo, emptyJokesArrayString)
+        moveFromLStoLS(moveFrom, moveTo)
+    }
+    else{
+        const favoritesJokesArray = JSON.parse(favoritesJokesString)
+
+        const tempFavoritesJokesString = localStorage.getItem(moveFrom)
+        const tempFavoritesJokesArray = JSON.parse(tempFavoritesJokesString)
+
+        for (let index = 0; index < tempFavoritesJokesArray.length; index++) {
+            const currentTempJoke = tempFavoritesJokesArray[index];
+
+            const found = getJokeObjById(currentTempJoke.id, favoritesJokesArray)
+            if(!found){
+                favoritesJokesArray.push(currentTempJoke)
+            }
+            
+        }
+        const jokesToLoad = JSON.stringify(favoritesJokesArray)
+        localStorage.setItem(moveTo, jokesToLoad)
+        localStorage.setItem(moveFrom, "[]")
+    }
 
 
-function addOrRemoveFromTempFav(id){
+}
+
+function addOrRemoveFromTempFav(id,LSName){
     const jokeToFavorite = getJokeObjById(id, jokes)
     if (jokeToFavorite) {
-        const favoritesJokesString = localStorage.getItem("TempfavoritesJokes")  
+        const favoritesJokesString = localStorage.getItem(LSName)  
         if(favoritesJokesString){
             //console.log(favoritesJokesString)
             const favoritesJokesArray = JSON.parse(favoritesJokesString)
@@ -32,52 +63,27 @@ function addOrRemoveFromTempFav(id){
                 favoritesJokesArray.push(jokeToFavorite)
                 const favoritesJokesArrayString = JSON.stringify(favoritesJokesArray)
                 console.log(favoritesJokesArray)
-                localStorage.setItem("TempfavoritesJokes", favoritesJokesArrayString)
-                console.log(`joke id: ${id} added to temp favorites!`)
+                localStorage.setItem(LSName, favoritesJokesArrayString)
+                console.log(`joke id: ${id} added to ${LSName}!`)
             }
             else{
                 const jokeIndex = getJokeIndexById(id, favoritesJokesArray)
                 favoritesJokesArray.splice(jokeIndex, 1)
                 const favoritesJokesArrayString = JSON.stringify(favoritesJokesArray)
-                localStorage.setItem("TempfavoritesJokes", favoritesJokesArrayString)
-                //in the loadCards add a feature that identify if the id is in the temp, if so change the icon so the user will know its already in the temp list.
-                console.log(`joke id: ${id} removed from temp favorites!`)
+                localStorage.setItem(LSName, favoritesJokesArrayString)
+                console.log(`joke id: ${id} removed from ${LSName}!`)
             }
         }
         else{
             const favoritesJokesArray = []
             const favoritesJokesArrayString = JSON.stringify(favoritesJokesArray)
-            localStorage.setItem("TempfavoritesJokes", favoritesJokesArrayString)
+            localStorage.setItem(LSName, favoritesJokesArrayString)
             addOrRemoveFromTempFav(id)
         }
         loadCards(jokes, "jokesContent")
     }
 }
 
-
-function addToFavorites(id) {
-    const jokeToFavorite = getJokeObjById(id, jokes)
-    if (jokeToFavorite) {
-        const favoritesJokesString = localStorage.getItem("favoritesJokes")  // fetch from LS (get)
-        if (favoritesJokesString) {
-            const favoritesJokesArray = JSON.parse(favoritesJokesString) // JSON.parse 
-            const found = getJokeObjById(jokeToFavorite.id, favoritesJokesArray)
-            if (!found) {
-                favoritesJokesArray.push(jokeToFavorite) // push into array
-                const favoritesJokesArrayString = JSON.stringify(favoritesJokesArray)// JSON.stringify
-                localStorage.setItem("favoritesJokes", favoritesJokesArrayString)// insert into LS (set)
-                //alertSuccess()
-                console.log(`joke id: ${id} added to favorites!`)
-            } else {
-                //alertError()
-                console.log(`joke id: ${id} already in favorites!`)
-            }
-        } else {
-            localStorage.setItem("favoritesJokes", JSON.stringify([jokeToFavorite]))
-        }
-    }
-
-}
 
 function alertSuccess() {
     Swal.fire({
