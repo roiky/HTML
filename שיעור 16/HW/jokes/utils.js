@@ -24,7 +24,7 @@ function removeFromLS(id, LSName) {
     if (favoritesJokesString) {
         const favoritesJokesArray = JSON.parse(favoritesJokesString)
         const jokeIndex = getJokeIndexById(id, favoritesJokesArray)
-        
+
         if (jokeIndex !== undefined) {
             favoritesJokesArray.splice(jokeIndex, 1)
             const favoritesJokesArrayString = JSON.stringify(favoritesJokesArray)
@@ -103,7 +103,7 @@ function addOrRemoveFromTempFav(id,LSName){
 }
 
 function drawLenghtOfJokes(array, targetContent){
-    if (!Array.isArray(array)) return; // validate that arrayOfCars is array
+    if (!Array.isArray(array)) return; 
     const content = document.getElementById(targetContent)
     content.innerHTML = `Number of Jokes on this page: ${array.length}`
 }
@@ -163,7 +163,7 @@ function getCardTemplate(j, action) {
     }
 
     if(isInLS(id,"favoritesJokes")){
-        button = `<h3> <button class="btn btn-warning" disabled onClick="addOrRemoveFromTempFav(${id}, 'TempfavoritesJokes')"> ${BSIcons.STAR} </button> </h3>`
+        button = `<h3> <button class="btn btn-warning" disabled > ${BSIcons.STAR} </button> </h3>` //no onClick so you just cant do nothing!
     }
 
     if (action === 'remove') {
