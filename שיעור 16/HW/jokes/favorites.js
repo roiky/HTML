@@ -3,8 +3,6 @@ function init() {
     const favoritesJokesArray = JSON.parse(favoritesJokesString)
     loadCards(favoritesJokesArray, "jokesContentFavorites", "remove")
     console.log(countTypes(favoritesJokesArray))
-
-
 }
 
 init()

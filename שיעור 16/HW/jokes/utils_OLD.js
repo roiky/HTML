@@ -138,6 +138,7 @@ function countTypes(arr){
     return tempObj
 }
 
+
 function loadCards(array, targetContent, action = "add") {
     if (!Array.isArray(array)) return; // validate that arrayOfCars is array
     const content = document.getElementById(targetContent) // Tomer remind me!
@@ -145,8 +146,8 @@ function loadCards(array, targetContent, action = "add") {
     content.innerHTML = ""
     for (let index = 0; index < array.length; index++) {
         const currentObject = array[index]
-        const cardHtml = createCard(currentObject, action)
-        content.appendChild(cardHtml)
+        const cardHtml = getCardTemplate(currentObject, action)
+        content.innerHTML += cardHtml
     }
 
     drawLenghtOfJokes(array, "totalJokes")
@@ -154,63 +155,28 @@ function loadCards(array, targetContent, action = "add") {
 
 }
 
-function createCard(j, action){
+function getCardTemplate(j, action) {
     const { id, punchline, type, setup } = j
-    const newCard = window.document.createElement("div");
-    newCard.id = `${id}`;
-    newCard.classList.add("card","card-width");
-
-    const title = window.document.createElement("h5");
-    const badge = window.document.createElement("span");
-    badge.classList.add("badge","badge-light");
-    badge.style.background = "#5c564b";
-    badge.style.color = "#e4d4c8";
-    title.textContent = `${type} (${id})`;
-    title.appendChild(badge);
-
-    const setupText = window.document.createElement("p");
-    setupText.innerHTML = `<b>Setup:</b> <br> ${setup}`;
-
-    const punchText = window.document.createElement("p");
-    punchText.innerHTML = `<b>Punchline:</b> <br> ${punchline}`;
-
-    const button = window.document.createElement("button");
-    const buttonText = window.document.createElement("h3");
-    button.classList.add("btn");
+    let button = `<h3> <button class="btn btn-success" onClick="addOrRemoveFromTempFav(${id}, 'TempfavoritesJokes')"> ${BSIcons.PLUS} </button> </h3>`;
 
     if(isInLS(id,"TempfavoritesJokes")){
-        button.classList.add("btn-primary");
-        button.innerHTML = BSIcons.WAIT;
-        button.addEventListener("click",function(){
-            addOrRemoveFromTempFav(id, "TempfavoritesJokes");
-        })
-    }
-    else if(action === 'remove'){
-        button.classList.add("btn-danger");
-        button.innerHTML = BSIcons.TRASH;
-        button.addEventListener("click",function(){
-            removeFromLS(id, "favoritesJokes");
-        })
-    }
-    else if (isInLS(id,"favoritesJokes")){
-        button.classList.add("btn-warning");
-        button.disabled = true;
-        button.innerHTML = BSIcons.STAR;
-    }
-    else{
-        button.classList.add("btn-success");
-        button.innerHTML = BSIcons.PLUS;
-        button.addEventListener("click",function(){
-            addOrRemoveFromTempFav(id, "TempfavoritesJokes");
-        })
+        button = `<h3> <button class="btn btn-primary" onClick="addOrRemoveFromTempFav(${id}, 'TempfavoritesJokes')"> ${BSIcons.WAIT} </button> </h3>`
     }
 
-    buttonText.appendChild(button);
+    if(isInLS(id,"favoritesJokes")){
+        button = `<h3> <button class="btn btn-warning" disabled > ${BSIcons.STAR} </button> </h3>` //no onClick so you just cant do nothing!
+    }
 
-    newCard.append(title, setupText, punchText, buttonText);
+    if (action === 'remove') {
+        button = `<h3> <button class="btn btn-danger" onClick="removeFromLS(${id},'favoritesJokes')">  ${BSIcons.TRASH} </button> </h3>`
+    }
 
-    return newCard;
-
+    return `<div id="${id}" class="card card-width">
+                <h5><span class="badge badge-light" style="background:#5c564b; color:#e4d4c8 ">${type} (${id})</span></h5>
+                <p><b>Setup:</b> <br> ${setup}</p>
+                <p><b>Punchline:</b> <br> ${punchline}</p>
+                ${button}
+                </div>`
 }
 
 function getJokeObjById(id, jokesArray) {

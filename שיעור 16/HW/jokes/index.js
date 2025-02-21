@@ -14,8 +14,6 @@ function init() {
     })
 
     loadCards(jokes, "jokesContent")
-
-    //isInLS()
 }
 
 init()
