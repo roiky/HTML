@@ -172,7 +172,7 @@ function getCardTemplate(j, action) {
     }
 
     return `<div id="${id}" class="card card-width">
-                <h5><span class="badge badge-light" style="background:gray">${type} (${id})</span></h5>
+                <h5><span class="badge badge-light" style="background:#5c564b; color:#e4d4c8 ">${type} (${id})</span></h5>
                 <p><b>Setup:</b> <br> ${setup}</p>
                 <p><b>Punchline:</b> <br> ${punchline}</p>
                 ${button}
