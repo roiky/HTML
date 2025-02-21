@@ -151,7 +151,6 @@ function loadCards(array, targetContent, action = "add") {
 
     drawLenghtOfJokes(array, "totalJokes")
     drawAllTypes(array, "jokesType")
-
 }
 
 function createCard(j, action){
@@ -163,9 +162,9 @@ function createCard(j, action){
     const title = window.document.createElement("h5");
     const badge = window.document.createElement("span");
     badge.classList.add("badge","badge-light");
-    badge.style.background = "#5c564b";
-    badge.style.color = "#e4d4c8";
-    title.textContent = `${type} (${id})`;
+    badge.style.background = "#5c564b"; 
+    badge.style.color = "#e4d4c8"; 
+    badge.textContent = `${type} (${id})`;
     title.appendChild(badge);
 
     const setupText = window.document.createElement("p");
