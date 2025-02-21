@@ -29,39 +29,44 @@ function removeFromLS(id, LSName) {
             favoritesJokesArray.splice(jokeIndex, 1)
             const favoritesJokesArrayString = JSON.stringify(favoritesJokesArray)
             localStorage.setItem(LSName, favoritesJokesArrayString)
+            console.log(`id ${id} was removed from "${LSName}"`)
             init()
         }
-
     }
 }
 
 
 function moveFromLStoLS(moveFrom, moveTo){
-    const favoritesJokesString = localStorage.getItem(moveTo)
+    const MoveToString = localStorage.getItem(moveTo)
 
-    if(!favoritesJokesString){
-        const emptyJokesArray = []
-        const emptyJokesArrayString = JSON.stringify(emptyJokesArray)
-        localStorage.setItem(moveTo, emptyJokesArrayString)
+    if(!MoveToString){
+        const emptyArray = []
+        const emptyArrayString = JSON.stringify(emptyArray)
+        localStorage.setItem(moveTo, emptyArrayString)
         moveFromLStoLS(moveFrom, moveTo)
     }
     else{
-        const favoritesJokesArray = JSON.parse(favoritesJokesString)
+        const MoveToArray = JSON.parse(MoveToString) 
 
-        const tempFavoritesJokesString = localStorage.getItem(moveFrom)
-        const tempFavoritesJokesArray = JSON.parse(tempFavoritesJokesString)
+        const MoveFromString = localStorage.getItem(moveFrom)
+        const MoveFromArray = JSON.parse(MoveFromString) 
 
-        for (let index = 0; index < tempFavoritesJokesArray.length; index++) {
-            const currentTempJoke = tempFavoritesJokesArray[index];
+        if(!MoveFromArray.length) return console.log(`no items were moved to "${moveTo}" because "${moveFrom}" is empty!`)
 
-            const found = getJokeObjById(currentTempJoke.id, favoritesJokesArray)
+        let counter = 0;
+        for (let index = 0; index < MoveFromArray.length; index++) {
+            const currentTemp = MoveFromArray[index];
+
+            const found = getJokeObjById(currentTemp.id, MoveToArray)
             if(!found){
-                favoritesJokesArray.push(currentTempJoke)
+                MoveToArray.push(currentTemp)
+                counter += 1;
             }
             
         }
-        const jokesToLoad = JSON.stringify(favoritesJokesArray)
-        localStorage.setItem(moveTo, jokesToLoad)
+        console.log(`${counter} items were moved from "${moveFrom}" to "${moveTo}"`)
+        const ItemsToLoad = JSON.stringify(MoveToArray)
+        localStorage.setItem(moveTo, ItemsToLoad)
         localStorage.setItem(moveFrom, "[]")
     }
 }
@@ -88,14 +93,14 @@ function addOrRemoveFromTempFav(id,LSName){
                 const favoritesJokesArrayString = JSON.stringify(favoritesJokesArray)
                 console.log(favoritesJokesArray)
                 localStorage.setItem(LSName, favoritesJokesArrayString)
-                console.log(`joke id: ${id} added to ${LSName}!`)
+                console.log(`joke id: ${id} added to "${LSName}"!`)
             }
             else{
                 const jokeIndex = getJokeIndexById(id, favoritesJokesArray)
                 favoritesJokesArray.splice(jokeIndex, 1)
                 const favoritesJokesArrayString = JSON.stringify(favoritesJokesArray)
                 localStorage.setItem(LSName, favoritesJokesArrayString)
-                console.log(`joke id: ${id} removed from ${LSName}!`)
+                console.log(`joke id: ${id} removed from "${LSName}"!`)
             }
         }
 
