@@ -64,12 +64,18 @@ function moveFromLStoLS(moveFrom, moveTo){
         localStorage.setItem(moveTo, jokesToLoad)
         localStorage.setItem(moveFrom, "[]")
     }
-
-
 }
 
 function addOrRemoveFromTempFav(id,LSName){
     const jokeToFavorite = getJokeObjById(id, jokes)
+
+    const checkLS = localStorage.getItem(LSName)  
+    if(!checkLS){
+        const favoritesJokesArray = []
+        const favoritesJokesArrayString = JSON.stringify(favoritesJokesArray)
+        localStorage.setItem(LSName, favoritesJokesArrayString)
+    }
+
     if (jokeToFavorite) {
         const favoritesJokesString = localStorage.getItem(LSName)  
         if(favoritesJokesString){
@@ -92,12 +98,7 @@ function addOrRemoveFromTempFav(id,LSName){
                 console.log(`joke id: ${id} removed from ${LSName}!`)
             }
         }
-        else{
-            const favoritesJokesArray = []
-            const favoritesJokesArrayString = JSON.stringify(favoritesJokesArray)
-            localStorage.setItem(LSName, favoritesJokesArrayString)
-            addOrRemoveFromTempFav(id)
-        }
+
         loadCards(jokes, "jokesContent")
     }
 }
