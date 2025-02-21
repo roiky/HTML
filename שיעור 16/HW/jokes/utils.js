@@ -37,38 +37,37 @@ function removeFromLS(id, LSName) {
 
 
 function moveFromLStoLS(moveFrom, moveTo){
-    const MoveToString = localStorage.getItem(moveTo)
+    let MoveToString = localStorage.getItem(moveTo)
 
     if(!MoveToString){
         const emptyArray = []
         const emptyArrayString = JSON.stringify(emptyArray)
         localStorage.setItem(moveTo, emptyArrayString)
-        moveFromLStoLS(moveFrom, moveTo)
     }
-    else{
-        const MoveToArray = JSON.parse(MoveToString) 
 
-        const MoveFromString = localStorage.getItem(moveFrom)
-        const MoveFromArray = JSON.parse(MoveFromString) 
+    MoveToString = localStorage.getItem(moveTo)
+    const MoveToArray = JSON.parse(MoveToString) 
 
-        if(!MoveFromArray.length) return console.log(`no items were moved to "${moveTo}" because "${moveFrom}" is empty!`)
+    const MoveFromString = localStorage.getItem(moveFrom)
+    const MoveFromArray = JSON.parse(MoveFromString) 
 
-        let counter = 0;
-        for (let index = 0; index < MoveFromArray.length; index++) {
-            const currentTemp = MoveFromArray[index];
+    if(!MoveFromArray.length) return console.log(`no items were moved to "${moveTo}" because "${moveFrom}" is empty!`)
 
-            const found = getJokeObjById(currentTemp.id, MoveToArray)
-            if(!found){
-                MoveToArray.push(currentTemp)
-                counter += 1;
-            }
-            
+    let counter = 0;
+    for (let index = 0; index < MoveFromArray.length; index++) {
+        const currentTemp = MoveFromArray[index];
+
+        const found = getJokeObjById(currentTemp.id, MoveToArray)
+        if(!found){
+            MoveToArray.push(currentTemp)
+            counter += 1;
         }
-        console.log(`${counter} items were moved from "${moveFrom}" to "${moveTo}"`)
-        const ItemsToLoad = JSON.stringify(MoveToArray)
-        localStorage.setItem(moveTo, ItemsToLoad)
-        localStorage.setItem(moveFrom, "[]")
+        
     }
+    console.log(`${counter} items were moved from "${moveFrom}" to "${moveTo}"`)
+    const ItemsToLoad = JSON.stringify(MoveToArray)
+    localStorage.setItem(moveTo, ItemsToLoad)
+    localStorage.setItem(moveFrom, "[]")
 }
 
 function addOrRemoveFromTempFav(id,LSName){
@@ -103,7 +102,6 @@ function addOrRemoveFromTempFav(id,LSName){
                 console.log(`joke id: ${id} removed from "${LSName}"!`)
             }
         }
-
         loadCards(jokes, "jokesContent")
     }
 }
@@ -138,7 +136,6 @@ function countTypes(arr){
         else{
             tempObj[currentType] = 1;
         }
-
     }
     return tempObj
 }
@@ -214,7 +211,6 @@ function createCard(j, action){
     newCard.append(title, setupText, punchText, buttonText);
 
     return newCard;
-
 }
 
 function getJokeObjById(id, jokesArray) {
