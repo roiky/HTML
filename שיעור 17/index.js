@@ -123,7 +123,7 @@ function createCard(j, action){
     newCard.id = `${imdbID}`;
     newCard.classList.add("card","card-width");
 
-    const Movietitle = window.document.createElement("h5");
+    const Movietitle = window.document.createElement("h3");
     const badge = window.document.createElement("span");
     badge.classList.add("badge","badge-light");
     badge.style.background = "#5c564b"; 
@@ -152,13 +152,26 @@ function createCard(j, action){
     writerText.innerHTML = `<b>Writer:</b>${Writer}`;
 
     const ratingText = window.document.createElement("span");
-    ratingText.innerHTML = `<b>Rating:</b>${Math.round(imdbRating,0)}`;
+    const movieRating = Math.round(imdbRating,0);
 
+    if(imdbRating === "N/A"){
+        ratingText.innerHTML = `<b>Rating:</b> Not available!`;
+    }
+    else{
+        ratingText.innerHTML = `<b>Rating:</b> `
+        for (let index = 1; index <= movieRating; index++) {
+            ratingText.innerHTML += BSIcons.STAR;
+        }
+    }
+    
     const votesText = window.document.createElement("span");
     votesText.innerHTML = `<b>Votes:</b>${imdbVotes}`;
 
     const typeText = window.document.createElement("span");
     typeText.innerHTML = `<b>Type:</b>${Type}`;
+
+    const IDText = window.document.createElement("span");
+    IDText.innerHTML = `<b>ID:</b>${imdbID}`;
 
     const button = window.document.createElement("button");
     const buttonText = window.document.createElement("h3");
@@ -181,7 +194,7 @@ function createCard(j, action){
 
     buttonText.appendChild(button);
 
-    newCard.append(Movietitle, imagesCarousel, ratedText, releasedText, runtimeText, genereText, directorText,writerText, ratingText, votesText, typeText, buttonText);
+    newCard.append(Movietitle, imagesCarousel, ratedText, releasedText, runtimeText, genereText, directorText,writerText, ratingText, votesText, typeText, IDText, buttonText);
 
     return newCard;
 }
