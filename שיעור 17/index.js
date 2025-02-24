@@ -13,11 +13,11 @@ function init(){
     loadCards(movies,"imdbContent")
 
     const result = aggregateTypes(movies,"Type")
-    loadStatistics(result, "chart-counter","firstChart")
+    createChart(result, "chart-counter","firstChart")
 
     const favArr = LStoArray("favoritesMovies")
     const favResult = aggregateTypes(favArr,"Type")
-    loadStatistics(favResult, "fav-counter", "secondChart")
+    createChart(favResult, "fav-counter", "secondChart")
 }
  init();
 
@@ -32,6 +32,7 @@ function LStoArray(LSName){
     try {
         return JSON.parse(LSstring);
     } catch (error) {
+        console.log(error)
         return [];
     }
 }
@@ -148,10 +149,17 @@ function createCard(j, action){
 
     const Movietitle = window.document.createElement("h3");
     const badge = window.document.createElement("span");
-    badge.classList.add("badge","badge-light");
+    badge.classList.add("badge","badge-light","mt-2");
     badge.style.background = "#E6AF2E"; 
     badge.style.color = "#191716"; 
-    badge.textContent = `${Title} (${Year})`;
+
+    if(Year[Year.length -1] === "–"){
+        badge.textContent = `${Title} (${Year}Now)`;
+    }
+    else{
+        badge.textContent = `${Title} (${Year})`;
+    }
+    
     Movietitle.appendChild(badge);
 
     const imagesCarousel = createCarousel(imdbID,Images);
@@ -280,7 +288,7 @@ function aggregateTypes(arr,keyToCount){
     return stats;
 }
 
-function loadStatistics(obj, targetContent, canvasID){
+function createChart(obj, targetContent, canvasID){
     const content = document.querySelector(`#${targetContent}`)
     if(!content) return;
 
