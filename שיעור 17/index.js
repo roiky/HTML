@@ -165,7 +165,8 @@ function createCard(j, action){
     }
     
     const votesText = window.document.createElement("span");
-    votesText.innerHTML = `<b>Votes:</b>${imdbVotes}`;
+    const votesNumber = parseInt(imdbVotes.replace(",",""),10)
+    votesText.innerHTML = `<b>Votes:</b>${votesNumber}`;
 
     const typeText = window.document.createElement("span");
     typeText.innerHTML = `<b>Type:</b>${Type}`;
@@ -178,23 +179,67 @@ function createCard(j, action){
     button.classList.add("btn");
 
     if(isInLS(imdbID,"favoritesMovies")){
-        button.classList.add("btn-primary");
-        button.innerHTML = BSIcons.STAR;
-        button.addEventListener("click",function(){
-            addOrRemoveFromTempFav(id, "TempfavoritesJokes");
-        })
+        button.classList.add("btn-danger");
+        button.innerHTML = BSIcons.TRASH;
     }
     else{
-        button.classList.add("btn-success");
-        button.innerHTML = BSIcons.PLUS;
-        button.addEventListener("click",function(){
-            addOrRemoveFromTempFav(id, "TempfavoritesJokes");
-        })
+        button.classList.add("btn-warning");
+        button.innerHTML = BSIcons.STAR;
     }
 
+    button.addEventListener("click",function(){
+        addOrRemoveFromFav(imdbID,"favoritesMovies");
+        init();
+    })
     buttonText.appendChild(button);
 
     newCard.append(Movietitle, imagesCarousel, ratedText, releasedText, runtimeText, genereText, directorText,writerText, ratingText, votesText, typeText, IDText, buttonText);
 
     return newCard;
+}
+
+function getObjById(id, fromArray) {
+    // missing validations 
+    for (let index = 0; index < fromArray.length; index++) {
+        const current = fromArray[index];
+        if (current.imdbID === id) {
+            return current;
+        }
+    }
+}
+
+function addOrRemoveFromFav(id,LSName){
+    const itemToFavorites = getObjById(id, movies)
+
+    const checkLS = localStorage.getItem(LSName)  
+    if(!checkLS){
+        const favoritesArray = []
+        const favoritesArrayString = JSON.stringify(favoritesArray)
+        localStorage.setItem(LSName, favoritesArrayString)
+    }
+
+    if (itemToFavorites) {
+        const favoritesJokesString = localStorage.getItem(LSName)  
+        if(favoritesJokesString){
+            let favoritesArray = JSON.parse(favoritesJokesString)
+            const found = getObjById(id, favoritesArray)
+            
+            if(!found){
+                favoritesArray.push(itemToFavorites)
+                const favoritesArrayString = JSON.stringify(favoritesArray)
+                console.log(favoritesArray)
+                localStorage.setItem(LSName, favoritesArrayString)
+                console.log(`item id: ${id} added to "${LSName}"!`)
+            }
+            else{
+                const itemIndex = favoritesArray.findIndex(function(item){
+                    return item.imdbID === id;
+                })
+                favoritesArray.splice(itemIndex, 1)
+                const favoritesArrayString = JSON.stringify(favoritesArray)
+                localStorage.setItem(LSName, favoritesArrayString)
+                console.log(`item id: ${id} removed from "${LSName}"!`)
+            }
+        }
+    }
 }
