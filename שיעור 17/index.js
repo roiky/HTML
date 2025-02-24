@@ -7,14 +7,34 @@ const BSIcons = {
     WAIT: '<i class="bi bi-clock"></i>'
 }
 
-let chart = null
+let charts = {}
 
 function init(){
     loadCards(movies,"imdbContent")
+
     const result = aggregateTypes(movies,"Type")
-    loadStatistics(result, "chart-counter")
+    loadStatistics(result, "chart-counter","firstChart")
+
+    const favArr = LStoArray("favoritesMovies")
+    const favResult = aggregateTypes(favArr,"Type")
+    loadStatistics(favResult, "fav-counter", "secondChart")
 }
  init();
+
+function LStoArray(LSName){
+    let LSstring = localStorage.getItem(LSName);
+
+    if(!LSstring){
+        console.log(`${LSName} do not exist in LocalStorage!`);
+        return [];
+    }
+
+    try {
+        return JSON.parse(LSstring);
+    } catch (error) {
+        return [];
+    }
+}
 
  function createCarousel(id, imgArr){
     if (!Array.isArray(imgArr)) return;
@@ -260,9 +280,10 @@ function aggregateTypes(arr,keyToCount){
     return stats;
 }
 
-function loadStatistics(obj, targetContent){
+function loadStatistics(obj, targetContent, canvasID){
     const content = document.querySelector(`#${targetContent}`)
     if(!content) return;
+
     let labels = []
     let data = []   
     for(const property in obj){
@@ -270,11 +291,13 @@ function loadStatistics(obj, targetContent){
         data.push(obj[property])
     }
 
-    const ctx = document.getElementById('myChart');
-    if(chart){
-        chart.destroy()
+    const ctx = content.querySelector(`#${canvasID}`)
+    //const ctx = document.getElementById('myChart');
+
+    if(charts[canvasID]){
+        charts[canvasID].destroy()
     }
-    chart = new Chart(ctx, {
+    charts[canvasID] = new Chart(ctx, {
       type: 'pie',
       borderColor: 'rgba(0, 0, 0, 0.1)',
       
@@ -294,11 +317,26 @@ function loadStatistics(obj, targetContent){
       options: {
         responsive: true,
         maintainAspectRatio: false,  
-        scales: {
+        scales:
+         {
         //   y: {
         //     beginAtZero: true
         //   }
+        },
+        plugins:{
+                title:{
+                    display: true,
+                    text: 'Type of items', 
+                    font:{
+                            size: 20 
+                        },
+                    color: 'black', 
+                    padding: {
+                        top: 0,
+                        bottom: 0
+                    }
+                }
+            }      
         }
-      }
     });
 }
