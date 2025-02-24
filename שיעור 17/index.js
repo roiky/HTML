@@ -9,14 +9,15 @@ const BSIcons = {
 
 
 function init(){
-    console.log(movies[0].Images)
-    //loadCards(movies,"imdbContent")
-    const content = window.document.getElementById("imdbContent");
-    content.append(createCarousel("test",movies[0].Images));
+    //console.log(movies[0].Images)
+    loadCards(movies,"imdbContent")
+    // const content = window.document.getElementById("imdbContent");
+    // content.append(createCarousel("test",movies[0].Images));
 }
  init();
 
  function createCarousel(id, imgArr){
+    if (!Array.isArray(imgArr)) return console.log("NOT AN ARRAY!");
     const newCarousel = window.document.createElement("div");
     newCarousel.id = `crsl-${id}`;
     newCarousel.classList.add("carousel", "slide");
@@ -117,7 +118,7 @@ function isInLS(jid, LSName){
 }
 
 function createCard(j, action){
-    const { Title, Year,Rated, Released, Runtime, Genre, Director, Writer, image, imdbRating, imdbVotes, imdbID, Type} = j
+    const { Title, Year,Rated, Released, Runtime, Genre, Director, Writer, Images, imdbRating, imdbVotes, imdbID, Type} = j
     const newCard = window.document.createElement("div");
     newCard.id = `${imdbID}`;
     newCard.classList.add("card","card-width");
@@ -129,6 +130,8 @@ function createCard(j, action){
     badge.style.color = "#e4d4c8"; 
     badge.textContent = `${Title} (${Year})`;
     Movietitle.appendChild(badge);
+
+    const imagesCarousel = createCarousel(imdbID,Images);
 
     const ratedText = window.document.createElement("span");
     ratedText.innerHTML = `<b>Rated:</b>${Rated}`;
@@ -178,7 +181,7 @@ function createCard(j, action){
 
     buttonText.appendChild(button);
 
-    newCard.append(Movietitle, ratedText, releasedText, runtimeText, genereText, directorText,writerText, ratingText, votesText, typeText, buttonText);
+    newCard.append(Movietitle, imagesCarousel, ratedText, releasedText, runtimeText, genereText, directorText,writerText, ratingText, votesText, typeText, buttonText);
 
     return newCard;
 }
