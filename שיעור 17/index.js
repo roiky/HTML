@@ -49,6 +49,8 @@ function init(){
 
         const img = window.document.createElement("img");
         img.classList.add("d-block","w-100");
+        img.style.minHeight = "300px"
+        img.style.maxHeight = "300px"
         img.src = currentImg;
 
         imgDiv.append(img);
@@ -119,57 +121,58 @@ function createCard(j, action){
     const newCard = window.document.createElement("div");
     newCard.id = `${imdbID}`;
     newCard.classList.add("card","card-width");
+    newCard.style.border = "2px solid #EBDCCB"
 
     const Movietitle = window.document.createElement("h3");
     const badge = window.document.createElement("span");
     badge.classList.add("badge","badge-light");
-    badge.style.background = "#5c564b"; 
-    badge.style.color = "#e4d4c8"; 
+    badge.style.background = "#E6AF2E"; 
+    badge.style.color = "#191716"; 
     badge.textContent = `${Title} (${Year})`;
     Movietitle.appendChild(badge);
 
     const imagesCarousel = createCarousel(imdbID,Images);
 
     const ratedText = window.document.createElement("span");
-    ratedText.innerHTML = `<b>Rated:</b>${Rated}`;
+    ratedText.innerHTML = `<b>Rated:</b> ${Rated}`;
 
     const releasedText = window.document.createElement("span");
-    releasedText.innerHTML = `<b>Released:</b>${Released}`;
+    releasedText.innerHTML = `<b>Released:</b> ${Released}`;
 
     const runtimeText = window.document.createElement("span");
-    runtimeText.innerHTML = `<b>Runtime:</b>${Runtime}`;
+    runtimeText.innerHTML = `<b>Runtime:</b> ${Runtime}`;
 
     const genereText = window.document.createElement("span");
-    genereText.innerHTML = `<b>Genere:</b>${Genre}`;
+    genereText.innerHTML = `<b>Genere:</b> ${Genre}`;
 
     const directorText = window.document.createElement("span");
-    directorText.innerHTML = `<b>Director:</b>${Director}`;
+    directorText.innerHTML = `<b>Director:</b> ${Director}`;
 
     const writerText = window.document.createElement("span");
-    writerText.innerHTML = `<b>Writer:</b>${Writer}`;
+    writerText.innerHTML = `<b>Writer:</b> ${Writer}`;
 
     const ratingText = window.document.createElement("span");
     const movieRating = Math.round(imdbRating,0);
-    ratingText.innerHTML = `<b>Rating:</b> `;
+    ratingText.innerHTML = `<b>Rating:</b>   `;
 
     if(imdbRating === "N/A"){
         ratingText.innerHTML += `Not available!`;
     }
     else{
         for (let index = 1; index <= movieRating; index++) {
-            ratingText.innerHTML += BSIcons.STAR;
+            ratingText.innerHTML += `${BSIcons.STAR} `;
         }
     }
     
     const votesText = window.document.createElement("span");
     const votesNumber = parseInt(imdbVotes.replace(",",""),10)
-    votesText.innerHTML = `<b>Votes:</b>${votesNumber}`;
+    votesText.innerHTML = `<b>Votes:</b> ${votesNumber}`;
 
     const typeText = window.document.createElement("span");
-    typeText.innerHTML = `<b>Type:</b>${Type}`;
+    typeText.innerHTML = `<b>Type:</b> ${Type}`;
 
     const IDText = window.document.createElement("span");
-    IDText.innerHTML = `<b>ID:</b>${imdbID}`;
+    IDText.innerHTML = `<b>ID:</b> ${imdbID}`;
 
     const button = window.document.createElement("button");
     const buttonText = window.document.createElement("h3");
