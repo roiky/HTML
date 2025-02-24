@@ -7,9 +7,12 @@ const BSIcons = {
     WAIT: '<i class="bi bi-clock"></i>'
 }
 
+let chart = null
 
 function init(){
     loadCards(movies,"imdbContent")
+    const result = aggregateTypes(movies,"Type")
+    loadStatistics(result, "chart-counter")
 }
  init();
 
@@ -199,7 +202,7 @@ function createCard(j, action){
 }
 
 function getObjById(id, fromArray) {
-    // missing validations 
+    if (!Array.isArray(fromArray)) return;
     for (let index = 0; index < fromArray.length; index++) {
         const current = fromArray[index];
         if (current.imdbID === id) {
@@ -242,4 +245,60 @@ function addOrRemoveFromFav(id,LSName){
             }
         }
     }
+}
+
+function aggregateTypes(arr,keyToCount){
+    if (!Array.isArray(arr)) return;
+    let stats = {};
+    arr.forEach(function(currentItem)   {
+        if(stats[currentItem[keyToCount]]){ // if true we have something in the object under the relevant key
+            stats[currentItem[keyToCount]] = stats[currentItem[keyToCount]] + 1
+        }else{
+            stats[currentItem[keyToCount]] = 1;
+        }
+    })
+    return stats;
+}
+
+function loadStatistics(obj, targetContent){
+    const content = document.querySelector(`#${targetContent}`)
+    if(!content) return;
+    let labels = []
+    let data = []   
+    for(const property in obj){
+        labels.push(property)
+        data.push(obj[property])
+    }
+
+    const ctx = document.getElementById('myChart');
+    if(chart){
+        chart.destroy()
+    }
+    chart = new Chart(ctx, {
+      type: 'pie',
+      borderColor: 'rgba(0, 0, 0, 0.1)',
+      
+      data: {
+        labels:labels,
+        datasets: [{
+          label: 'Number of Types',
+          data: data,
+          borderWidth: 2,
+          backgroundColor:
+          [
+            'rgb(21, 7, 102)',
+            'rgb(100, 16, 16)'
+          ],
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,  
+        scales: {
+        //   y: {
+        //     beginAtZero: true
+        //   }
+        }
+      }
+    });
 }
