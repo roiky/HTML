@@ -9,15 +9,12 @@ const BSIcons = {
 
 
 function init(){
-    //console.log(movies[0].Images)
     loadCards(movies,"imdbContent")
-    // const content = window.document.getElementById("imdbContent");
-    // content.append(createCarousel("test",movies[0].Images));
 }
  init();
 
  function createCarousel(id, imgArr){
-    if (!Array.isArray(imgArr)) return console.log("NOT AN ARRAY!");
+    if (!Array.isArray(imgArr)) return;
     const newCarousel = window.document.createElement("div");
     newCarousel.id = `crsl-${id}`;
     newCarousel.classList.add("carousel", "slide");
@@ -153,12 +150,12 @@ function createCard(j, action){
 
     const ratingText = window.document.createElement("span");
     const movieRating = Math.round(imdbRating,0);
+    ratingText.innerHTML = `<b>Rating:</b> `;
 
     if(imdbRating === "N/A"){
-        ratingText.innerHTML = `<b>Rating:</b> Not available!`;
+        ratingText.innerHTML += `Not available!`;
     }
     else{
-        ratingText.innerHTML = `<b>Rating:</b> `
         for (let index = 1; index <= movieRating; index++) {
             ratingText.innerHTML += BSIcons.STAR;
         }
