@@ -9,11 +9,87 @@ const BSIcons = {
 
 
 function init(){
-    console.log(movies)
-    loadCards(movies,"imdbContent")
+    console.log(movies[0].Images)
+    //loadCards(movies,"imdbContent")
+    const content = window.document.getElementById("imdbContent");
+    content.append(createCarousel("test",movies[0].Images));
 }
  init();
 
+ function createCarousel(id, imgArr){
+    const newCarousel = window.document.createElement("div");
+    newCarousel.id = `crsl-${id}`;
+    newCarousel.classList.add("carousel", "slide");
+
+    const newIndicator = window.document.createElement("div");
+    newIndicator.classList.add("carousel-indicators");
+
+    const newInner = window.document.createElement("div");
+    newInner.classList.add("carousel-inner");
+
+    for (let index = 0; index < imgArr.length; index++) {
+        const currentImg = imgArr[index];
+
+        const indicatorButton = window.document.createElement("button");
+        indicatorButton.type = "button";
+        indicatorButton.setAttribute("data-bs-target", `#${newCarousel.id}`);
+        indicatorButton.setAttribute("data-bs-slide-to", index.toString());
+        indicatorButton.setAttribute("aria-label",`Slide ${index+1}`)
+        
+        if(index === 0){
+            indicatorButton.classList.add("active");
+            indicatorButton.setAttribute("aria-current","true");
+        }
+
+        newIndicator.append(indicatorButton);
+
+        const imgDiv = window.document.createElement("div");
+        imgDiv.classList.add("carousel-item");
+        if(index === 0){
+            imgDiv.classList.add("active");
+        }
+
+        const img = window.document.createElement("img");
+        img.classList.add("d-block","w-100");
+        img.src = currentImg;
+
+        imgDiv.append(img);
+        newInner.append(imgDiv);
+    }
+
+    const prevButton = window.document.createElement("button");
+    prevButton.type = "button";
+    prevButton.classList.add("carousel-control-prev");
+    prevButton.setAttribute("data-bs-slide","prev");
+    prevButton.setAttribute("data-bs-target", `#${newCarousel.id}`);
+    const prevIcon = window.document.createElement("span");
+    prevIcon.classList.add("carousel-control-prev-icon");
+    prevIcon.setAttribute("aria-hidden","true");
+    const prevText = window.document.createElement("span");
+    prevText.classList.add("visually-hidden");
+    prevText.textContent = "Previous";
+
+    prevButton.append(prevIcon,prevText);
+
+    const nextButton = window.document.createElement("button");
+    nextButton.type = "button";
+    nextButton.classList.add("carousel-control-next");
+    nextButton.setAttribute("data-bs-slide","next");
+    nextButton.setAttribute("data-bs-target", `#${newCarousel.id}`);
+    const nextIcon = window.document.createElement("span");
+    nextIcon.classList.add("carousel-control-next-icon");
+    nextIcon.setAttribute("aria-hidden","true");
+    const nextText = window.document.createElement("span");
+    nextText.classList.add("visually-hidden");
+    nextText.textContent = "Next";
+
+    nextButton.append(nextIcon,nextText);
+
+    newCarousel.append(newIndicator,newInner,prevButton,nextButton);
+
+    return newCarousel;
+
+ }
 
 function loadCards(array, targetContent, action = "add") {
     if (!Array.isArray(array)) return; // validate that arrayOfCars is array
