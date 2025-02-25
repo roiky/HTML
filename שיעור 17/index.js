@@ -362,9 +362,11 @@ function createChart(obj, canvasID, chartTitle = "Title"){
 function getValuebyKey(arr,keySent,keyValue, valueToGet){
     if (!Array.isArray(arr)) return;
 
-    const itemIndex = arr.findIndex(function(item){
+    const item = arr.find(function(item){
         return item[keySent] === keyValue;
-    }) 
-    if (itemIndex === -1) return undefined;
-    return arr[itemIndex][valueToGet]
-}
+    })
+
+    if(!item) return undefined;
+    if(item) return item[valueToGet];
+
+}  
