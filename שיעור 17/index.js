@@ -13,11 +13,11 @@ function init(){
     loadCards(movies,"imdbContent")
 
     const result = aggregateTypes(movies,"Type")
-    createChart(result, "chart-counter","firstChart","Types from all")
+    createChart(result,"firstChart","Types from all")
 
     const favArr = LStoArray("favoritesMovies")
     const favResult = aggregateTypes(favArr,"Type")
-    createChart(favResult, "fav-counter", "secondChart", "Types from favorites")
+    createChart(favResult, "secondChart", "Types from favorites")
 }
  init();
 
@@ -288,8 +288,8 @@ function aggregateTypes(arr,keyToCount){
     return stats;
 }
 
-function createChart(obj, targetContent, canvasID, chartTitle = "Title"){
-    const content = document.querySelector(`#${targetContent}`)
+function createChart(obj, canvasID, chartTitle = "Title"){
+    const content = document.querySelector(`#${canvasID}`)
     if(!content) return;
 
     let labels = []
@@ -299,13 +299,13 @@ function createChart(obj, targetContent, canvasID, chartTitle = "Title"){
         data.push(obj[property])
     }
 
-    const ctx = content.querySelector(`#${canvasID}`)
+    //const ctx = content.querySelector(`#${canvasID}`)
     //const ctx = document.getElementById('myChart');
 
     if(charts[canvasID]){
         charts[canvasID].destroy()
     }
-    charts[canvasID] = new Chart(ctx, {
+    charts[canvasID] = new Chart(content, {
       type: 'pie',
       borderColor: 'rgba(0, 0, 0, 0.1)',
       
