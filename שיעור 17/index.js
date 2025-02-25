@@ -290,6 +290,9 @@ function aggregateTypes(arr,keyToCount){
 
 function createChart(obj, canvasID, chartTitle = "Title"){
     const content = document.querySelector(`#${canvasID}`)
+    content.style.border = "2px solid rgba(85, 75, 63, 0.23)";
+    content.style.borderRadius = "10px";
+
     if(!content) return;
 
     let labels = []
@@ -347,4 +350,5 @@ function createChart(obj, canvasID, chartTitle = "Title"){
             }      
         }
     });
+    
 }
