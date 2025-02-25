@@ -264,7 +264,6 @@ function addOrRemoveFromFav(id,LSName){
                 console.log(favoritesArray)
                 localStorage.setItem(LSName, favoritesArrayString)
                 console.log(`item id: ${id} added to "${LSName}"!`)
-                
                 alertify.warning(`"${itemTitle}" added to favorites!`); 
             }
             else{
