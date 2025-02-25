@@ -1,4 +1,6 @@
 
+let pageMovie = movies;
+let charts = {}
 
 const BSIcons = {
     PLUS: '<i class="bi bi-plus"></i>',
@@ -7,12 +9,10 @@ const BSIcons = {
     WAIT: '<i class="bi bi-clock"></i>'
 }
 
-let charts = {}
-
 function init(){
-    loadCards(movies,"imdbContent")
+    loadCards(pageMovie,"imdbContent")
 
-    const result = aggregateTypes(movies,"Type")
+    const result = aggregateTypes(pageMovie,"Type")
     createChart(result,"firstChart","Types from all")
 
     const favArr = LStoArray("favoritesMovies")
