@@ -13,11 +13,11 @@ function init(){
     loadCards(movies,"imdbContent")
 
     const result = aggregateTypes(movies,"Type")
-    createChart(result, "chart-counter","firstChart")
+    createChart(result, "chart-counter","firstChart","Types from all")
 
     const favArr = LStoArray("favoritesMovies")
     const favResult = aggregateTypes(favArr,"Type")
-    createChart(favResult, "fav-counter", "secondChart")
+    createChart(favResult, "fav-counter", "secondChart", "Types from favorites")
 }
  init();
 
@@ -288,7 +288,7 @@ function aggregateTypes(arr,keyToCount){
     return stats;
 }
 
-function createChart(obj, targetContent, canvasID){
+function createChart(obj, targetContent, canvasID, chartTitle = "Title"){
     const content = document.querySelector(`#${targetContent}`)
     if(!content) return;
 
@@ -334,7 +334,7 @@ function createChart(obj, targetContent, canvasID){
         plugins:{
                 title:{
                     display: true,
-                    text: 'Type of items', 
+                    text: chartTitle, 
                     font:{
                             size: 20 
                         },
