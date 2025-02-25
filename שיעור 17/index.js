@@ -18,6 +18,7 @@ function init(){
     const favArr = LStoArray("favoritesMovies")
     const favResult = aggregateTypes(favArr,"Type")
     createChart(favResult, "secondChart", "Types from favorites")
+
 }
  init();
 
@@ -224,7 +225,8 @@ function createCard(j, action){
     })
     buttonText.appendChild(button);
 
-    newCard.append(Movietitle, imagesCarousel, ratedText, releasedText, runtimeText, genereText, directorText,writerText, ratingText, votesText, typeText, IDText, buttonText);
+    newCard.append(Movietitle, imagesCarousel, ratedText, releasedText, runtimeText, genereText, directorText,writerText,
+                    ratingText, votesText, typeText, IDText, buttonText);
 
     return newCard;
 }
@@ -252,6 +254,7 @@ function addOrRemoveFromFav(id,LSName){
     if (itemToFavorites) {
         const favoritesJokesString = localStorage.getItem(LSName)  
         if(favoritesJokesString){
+            const itemTitle = getValuebyKey(movies,"imdbID",id,"Title");
             let favoritesArray = JSON.parse(favoritesJokesString)
             const found = getObjById(id, favoritesArray)
             
@@ -261,6 +264,8 @@ function addOrRemoveFromFav(id,LSName){
                 console.log(favoritesArray)
                 localStorage.setItem(LSName, favoritesArrayString)
                 console.log(`item id: ${id} added to "${LSName}"!`)
+                
+                alertify.warning(`"${itemTitle}" added to favorites!`); 
             }
             else{
                 const itemIndex = favoritesArray.findIndex(function(item){
@@ -270,6 +275,7 @@ function addOrRemoveFromFav(id,LSName){
                 const favoritesArrayString = JSON.stringify(favoritesArray)
                 localStorage.setItem(LSName, favoritesArrayString)
                 console.log(`item id: ${id} removed from "${LSName}"!`)
+                alertify.error(`"${itemTitle}" removed from favorites!`); 
             }
         }
     }
@@ -351,4 +357,14 @@ function createChart(obj, canvasID, chartTitle = "Title"){
         }
     });
     
+}
+
+function getValuebyKey(arr,keySent,keyValue, valueToGet){
+    if (!Array.isArray(arr)) return;
+
+    const itemIndex = arr.findIndex(function(item){
+        return item[keySent] === keyValue;
+    }) 
+    if (itemIndex === -1) return undefined;
+    return arr[itemIndex][valueToGet]
 }
