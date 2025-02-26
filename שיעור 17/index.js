@@ -74,8 +74,9 @@ function LStoArray(LSName){
 
         const img = window.document.createElement("img");
         img.classList.add("d-block","w-100");
-        img.style.minHeight = "300px"
-        img.style.maxHeight = "300px"
+        // img.style.minHeight = "300px"
+        // img.style.maxHeight = "300px"
+        img.style.height = "300px";
         img.src = currentImg;
 
         imgDiv.append(img);
