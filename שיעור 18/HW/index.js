@@ -15,8 +15,8 @@ function ChessPiece(_type, _color, _xpos, _ypos){
 }
 
 ChessPiece.prototype.setLocation = function (_newX, _newY) {
-    if(!allColumns.includes(_newX) || _newY < 1 || _newY > 8) return console.log("illigal move!")
-    this.location = {x: _newX, y:_newY}
+    if(!allColumns.includes(_newX) || _newY < 1 || _newY > 8) return console.log("illigal move!");
+    this.location = {x: _newX, y:_newY};
 }
 // 16 total pieces =>  8 pawns, 2 rooks, 2 knights, 2 bishops, 1 queen, 1 king
 
@@ -33,10 +33,10 @@ for (let index = 0; index < 8; index++) {
         
 }
 
-const pieceToMove = board.pieces[2]
-console.log(pieceToMove.location)
+const pieceToMove = board.pieces[2];
+console.log(pieceToMove.location);
 
-pieceToMove.setLocation("A",6)
+pieceToMove.setLocation("A",6);
 
-console.log(pieceToMove.location)
+console.log(pieceToMove.location);
 //console.log(board)
