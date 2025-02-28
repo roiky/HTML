@@ -60,8 +60,19 @@ ChessPiece.prototype.isValidMove = function(_newX, _newY){
         startRow = 7;
     }
 
-    if(currentY === startRow && _newX === currentX && _newY === currentY +(2*yDirection)) return true; //first move - can move 2 steps forward
-    if(_newX === currentX && _newY === currentY + yDirection) return true; //regular step - move 1 sq forward
+    //first move - can move 2 steps forward
+    if(currentY === startRow && _newX === currentX && _newY === currentY +(2*yDirection)){
+        if(!isTherePiece(board,_newX,_newY) && !isTherePiece(board,_newX,currentY + yDirection)){
+            return true;
+        }
+    } 
+
+    //regular step - move 1 sq forward
+    if(_newX === currentX && _newY === currentY + yDirection){
+        if(!isTherePiece(board, _newX, _newY)){
+            return true;
+        }
+    }
 
     return false;
 }
@@ -111,7 +122,7 @@ console.log(pieceToMove.location);
 //     pieceToMove.setLocation("A",3);
 // }
 
-pieceToMove.setLocation("A",3);
+pieceToMove.setLocation("A",4);
 
 console.log(pieceToMove.location);
 
