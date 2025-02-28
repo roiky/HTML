@@ -26,6 +26,8 @@ ChessPiece.prototype.setLocation = function (_newX, _newY) {
         return;
     }
 
+    //use "isTherePiece" to check if the player already have a piece in the new position
+    
     console.log(`${this.color} ${this.type} moved from ${this.easyLoc()} to ${_newX}${_newY}`)
     this.location = {x: _newX, y:_newY};
 }
