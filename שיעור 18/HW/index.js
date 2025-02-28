@@ -60,6 +60,8 @@ ChessPiece.prototype.isValidMove = function(_newX, _newY){
 }
 
 function isTherePiece(boardObj,x,y){
+    if(typeof boardObj !== 'object') return;
+
     const piece = boardObj.pieces.find(function(item){
         return item.location.x === x && item.location.y === y;
     })
@@ -67,6 +69,16 @@ function isTherePiece(boardObj,x,y){
     if (!piece) return false;
     return piece;
 }
+
+// function isTherePiece(boardObj,pos){
+//     if(typeof boardObj !== 'object') return;
+//     const piece = boardObj.pieces.find(function(item){
+//         return item.easyLoc() === pos;
+//     })
+
+//     if (!piece) return false;
+//     return piece;
+// }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
