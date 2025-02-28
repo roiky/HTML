@@ -59,6 +59,16 @@ ChessPiece.prototype.isValidMove = function(_newX, _newY){
     return false;
 }
 
+function isTherePiece(boardObj,x,y){
+    const piece = boardObj.pieces.find(function(item){
+        return item.location.x === x && item.location.y === y;
+    })
+
+    if (!piece) return false;
+    return piece;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // 16 total pieces =>  8 pawns, 2 rooks, 2 knights, 2 bishops, 1 queen, 1 king
 
