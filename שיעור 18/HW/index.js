@@ -27,11 +27,12 @@ ChessPiece.prototype.setLocation = function (_newX, _newY) {
     }
 
     const targetPiece = isTherePiece(board,_newX, _newY);
-    if(targetPiece.color === this.color){
-        console.log(`you already have a piece at ${_newX}${_newY}!`);
-        return;
+    if(targetPiece && targetPiece.color !== this.color){
+        targetPiece.isAlive = false;
+        board.pieces = board.pieces.filter(function(pieces){
+            return pieces.isAlive;
+        })
     }
-    //use "isTherePiece" to check if the player already have a piece in the new position
 
     console.log(`${this.color} ${this.type} moved from ${this.easyLoc()} to ${_newX}${_newY}`)
     this.location = {x: _newX, y:_newY};
@@ -42,6 +43,11 @@ ChessPiece.prototype.easyLoc = function(){
 }
 
 ChessPiece.prototype.isValidMove = function(_newX, _newY){
+    if(!this.isAlive){
+        console.log(`this piece is dead!`)
+        return false;
+    }
+
     if(this.type !== "pawn"){
         console.log(`support only pawn move for now`)
         return false;
@@ -60,16 +66,31 @@ ChessPiece.prototype.isValidMove = function(_newX, _newY){
         startRow = 7;
     }
 
-    //first move - can move 2 steps forward
+    //first check - the player already have a piece there?
+    const targetPiece = isTherePiece(board,_newX, _newY);
+    if(targetPiece && targetPiece.color === this.color){
+        console.log(`you already have a piece at ${_newX}${_newY}!`);
+        return false;
+    }
+
+    //first pawn move - can move 2 steps forward
     if(currentY === startRow && _newX === currentX && _newY === currentY +(2*yDirection)){
         if(!isTherePiece(board,_newX,_newY) && !isTherePiece(board,_newX,currentY + yDirection)){
             return true;
         }
     } 
 
-    //regular step - move 1 sq forward
+    //regular step - move 1 step forward
     if(_newX === currentX && _newY === currentY + yDirection){
         if(!isTherePiece(board, _newX, _newY)){
+            return true;
+        }
+    }
+
+    //pawn can eat
+    if(Math.abs(allColumns.indexOf(currentX) - allColumns.indexOf(_newX)) === 1 && _newY === currentY + yDirection){
+//        const targetPiece = isTherePiece(board, _newX, _newY);
+        if(targetPiece && targetPiece.color !== this.color){
             return true;
         }
     }
@@ -102,7 +123,7 @@ function isTherePiece(boardObj,x,y){
 
 // 16 total pieces =>  8 pawns, 2 rooks, 2 knights, 2 bishops, 1 queen, 1 king
 
-for (let index = 0; index < 8; index++) {
+for (let index = 0; index < allColumns.length; index++) {
 
     const newWhiteOtherPiece = new ChessPiece(otherPositions[index], "white",allColumns[index],1);
     const newWhitePawn = new ChessPiece("pawn","white",allColumns[index],2);
