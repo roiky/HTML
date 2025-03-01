@@ -29,6 +29,7 @@ ChessPiece.prototype.setLocation = function (_newX, _newY) {
     const targetPiece = isTherePiece(board,_newX, _newY);
     if(targetPiece && targetPiece.color !== this.color){
         targetPiece.isAlive = false;
+        console.log(`${targetPiece.color} ${targetPiece.type} is now dead!`)
         board.pieces = board.pieces.filter(function(pieces){
             return pieces.isAlive;
         })
@@ -48,24 +49,14 @@ ChessPiece.prototype.isValidMove = function(_newX, _newY){
         return false;
     }
 
-    if(this.type !== "pawn"){
-        console.log(`support only pawn move for now`)
+    if(this.type !== "pawn" && this.type !== "knight"){
+        console.log(`support only pawn & knight moves for now`)
         return false;
     }
 
     const currentX = this.location.x;
     const currentY = this.location.y;
-    let yDirection, startRow;
-
-    if(this.color === "white"){
-        yDirection = 1;
-        startRow = 2;
-    } 
-    else{
-        yDirection = -1;
-        startRow = 7;
-    }
-
+    
     //first check - the player already have a piece there?
     const targetPiece = isTherePiece(board,_newX, _newY);
     if(targetPiece && targetPiece.color === this.color){
@@ -73,26 +64,51 @@ ChessPiece.prototype.isValidMove = function(_newX, _newY){
         return false;
     }
 
-    //first pawn move - can move 2 steps forward
-    if(currentY === startRow && _newX === currentX && _newY === currentY +(2*yDirection)){
-        if(!isTherePiece(board,_newX,_newY) && !isTherePiece(board,_newX,currentY + yDirection)){
-            return true;
+    if(this.type === `pawn`){
+        let yDirection, startRow;
+        if(this.color === "white"){
+            yDirection = 1;
+            startRow = 2;
+        } 
+        else{
+            yDirection = -1;
+            startRow = 7;
         }
-    } 
 
-    //regular step - move 1 step forward
-    if(_newX === currentX && _newY === currentY + yDirection){
-        if(!isTherePiece(board, _newX, _newY)){
-            return true;
+        //first pawn move - can move 2 steps forward
+        if(currentY === startRow && _newX === currentX && _newY === currentY +(2*yDirection)){
+            if(!isTherePiece(board,_newX,_newY) && !isTherePiece(board,_newX,currentY + yDirection)){
+                return true;
+            }
+        } 
+
+        //regular step - move 1 step forward
+        if(_newX === currentX && _newY === currentY + yDirection){
+            if(!isTherePiece(board, _newX, _newY)){
+                return true;
+            }
         }
+
+        //pawn can eat
+        if(Math.abs(allColumns.indexOf(currentX) - allColumns.indexOf(_newX)) === 1 && _newY === currentY + yDirection){
+    //        const targetPiece = isTherePiece(board, _newX, _newY);
+            if(targetPiece && targetPiece.color !== this.color){
+                return true;
+            }
+        }
+        return false;
     }
 
-    //pawn can eat
-    if(Math.abs(allColumns.indexOf(currentX) - allColumns.indexOf(_newX)) === 1 && _newY === currentY + yDirection){
-//        const targetPiece = isTherePiece(board, _newX, _newY);
-        if(targetPiece && targetPiece.color !== this.color){
-            return true;
+    if(this.type ===`knight`){
+        const deltaX = Math.abs(allColumns.indexOf(currentX) - allColumns.indexOf(_newX));
+        const deltaY = Math.abs(currentY - _newY);
+        const isKnightMove = (deltaX === 2 && deltaY === 1) || (deltaX === 1 && deltaY === 2);
+
+        if(!isKnightMove){
+            console.log(`illegal knight move!`);
+            return false;
         }
+        return true;
     }
 
     return false;
