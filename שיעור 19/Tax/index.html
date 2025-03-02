@@ -43,22 +43,23 @@
         <div id="month-selector" class="mt-2 mb-2">
             <label>Month:</label>
             <select id="monthSelected">
-                <option>Jan</option>
-                <option>Feb</option>
-                <option>March</option>
-                <option>April</option>
-                <option>May</option>
-                <option>Jun</option>
-                <option>Jul</option>
-                <option>Aug</option>
-                <option>Sept</option>
-                <option>Oct</option>
-                <option>Nov</option>
-                <option>Dec</option>
+                <!-- Months will be added dynamically here -->
             </select>
         </div>
         <div class="send-button">
             <button id="sendBtn" class="btn btn-success"> Send</button>
+        </div>
+
+        <div class="mt-4">
+            <h2>Reported Incomes</h2>
+            <table class="table table-striped" id="incomeTable">
+                <thead>
+                    <tr id="tableHeaders"></tr>
+                </thead>
+                <tbody id="incomeBody">
+                    <!-- Rows will be added dynamically here -->
+                </tbody>
+            </table>
         </div>
     </div>
 
