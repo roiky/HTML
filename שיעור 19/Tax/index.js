@@ -2,17 +2,28 @@
 let taxRate, usrIncome, nikoiTax, usrComment, taxIncluded=true, selectedMonth, tempArr = [];
 const allMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
+const inputs = {
+    sendButton : document.getElementById("sendBtn"),
+    taxRateInput : document.getElementById("taxRate"),
+    incomeInput : document.getElementById("userIncome"),
+    nikoiInput : document.getElementById("nikoiTax"),
+    commentInput : document.getElementById("usrComment"),
+    radioNotIncluded : document.getElementById("flexRadioDefault2"),
+    radioIncluded : document.getElementById("flexRadioDefault1"),
+    selectedMonth : document.getElementById("monthSelected")
+}
+
 function init(){
 
     loadMonths("monthSelected");
 
-    document.getElementById("sendBtn")?.addEventListener("click",function(){
+    inputs.sendButton?.addEventListener("click",function(){
         //loadTable(carsForSale);
-        notIncludedBox = document.getElementById("flexRadioDefault2");
-        IncludedBox = document.getElementById("flexRadioDefault1");
+        notIncludedBox = inputs.radioNotIncluded;
+        IncludedBox = inputs.radioIncluded;
         if(notIncludedBox.checked) taxIncluded = false;
         if(IncludedBox.checked) taxIncluded = true;
-        selectedMonth = document.getElementById("monthSelected").value;
+        selectedMonth = inputs.selectedMonth.value;
         //console.log(`TEST - ${usrIncome} Month: ${selectedMonth}`)
         currentTax = localStorage.getItem("TaxRate");
         const tempRow = new newRow(usrIncome,nikoiTax,usrComment,taxIncluded,selectedMonth, currentTax) 
@@ -23,21 +34,21 @@ function init(){
         cleanInputs();
     })
 
-    document.getElementById("taxRate")?.addEventListener("input",function(){
-        taxRate = document.getElementById("taxRate").value;
+    inputs.taxRateInput?.addEventListener("input",function(){
+        taxRate = inputs.taxRateInput.value;
         localStorage.setItem("TaxRate",taxRate);
     })
 
-    document.getElementById("userIncome")?.addEventListener("change",function(){
-        usrIncome = document.getElementById("userIncome").value;
+    inputs.incomeInput?.addEventListener("change",function(){
+        usrIncome = inputs.incomeInput.value;
     })
 
-    document.getElementById("nikoiTax")?.addEventListener("change",function(){
-        nikoiTax = document.getElementById("nikoiTax").value;
+    inputs.nikoiInput?.addEventListener("change",function(){
+        nikoiTax = inputs.nikoiInput.value;
     })
 
-    document.getElementById("comment")?.addEventListener("change",function(){
-        usrComment = document.getElementById("usrComment").value;
+    inputs.commentInput?.addEventListener("change",function(){
+        usrComment = inputs.commentInput.value;
     })
 
 
@@ -48,17 +59,17 @@ function init(){
 init();
 
 function newRow(_income, _nikoi, _comm, _taxInclude,_month, _taxRate){
-    this.income = _income || null;
-    this.nikoi = _nikoi || null;
+    this.income = Number(_income) || null;
+    this.nikoi = Number(_nikoi) || null;
     this.comment = _comm || null;
     this.taxInclude = _taxInclude || null;
     this.month = _month || null;
-    this.taxRate = _taxRate || null;
+    this.taxRate = Number(_taxRate)/100 || null;
     if(_taxInclude){
-        this.finalAmount = _income/(1+Number(_taxRate)/100)
+        this.finalAmount = _income/(1+Number(this.taxRate))
     }
     else{
-        this.finalAmount = _income*(1+Number(_taxRate)/100)
+        this.finalAmount = _income*(1+Number(this.taxRate))
     }
     this.taxAmount = Math.abs(this.income - this.finalAmount);
     this.dateCreated = new Date().toLocaleDateString('he-IL');
@@ -102,13 +113,13 @@ function loadTable(Arr){
     if(typeof firstElement === 'undefined' || Arr.length === 0) return console.log("ERR1");
     const fields = Object.keys(firstElement)
 
-    fields.forEach(field => {
+    fields.forEach(field => { //table headers
         const th = document.createElement("th");
         th.textContent = field;
         tableHeaders.append(th);
     })
 
-    Arr.forEach(obj =>{
+    Arr.forEach(obj =>{ //table rows
         const row = document.createElement("tr");
 
         fields.forEach(field => {
