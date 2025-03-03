@@ -20,7 +20,7 @@
         </div>
         <div id="includedDiv" class="mt-2 mb-2">
             Enter income (select if tax included):
-            <input placeholder="Income" id="userIncome" class="input" type="text">
+            <input placeholder="Income" id="userIncome" class="input" type="text" required>
             <div class="form-check">
                 <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
                 <label class="form-check-label" for="flexRadioDefault1">
@@ -50,6 +50,12 @@
                 <!-- Months will be added dynamically here -->
             </select>
         </div>
+
+        <div id="pay-date" class="mt-2 mb-2">
+            Payment date:
+            <input id="usrDate" class="input" type="date">
+        </div>
+
         <div class="send-button">
             <button id="sendBtn" class="btn btn-success"> Send</button>
         </div>
