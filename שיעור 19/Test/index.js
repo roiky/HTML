@@ -1,14 +1,13 @@
 
-let taxRate, usrIncome, nameInput, prdctPrice, taxIncluded=true, selectedCategory, tempArr = [],payday;
-const allMonths = [`Drinks`, `Meat`, `Dairy`, `Snacks`, `Basic`];
+let taxRate, usrIncome, nameInput, prdctPrice, taxIncluded=true, selectedCategory, tempArr = [],imgLink;
+const allCategories = [`Drinks`, `Meat`, `Dairy`, `Snacks`, `Basic`];
 
 const inputs = {
     sendButton : document.getElementById("sendBtn"),
-    incomeInput : document.getElementById("userIncome"),
-    nikoiInput : document.getElementById("nameInput"),
-    commentInput : document.getElementById("prdctPrice"),
+    nameInput : document.getElementById("nameInput"),
+    priceInput : document.getElementById("prdctPrice"),
     selectedCategory : document.getElementById("categoiesSelector"),
-    paymentDate : document.getElementById("imgLink")
+    imgInput : document.getElementById("imgLinkInput")
 }
 
 const BSIcons = {
@@ -20,63 +19,44 @@ const BSIcons = {
 
 function init(){
 
-    loadCategories("categoiesSelector");
+    loadCategories("categoiesSelector"); //load all categires from "allCategories" array!
 
     inputs.sendButton?.addEventListener("click",function(){
 
         selectedCategory = inputs.selectedCategory.value;
-        currentTax = localStorage.getItem("TaxRate");
-        if(!usrIncome || !payday) return console.log("must insert income and payday!");
-        const tempRow = new newRow(usrIncome,nameInput,prdctPrice,taxIncluded,selectedCategory, currentTax, payday);
-        insertToLS(tempRow,"AllIncomes");
-        loadTable(LStoArray("AllIncomes"));
+        if(!imgLink || !nameInput || !prdctPrice) return console.log("must fill all the inputs!");
+        const tempRow = new newRow(nameInput,prdctPrice,selectedCategory, imgLink);
+        console.log(tempRow)
+        insertToLS(tempRow,"AllProducts");
+        loadTable(LStoArray("AllProducts"));
         cleanInputs();
     })
 
-    inputs.incomeInput?.addEventListener("change",function(){
-        usrIncome = inputs.incomeInput.value;
+    inputs.nameInput?.addEventListener("change",function(){
+        nameInput = inputs.nameInput.value;
     })
 
-    inputs.nikoiInput?.addEventListener("change",function(){
-        nameInput = inputs.nikoiInput.value;
+    inputs.priceInput?.addEventListener("change",function(){
+        prdctPrice = inputs.priceInput.value;
     })
 
-    inputs.commentInput?.addEventListener("change",function(){
-        prdctPrice = inputs.commentInput.value;
+    inputs.imgInput?.addEventListener("change",function(){
+        imgLink = inputs.imgInput.value;
     })
 
-    inputs.paymentDate?.addEventListener("change",function(){
-        payday = inputs.paymentDate.value;
-    })
-
-    console.log(LStoArray("AllIncomes"))
-    loadTable(LStoArray("AllIncomes"))
+    console.log(LStoArray("AllProducts"));
+    cleanInputs();
+    loadTable(LStoArray("AllProducts"));
 
 }  
     
 init();
-
-function newRow(_income, _nikoi, _comm, _taxInclude,_month, _taxRate, _payday){
-    this.income = Number(_income) || null;
-    this.nikoi = Number(_nikoi) || null;
-    this.comment = _comm || null;
-    this.taxInclude = _taxInclude || null;
-    this.month = _month || null;
-    this.taxRate = Number(_taxRate)/100 || null;
-    if(_taxInclude){
-        this.finalAmount = _income/(1+Number(this.taxRate))
-    }
-    else{
-        this.finalAmount = _income*(1+Number(this.taxRate))
-    }
-    this.taxAmount = Math.abs(this.income - this.finalAmount);
-    this.dateCreated = new Date().toLocaleDateString('he-IL');
-
-    if(_payday){
-        const dateParts = _payday.split("-"); // [0] = YYYY, [1] = MM, [2] = DD
-        this.paymentDate = `${dateParts[2]}.${dateParts[1]}.${dateParts[0]}`
-    }
-
+//newRow(nameInput,prdctPrice,selectedCategory, imgLink);
+function newRow(_name, _price, _category, _img){
+    this.name = _name || null;
+    this.price = _price || null;
+    this.category = _category || null;
+    this.img = _img || null;
     this.id = `${Date.now() + Math.ceil(Math.random() * 9999)}`;
 }
 
@@ -159,17 +139,17 @@ function loadTable(Arr){
 }
 
 function cleanInputs(){
-    const allInputs = document.querySelectorAll("input");
+    const allInputs = document.querySelectorAll(".input");
     for (let index = 0; index < allInputs.length; index++) {
         const element = allInputs[index];
-        element.value = ""
+        element.value = "";
     }
 }
 
 function loadCategories(location){
     const monthsDiv = document.querySelector(`#${location}`);
 
-    allMonths.forEach(month =>{
+    allCategories.forEach(month =>{
         newMonth = document.createElement("option");
         newMonth.textContent = month;
         monthsDiv.append(newMonth);
