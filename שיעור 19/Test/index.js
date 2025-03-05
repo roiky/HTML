@@ -61,6 +61,7 @@ function newRow(_name, _price, _category, _img){
 
 
 function LStoArray(LSName) {
+    if(typeof LSName !== "string") return;
     let LSstring = localStorage.getItem(LSName);
 
     if (!LSstring || LSstring === "") { 
@@ -77,7 +78,8 @@ function LStoArray(LSName) {
 
 
 function insertToLS(obj, LSName){
-    //NEED TO CHECK IF OBJ.ID IS ALREADY IN LS
+    if(typeof LSName !== "string" || typeof obj !== "object") return console.log("ERR2");
+
     LSArr = LStoArray(LSName);
     if(!LSArr) LSArr = [];
     LSArr.push(obj);
@@ -100,7 +102,9 @@ function loadTable(Arr){
 
     fields.forEach(field => { //table headers
         if(field === "id") return ; //gal dont want to see the ID
+
         const th = document.createElement("th");
+        th.classList.add("text-center");
         th.textContent = field;
         tableHeaders.append(th);
     })
@@ -114,11 +118,14 @@ function loadTable(Arr){
 
         fields.forEach(field => {
             if(field === "id") return ; //gal dont want to see the ID
+
             const newTD = document.createElement("td");
+            newTD.classList.add("text-center")
+
             if(field === "img"){
                 const img = window.document.createElement("img");
                 img.src = obj[field];
-                img.classList.add("img-top");
+                img.classList.add("img");
                 img.width = 100;
                 img.height = 100;
                 newTD.append(img);
@@ -131,7 +138,7 @@ function loadTable(Arr){
 
         const deleteData = document.createElement("td"); //delete button section
         const deleteButton = window.document.createElement("button");
-        const buttonText = window.document.createElement("h5");
+        const buttonText = window.document.createElement("h1");
         deleteButton.classList.add("btn","btn-danger");
         deleteButton.innerHTML = BSIcons.TRASH;
 
@@ -158,17 +165,19 @@ function cleanInputs(){
 }
 
 function loadCategories(location){
+    if(typeof location !== "string") return;
     const monthsDiv = document.querySelector(`#${location}`);
 
     allCategories.forEach(month =>{
-        newMonth = document.createElement("option");
-        newMonth.textContent = month;
-        monthsDiv.append(newMonth);
+        newCategory = document.createElement("option");
+        newCategory.textContent = month;
+        monthsDiv.append(newCategory);
     })
 
 }
 
 function removeFromLS(id, LSName) {
+    if(typeof LSName !== "string") return;
     const LSArr = LStoArray(LSName);
     if(LSArr.length < 1) return ;
 
