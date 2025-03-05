@@ -51,7 +51,6 @@ function init(){
 }  
     
 init();
-//newRow(nameInput,prdctPrice,selectedCategory, imgLink);
 function newRow(_name, _price, _category, _img){
     this.name = _name || null;
     this.price = _price || null;
@@ -100,21 +99,33 @@ function loadTable(Arr){
     const fields = Object.keys(firstElement)
 
     fields.forEach(field => { //table headers
+        if(field === "id") return ; //gal dont want to see the ID
         const th = document.createElement("th");
         th.textContent = field;
         tableHeaders.append(th);
     })
 
     const deleteHeader = document.createElement("th");
-    deleteHeader.textContent = "Delete";
+    deleteHeader.textContent = "Actions";
     tableHeaders.append(deleteHeader);
 
     Arr.forEach(obj =>{ //table rows
         const row = document.createElement("tr");
 
         fields.forEach(field => {
+            if(field === "id") return ; //gal dont want to see the ID
             const newTD = document.createElement("td");
-            newTD.textContent = obj[field];
+            if(field === "img"){
+                const img = window.document.createElement("img");
+                img.src = obj[field];
+                img.classList.add("img-top");
+                img.width = 100;
+                img.height = 100;
+                newTD.append(img);
+            }
+            else{
+                newTD.textContent = obj[field];
+            }
             row.append(newTD);
         })
 
@@ -125,7 +136,7 @@ function loadTable(Arr){
         deleteButton.innerHTML = BSIcons.TRASH;
 
         deleteButton.addEventListener("click",function(){
-            removeFromLS(obj.id,"AllIncomes");
+            removeFromLS(obj.id,"AllProducts");
         })
 
         buttonText.appendChild(deleteButton);
@@ -168,7 +179,7 @@ function removeFromLS(id, LSName) {
         localStorage.setItem(LSName,LSStr);
         console.log(`item id ${id} was removed from LS ${LSName}!`);
 
-        loadTable(LStoArray("AllIncomes"));
+        loadTable(LStoArray("AllProducts"));
         cleanInputs();
     }
 }
