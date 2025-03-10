@@ -29,4 +29,12 @@ body {
     width: 300px !important;
     height: 400px !important;
     text-align: center;
+    overflow: hidden;
+}
+
+.card-description {
+    max-height: 65%; 
+    overflow-y: auto; 
+    word-wrap: break-word; 
+    padding: 5px;
 }

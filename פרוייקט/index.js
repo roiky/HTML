@@ -105,7 +105,7 @@ function loadCards(array, targetContent) {
     for (let index = 0; index < array.length; index++) {
         const currentObject = array[index]
         const cardHtml = createCard(currentObject)
-        content.appendChild(cardHtml)
+        content.append(cardHtml)
     }
 }
 
@@ -124,8 +124,9 @@ function createCard(j){
     badge.textContent = `ID: ${id}`;
     TaskID.appendChild(badge);
 
-    const TaskDesc = window.document.createElement("span");
-    TaskDesc.innerHTML = `<b>Description</b><br> ${desc}`;
+    const TaskDesc = window.document.createElement("div");
+    TaskDesc.classList.add("card-description"); 
+    TaskDesc.innerHTML = `<b>Description</b><br> ${desc}`;    
 
     const taskDate = window.document.createElement("p");
     taskDate.innerHTML = `<b>Due Date:</b> ${date}`;
