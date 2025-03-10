@@ -24,7 +24,9 @@ body {
 }
 
 .card-style {
-    width: 500px !important;
+    background-image: url(./sticky.png);
+    background-size: cover;
+    width: 300px !important;
     height: 400px !important;
     text-align: center;
 }

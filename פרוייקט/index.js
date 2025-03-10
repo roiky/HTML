@@ -30,15 +30,13 @@ function init(){
         const tempTask = new newTask(taskDesc,taskDate,taskTime);
         console.log(tempTask)
         insertToLS(tempTask,"AllTasks");
-        // loadTable(LStoArray("AllTasks"));
         
         inputs.resetButton.click();
+        loadCards(LStoArray("AllTasks"), "tasksContent")
     })
 
     console.log(LStoArray("AllTasks"));
-    tasksArr=LStoArray("AllTasks");
-    loadCards(tasksArr, "tasksContent")
-
+    loadCards(LStoArray("AllTasks"), "tasksContent")
 }
 
 init();
@@ -115,7 +113,7 @@ function createCard(j){
     const {desc, time, id, date} = j
     const newCard = window.document.createElement("div");
     newCard.id = `${id}`;
-    newCard.classList.add("card","card-style","text-center");
+    newCard.classList.add("card","card-style","text-center","mt-4");
     newCard.style.border = "2px solid #EBDCCB"
 
     const TaskID = window.document.createElement("p");
@@ -129,11 +127,15 @@ function createCard(j){
     const TaskDesc = window.document.createElement("span");
     TaskDesc.innerHTML = `<b>Description</b><br> ${desc}`;
 
-    const taskDate = window.document.createElement("span");
+    const taskDate = window.document.createElement("p");
     taskDate.innerHTML = `<b>Due Date:</b> ${date}`;
 
-    const taskTime = window.document.createElement("span");
+    const taskTime = window.document.createElement("p");
     taskTime.innerHTML = `<b>Due Time:</b> ${time}`;
+
+    const valuesDiv = window.document.createElement("div");
+    valuesDiv.classList.add("position-absolute","bottom-0","start-0")
+    valuesDiv.append(taskDate,taskTime);
 
     const button = window.document.createElement("button");
     const buttonText = window.document.createElement("h5");
@@ -148,7 +150,7 @@ function createCard(j){
     })
     buttonText.appendChild(button);
 
-    newCard.append(TaskID, TaskDesc, taskDate, taskTime, buttonText);
+    newCard.append(TaskID, TaskDesc, valuesDiv, buttonText);
 
     return newCard;
 }
