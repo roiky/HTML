@@ -17,8 +17,6 @@ const BSIcons = {
 
 function init(){
 
-    //add draw for all existing tasks!
-    
     inputs.resetButton.click();
     inputs.sendButton?.addEventListener("click",function(){ 
  
@@ -46,6 +44,7 @@ init();
 /* =======================================================[Functions]================================================================================ */
 
 function newTask(_description, _date, _time){
+    //validate types
     this.desc = _description || null;
     this.time = _time || null;
     this.id = `${Date.now() + Math.ceil(Math.random() * 9999)}`;
@@ -102,7 +101,7 @@ function loadCards(array, targetContent) {
     if (!content) return;
 
     content.innerHTML = ""
-    for (let index = 0; index < array.length; index++) {
+    for (let index = 0; index < array.length; index++) { //can change to forEach
         const currentObject = array[index]
         const cardHtml = createCard(currentObject)
         content.append(cardHtml)
@@ -142,16 +141,40 @@ function createCard(j){
     const buttonText = window.document.createElement("h5");
     button.classList.add("btn","btn-danger", "btn-sm","mt-1","position-absolute","top-0","end-0");
     button.innerHTML = BSIcons.X;
-
+    button.setAttribute("hidden","hidden");
 
     button.addEventListener("click",function(){
-        //addOrRemoveFromFav(imdbID,"favoritesMovies");
-        //init();
-        console.log(`you click on button id:${id}`)
+        removeFromLS(id,"AllTasks")
+        console.log(`id:${id} removed from LocalStorage!`)
+        loadCards(LStoArray("AllTasks"), "tasksContent")
     })
     buttonText.appendChild(button);
 
     newCard.append(TaskID, TaskDesc, valuesDiv, buttonText);
 
+    newCard.addEventListener("mouseover",function(){
+        button.removeAttribute("hidden");
+    })
+    newCard.addEventListener("mouseleave",function(){
+        button.setAttribute("hidden","hidden");
+    })
+
     return newCard;
+}
+
+function removeFromLS(id, LSName) {
+    if(typeof LSName !== "string") return;
+    const LSArr = LStoArray(LSName);
+    if(LSArr.length < 1) return ;
+
+    const itemIndex = LSArr.findIndex( (item) => item.id === id);
+    if (itemIndex > -1){
+        LSArr.splice(itemIndex,1);
+        const LSStr = JSON.stringify(LSArr);
+        localStorage.setItem(LSName,LSStr);
+        console.log(`item id ${id} was removed from LS ${LSName}!`);
+
+        //loadTable(LStoArray("AllProducts"));
+        //cleanInputs();
+    }
 }
