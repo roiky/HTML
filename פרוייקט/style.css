@@ -22,3 +22,9 @@ body {
         -3px  3px 0 black,
          3px  3px 0 black; 
 }
+
+.card-style {
+    width: 500px !important;
+    height: 400px !important;
+    text-align: center;
+}
