@@ -16,11 +16,8 @@ body {
     text-align: center;
     font-weight: bolder;
     color: white; 
-    text-shadow: 
-        -3px -3px 0 black,  
-         3px -3px 0 black,
-        -3px  3px 0 black,
-         3px  3px 0 black; 
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: black;
 }
 
 .card-style {

@@ -89,23 +89,19 @@ function removeFromLS(id, LSName) {
         const LSStr = JSON.stringify(LSArr);
         localStorage.setItem(LSName,LSStr);
         console.log(`item id ${id} was removed from LS ${LSName}!`);
-
-        //loadTable(LStoArray("AllProducts"));
-        //cleanInputs();
     }
 }
 
 function loadCards(array, targetContent) {
-    if (!Array.isArray(array)) return; // validate that arrayOfCars is array
-    const content = document.getElementById(targetContent) // Tomer remind me!
+    if (!Array.isArray(array) || typeof targetContent !== "string") return; 
+    const content = document.getElementById(targetContent) 
     if (!content) return;
 
     content.innerHTML = ""
-    for (let index = 0; index < array.length; index++) { //can change to forEach
-        const currentObject = array[index]
-        const cardHtml = createCard(currentObject)
-        content.append(cardHtml)
-    }
+    array.forEach(item => {
+        const cardHtml = createCard(item);
+        content.append(cardHtml);
+    })
 }
 
 function createCard(j){
@@ -127,10 +123,10 @@ function createCard(j){
     TaskDesc.classList.add("card-description"); 
     TaskDesc.innerHTML = `<b>Description</b><br> ${desc}`;    
 
-    const taskDate = window.document.createElement("p");
+    const taskDate = window.document.createElement("div");
     taskDate.innerHTML = `<b>Due Date:</b> ${date}`;
 
-    const taskTime = window.document.createElement("p");
+    const taskTime = window.document.createElement("div");
     taskTime.innerHTML = `<b>Due Time:</b> ${time}`;
 
     const valuesDiv = window.document.createElement("div");
@@ -138,19 +134,16 @@ function createCard(j){
     valuesDiv.append(taskDate,taskTime);
 
     const button = window.document.createElement("button");
-    const buttonText = window.document.createElement("h5");
     button.classList.add("btn","btn-danger", "btn-sm","mt-1","position-absolute","top-0","end-0");
     button.innerHTML = BSIcons.X;
     button.setAttribute("hidden","hidden");
 
     button.addEventListener("click",function(){
         removeFromLS(id,"AllTasks")
-        console.log(`id:${id} removed from LocalStorage!`)
         loadCards(LStoArray("AllTasks"), "tasksContent")
     })
-    buttonText.appendChild(button);
 
-    newCard.append(TaskID, TaskDesc, valuesDiv, buttonText);
+    newCard.append(TaskID, TaskDesc, valuesDiv, button);
 
     newCard.addEventListener("mouseover",function(){
         button.removeAttribute("hidden");
@@ -160,21 +153,4 @@ function createCard(j){
     })
 
     return newCard;
-}
-
-function removeFromLS(id, LSName) {
-    if(typeof LSName !== "string") return;
-    const LSArr = LStoArray(LSName);
-    if(LSArr.length < 1) return ;
-
-    const itemIndex = LSArr.findIndex( (item) => item.id === id);
-    if (itemIndex > -1){
-        LSArr.splice(itemIndex,1);
-        const LSStr = JSON.stringify(LSArr);
-        localStorage.setItem(LSName,LSStr);
-        console.log(`item id ${id} was removed from LS ${LSName}!`);
-
-        //loadTable(LStoArray("AllProducts"));
-        //cleanInputs();
-    }
 }
