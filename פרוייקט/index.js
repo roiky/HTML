@@ -19,12 +19,11 @@ function init(){
 
     inputs.resetButton.click();
     inputs.sendButton?.addEventListener("click",function(){ 
- 
-        if(!inputs.taskDesc.value || !inputs.taskDate.value || !inputs.taskTime.value) return console.log("must fill all the inputs!");
-
         const taskDesc = inputs.taskDesc.value;
         const taskDate = inputs.taskDate.value;
         const taskTime = inputs.taskTime.value;
+        if(!taskDesc || !taskDate || !taskTime) return console.log("must fill all the inputs!");
+
         const tempTask = new newTask(taskDesc,taskDate,taskTime);
         console.log(tempTask)
         insertToLS(tempTask,"AllTasks");
@@ -109,7 +108,7 @@ function createCard(j){
     const newCard = window.document.createElement("div");
     newCard.id = `${id}`;
     newCard.classList.add("card","card-style","text-center","mt-4");
-    newCard.style.border = "2px solid #EBDCCB"
+    // newCard.style.border = "2px solid #EBDCCB"
 
     const TaskID = window.document.createElement("p");
     const badge = window.document.createElement("span");
