@@ -138,8 +138,13 @@ function createCard(j){
     button.setAttribute("hidden","hidden");
 
     button.addEventListener("click",function(){
-        removeFromLS(id,"AllTasks")
-        loadCards(LStoArray("AllTasks"), "tasksContent")
+        newCard.classList.add("fade-out");
+        removeFromLS(id,"AllTasks");
+
+        setTimeout(() => {
+            loadCards(LStoArray("AllTasks"), "tasksContent"); 
+        }, 450); 
+        
     })
 
     newCard.append(TaskID, TaskDesc, valuesDiv, button);
