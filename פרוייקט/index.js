@@ -74,6 +74,7 @@ function insertToLS(obj, LSName){
     LSArr.push(obj);
     LSStr = JSON.stringify(LSArr);
     localStorage.setItem(LSName,LSStr);
+    alertify.success(`Task id (${obj.id}) has been added!`); 
     console.log(`item id ${obj.id} added to ${LSName}!`)
 }
 
@@ -144,6 +145,7 @@ function createCard(j){
         setTimeout(() => {
             loadCards(LStoArray("AllTasks"), "tasksContent"); 
         }, 450); 
+        alertify.error(`Task id (${id}) has been removed!`); 
         
     })
 
