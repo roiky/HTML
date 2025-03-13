@@ -39,6 +39,10 @@ body {
     padding: 5px;
 }
 
+.site-footer{
+    height: 3rem; /* just to make a little space at the bottom */
+}
+
 @keyframes fadeOut {
     from {
         opacity: 1;
