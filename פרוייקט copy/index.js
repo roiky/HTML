@@ -176,6 +176,13 @@ function createCard(j){
     saveButton.innerHTML = BSIcons.SAVE;
     saveButton.setAttribute("hidden","hidden");
 
+    saveButton.addEventListener("click", function(){
+        const currentInput = editInput.value;
+        console.log(`new value ${currentInput}`);
+        editExistCard("AllTasks", id, currentInput);
+        loadCards(LStoArray("AllTasks"), "tasksContent");
+    })
+
     buttonWrapper.append(editButton, deleteButton);
     saveWrapper.append(saveButton);
     newCard.append(TaskID, TaskDesc, valuesDiv, saveWrapper, buttonWrapper, editInput);
@@ -192,4 +199,21 @@ function createCard(j){
     })
 
     return newCard;
+}
+
+function editExistCard(LSName, id, newDesc) {
+    if (typeof LSName !== "string") return;
+    
+    const tempArr = LStoArray(LSName);
+
+    const itemIndex = tempArr.findIndex(item => item.id === id);
+
+    if (itemIndex === -1) {
+        console.log(`Task with ID ${id} does not exist.`);
+        return;
+    }
+
+    tempArr[itemIndex].desc = newDesc;
+    localStorage.setItem(LSName, JSON.stringify(tempArr));
+    console.log(`Task ID ${id} updated successfully.`);
 }
