@@ -184,7 +184,7 @@ function createCard(j){
         deleteButton.removeAttribute("hidden");
         editButton.removeAttribute("hidden");
     })
-    
+
     newCard.addEventListener("mouseleave",function(){
         deleteButton.setAttribute("hidden","hidden");
         editButton.setAttribute("hidden","hidden");
