@@ -1,0 +1,59 @@
+body {
+    background-image: url(./background.jpg); 
+    background-size: cover; 
+    background-position: center;
+    
+}
+
+.tasks-form{
+    background-image: url(./linesbook.png);
+    background-size: cover;
+    background-position: center;
+    border-radius: 10px;
+    border: 2px solid black;
+}
+
+.page-header-text{
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    font-weight: bolder;
+    color: white; 
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: black;
+}
+
+.card-style {
+    background-image: url(./sticky1.png);
+    background-size: cover;
+    background-color: transparent;
+    width: 300px;
+    height: 350px;
+    text-align: center;
+    overflow: hidden;
+}
+
+.card-description {
+    max-height: 65%; 
+    overflow-y: auto; 
+    word-wrap: break-word; 
+    padding: 5px;
+}
+
+.site-footer{
+    height: 3rem; /* just to make a little space at the bottom */
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+}
+
+.fade-out {
+    animation: fadeOut 0.5s ease-in-out;
+}
