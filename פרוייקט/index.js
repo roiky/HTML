@@ -43,7 +43,6 @@ init();
 /* =======================================================[Functions]================================================================================ */
 
 function newTask(_description, _date, _time){
-    //validate types
     this.desc = _description || null;
     this.time = _time || null;
     this.id = `${Date.now() + Math.ceil(Math.random() * 9999)}`;
