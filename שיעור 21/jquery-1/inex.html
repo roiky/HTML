@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    .selectMeHover:hover {
+        color: green
+    }
+
+    .selectMe {
+        background-color: yellow;
+        font-size: 20px;
+    }
+</style>
+
+<body>
+    <div style="margin: auto; width: 50%;">
+
+        <div>
+            <input id="expenseName" type="text">
+            <input id="expensePrice" type="number">
+            <button id="add"> Add </button>
+        </div>
+
+        <h1 id="main-header" style="background-color: red;">
+            My Expenses
+        </h1>
+
+        <ul id="list-items">
+            <li> Movies - 10$ </li>
+            <li> Clubs - 50$ </li>
+            <li> Shopping - 5000$ </li>
+            <li> Rest - 2000$ </li>
+        </ul>
+
+        <h2 id="locations-header">
+            Locations
+        </h2>
+
+        <ul class="locations-items">
+            <li> TelAviv - 50% </li>
+            <li> Haifa - 20% </li>
+            <li> Kfar kara - 30% </li>
+        </ul>
+        <div id="bb" style="position: absolute; left:0; top:0">
+            <img src="https://img.mako.co.il/2022/10/20/StoryOfMyLifeByBibs_Headline_M568_autoOrient_g.jpg" alt=""
+                height="200" width="200">
+        </div>
+        <div id="rb" style="position: absolute; right:500; top:400">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/3/35/Ronen_Bar%2C_October_2021_%28GPODBG_7092%29_%28cropped%29.jpg"
+                alt="" height="200" width="200">
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="./index.js"></script>
+</body>
+
+</html>
