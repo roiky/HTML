@@ -24,7 +24,7 @@ function init(){
         const taskDesc = inputs.taskDesc.value;
         const taskDate = inputs.taskDate.value;
         const taskTime = inputs.taskTime.value;
-        if(!taskDesc || !taskDate || !taskTime) return console.log("must fill all the inputs!");
+        if(!taskDesc || !taskDate || !taskTime) return showError("must fill all the inputs!");
 
         const tempTask = new newTask(taskDesc,taskDate,taskTime);
         console.log(tempTask)
@@ -216,4 +216,9 @@ function editExistCard(LSName, id, newDesc) {
     tempArr[itemIndex].desc = newDesc;
     localStorage.setItem(LSName, JSON.stringify(tempArr));
     console.log(`Task ID ${id} updated successfully.`);
+}
+
+function showError(err){
+    if (typeof err !== "string") return;
+    alertify.dialog('alert').set({transition:'pulse',message: err}).show(); 
 }
