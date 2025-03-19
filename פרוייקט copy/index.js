@@ -220,5 +220,5 @@ function editExistCard(LSName, id, newDesc) {
 
 function showError(err){
     if (typeof err !== "string") return;
-    alertify.dialog('alert').set({transition:'pulse',message: err}).show(); 
+    alertify.alert(err).set('basic', true); 
 }

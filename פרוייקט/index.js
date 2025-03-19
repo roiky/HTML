@@ -22,7 +22,9 @@ function init(){
         const taskDesc = inputs.taskDesc.value;
         const taskDate = inputs.taskDate.value;
         const taskTime = inputs.taskTime.value;
+        
         if(!taskDesc || !taskDate || !taskTime) return showError("must fill all the inputs!");
+        if(taskDesc.length < 5 ) return showError("Task description must have at least 5 characters!");
 
         const tempTask = new newTask(taskDesc,taskDate,taskTime);
         console.log(tempTask)
@@ -162,5 +164,5 @@ function createCard(j){
 
 function showError(err){
     if (typeof err !== "string") return;
-    alertify.dialog('alert').set({transition:'pulse',message: err}).show(); 
+    alertify.alert(err).set('basic', true); 
 }
