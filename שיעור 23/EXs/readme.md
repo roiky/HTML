@@ -12,3 +12,9 @@ with the selected category - in this example:  beauty
 2. create 2 buttons prev & next.
 3. when clicking on next bring the next 3 items.
 4. when clicking on prev bring the prev 3 items
+
+do with 
+limit=3 skip=0
+limit=3 skip=3
+limit=3 skip=6
+...
