@@ -34,6 +34,7 @@ function init() {
 
     DOM.nextButton.innerHTML = BSIcons.ARROW_RIGHT;
     DOM.prevButton.innerHTML = BSIcons.ARROW_LEFT;
+    DOM.content.classList.add("d-flex", "align-items-start"); // => each card will have his own height when button appear
 
     DOM.selectedCat.addEventListener("change", function () {
         console.log(this.value);
