@@ -4,6 +4,17 @@ const DOM = {
     nextButton: null,
 };
 
+const BSIcons = {
+    PLUS: '<i class="bi bi-plus"></i>',
+    STAR: '<i class="bi bi-star-fill"></i>',
+    TRASH: '<i class="bi bi-trash3-fill"></i>',
+    WAIT: '<i class="bi bi-clock"></i>',
+    X: '<i class="bi bi-x"></i>',
+    ARROW_RIGHT: `<i class="bi bi-arrow-right"></i>`,
+    ARROW_LEFT: `<i class="bi bi-arrow-left"></i>`,
+    BAG_ADD: `<i class="bi bi-bag-plus"></i>`,
+};
+
 init();
 getCategories();
 
@@ -14,6 +25,9 @@ function init() {
     DOM.selectedCat = document.getElementById("drop");
     DOM.prevButton = document.getElementById("prevBtn");
     DOM.nextButton = document.getElementById("nextBtn");
+
+    DOM.nextButton.innerHTML = BSIcons.ARROW_RIGHT;
+    DOM.prevButton.innerHTML = BSIcons.ARROW_LEFT;
 
     DOM.selectedCat.addEventListener("change", function () {
         console.log(this.value);
@@ -38,29 +52,35 @@ function drawByCategory(category) {
     const fetchURL = `https://dummyjson.com/products/category/${category}?limit=${itemsLimit}&skip=${
         skipCounter * itemsLimit
     }`;
-    fetch(fetchURL)
-        .then(success)
-        .catch(failed)
-        .finally(() => {
-            showLoader(false);
-        });
+    fetch(fetchURL).then(success).catch(failed);
 
     function success(data) {
         data.json().then((s) => {
-            if (s.total < skipCounter * itemsLimit) return console.log("ERR");
-            else draw(s.products);
+            if (s.products.length === 0) {
+                alert("no more products!");
+                skipCounter--;
+                showLoader(false);
+                return;
+            } else {
+                draw(s.products);
+                showLoader(false);
+                console.log(skipCounter);
+            }
         });
     }
 
     function failed(error) {
         console.log(error);
         alert("Something went wrong!");
+        showLoader(false); // אם נכשל, גם להוריד loader
     }
 }
 
 function draw(products) {
     const content = document.getElementById("content");
-    const titles = products.map((p) => {
+    content.innerHTML = "";
+
+    products.forEach((p) => {
         content.appendChild(createCard(p));
     });
 }
@@ -84,9 +104,9 @@ function getCategories() {
 
 function showLoader(show) {
     if (show) {
-        document.querySelector("#content").innerHTML = "<h1>Loading...</h1>";
+        document.querySelector("#loader").innerHTML = "<h1>Loading...</h1>";
     } else {
-        document.querySelector("#content").innerHTML = "";
+        document.querySelector("#loader").innerHTML = "";
     }
 }
 
@@ -95,6 +115,7 @@ function createCard(j) {
     const newCard = window.document.createElement("div");
     newCard.id = `${id}`;
     newCard.classList.add("card", "mt-2", "text-center");
+    newCard.style.margin = "10px";
     newCard.style.border = "2px solid #a0a0a0";
     newCard.style.width = "300px";
 
@@ -129,10 +150,10 @@ function createCard(j) {
 
     const button = window.document.createElement("button");
     const buttonText = window.document.createElement("h3");
-    button.classList.add("btn", "btn-sm");
+    button.classList.add("btn", "btn-md");
 
     button.classList.add("btn-success");
-    button.innerHTML = `BUY`; //BSIcons.STAR;
+    button.innerHTML = BSIcons.BAG_ADD; //BSIcons.STAR;
 
     button.addEventListener("click", function () {
         console.log("PREESED BUY");
