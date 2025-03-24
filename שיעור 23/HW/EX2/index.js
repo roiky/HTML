@@ -7,27 +7,44 @@ const DOM = {
 init()
 getCategories()
 
+const itemsLimit = 3;
+let skipCounter = 0;
 
 function init() {
 
     DOM.selectedCat = document.getElementById("drop")
+    DOM.prevButton = document.getElementById("prevBtn")
+    DOM.nextButton = document.getElementById("nextBtn")
     
      
-    document.getElementById("drop").addEventListener("change", function() {
+    DOM.selectedCat.addEventListener("change", function() {
         console.log(this.value)
+        skipCounter = 0;
         showLoader(true)
         drawByCategory(DOM.selectedCat.value)
     });
 
+    DOM.nextButton.addEventListener("click", function(){
+        skipCounter++;
+        drawByCategory(DOM.selectedCat.value)
+    })
+
+    DOM.prevButton.addEventListener("click", function(){
+        if(skipCounter === 0 ) return;
+        skipCounter --;
+        drawByCategory(DOM.selectedCat.value)
+    })
+
 }
 
 function drawByCategory(category){
-    const fetchURL = `https://dummyjson.com/products/category/${category}`
+    const fetchURL = `https://dummyjson.com/products/category/${category}?limit=${itemsLimit}&skip=${skipCounter * itemsLimit}`
     fetch(fetchURL).then(success).catch(failed).finally(() => {showLoader(false)})
 
     function success(data) {
         data.json().then((s) => {
-            draw(s.products)
+            if(s.total < skipCounter * itemsLimit) return console.log("ERR");
+            else draw(s.products)
         })
     }
 
