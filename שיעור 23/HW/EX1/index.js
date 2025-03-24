@@ -2,8 +2,12 @@ const DOM = {
     selectedCat: null,
     prevButton: null,
     nextButton: null
-
 }
+
+init()
+getCategories()
+
+
 function init() {
 
     DOM.selectedCat = document.getElementById("drop")
@@ -13,8 +17,6 @@ function init() {
         console.log(this.value)
         showLoader(true)
         drawByCategory(DOM.selectedCat.value)
-        //const content = document.getElementById("content");
-
     });
 
 }
@@ -22,11 +24,13 @@ function init() {
 function drawByCategory(category){
     const fetchURL = `https://dummyjson.com/products/category/${category}`
     fetch(fetchURL).then(success).catch(failed).finally(() => {showLoader(false)})
+
     function success(data) {
         data.json().then((s) => {
             draw(s.products)
         })
     }
+
     function failed(error) {
         console.log(error)
         alert("Something went wrong!")
@@ -37,15 +41,9 @@ function drawByCategory(category){
 function draw(products) {
     const content = document.getElementById("content")
     const titles = products.map(p => { 
-        //console.log(p)
         content.appendChild(createCard(p))
          })
-    // document.querySelector("#content").innerHTML = titles.join("")
 }
-
-init()
-getCategories()
-
 
 function getCategories(){
     const dropdown = document.getElementById("drop")
