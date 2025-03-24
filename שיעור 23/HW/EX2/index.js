@@ -2,6 +2,9 @@ const DOM = {
     selectedCat: null,
     prevButton: null,
     nextButton: null,
+    content: null,
+    dropdown: null,
+    loader: null,
 };
 
 const BSIcons = {
@@ -25,6 +28,9 @@ function init() {
     DOM.selectedCat = document.getElementById("drop");
     DOM.prevButton = document.getElementById("prevBtn");
     DOM.nextButton = document.getElementById("nextBtn");
+    DOM.content = document.getElementById("content");
+    DOM.dropdown = document.getElementById("drop");
+    DOM.loader = document.querySelector("#loader");
 
     DOM.nextButton.innerHTML = BSIcons.ARROW_RIGHT;
     DOM.prevButton.innerHTML = BSIcons.ARROW_LEFT;
@@ -77,16 +83,14 @@ function drawByCategory(category) {
 }
 
 function draw(products) {
-    const content = document.getElementById("content");
-    content.innerHTML = "";
+    DOM.content.innerHTML = "";
 
     products.forEach((p) => {
-        content.appendChild(createCard(p));
+        DOM.content.appendChild(createCard(p));
     });
 }
 
 function getCategories() {
-    const dropdown = document.getElementById("drop");
     const categoriesURL = "https://dummyjson.com/products/categories";
     fetch(categoriesURL)
         .then((result) => {
@@ -95,7 +99,7 @@ function getCategories() {
                 .then((cat) =>
                     cat.map(
                         (C) =>
-                            (dropdown.innerHTML += `<option value=${C.slug} >${C.name}</option>`)
+                            (DOM.dropdown.innerHTML += `<option value=${C.slug} >${C.name}</option>`)
                     )
                 );
         })
@@ -104,9 +108,9 @@ function getCategories() {
 
 function showLoader(show) {
     if (show) {
-        document.querySelector("#loader").innerHTML = "<h1>Loading...</h1>";
+        DOM.loader.innerHTML = "<h1>Loading...</h1>";
     } else {
-        document.querySelector("#loader").innerHTML = "";
+        DOM.loader.innerHTML = "";
     }
 }
 
