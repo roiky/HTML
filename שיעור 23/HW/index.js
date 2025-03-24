@@ -72,18 +72,18 @@ function createCard(j){
     const {id, title, category, price, rating, thumbnail} = j
     const newCard = window.document.createElement("div");
     newCard.id = `${id}`;
-    newCard.classList.add("card","card-width");
+    newCard.classList.add("card","mt-2","text-center");
     newCard.style.border = "2px solid #EBDCCB"
     newCard.style.width = "300px"
 
-    const Movietitle = window.document.createElement("p");
+    const cardBadge = window.document.createElement("p");
     const badge = window.document.createElement("span");
     badge.classList.add("badge","badge-light","mt-2");
     badge.style.background = "#E6AF2E"; 
     badge.style.color = "#191716"; 
     badge.textContent = `ID: ${id}`;
     
-    Movietitle.appendChild(badge);
+    cardBadge.appendChild(badge);
 
     //const imagesCarousel = createCarousel(imdbID,Images);
 
@@ -96,30 +96,28 @@ function createCard(j){
     const titleText = window.document.createElement("span");
     titleText.innerHTML = `<b>Title:</b> ${title}`;
 
-    const ratedText = window.document.createElement("span");
-    ratedText.innerHTML = `<b>Category:</b> ${category}`;
+    const categoryText = window.document.createElement("span");
+    categoryText.innerHTML = `<b>Category:</b> ${category}`;
 
-    const releasedText = window.document.createElement("span");
-    releasedText.innerHTML = `<b>Rating:</b> ${rating}`;
+    const ratingText = window.document.createElement("span");
+    ratingText.innerHTML = `<b>Rating:</b> ${rating}`;
 
-    const runtimeText = window.document.createElement("span");
-    runtimeText.innerHTML = `<b>Price:</b> ${price}$`;
+    const priceText = window.document.createElement("span");
+    priceText.innerHTML = `<b>Price:</b> ${price}$`;
 
     const button = window.document.createElement("button");
     const buttonText = window.document.createElement("h3");
     button.classList.add("btn","btn-sm");
 
-        button.classList.add("btn-warning");
+        button.classList.add("btn-success");
         button.innerHTML = `BUY` //BSIcons.STAR;
 
     button.addEventListener("click",function(){
-        // addOrRemoveFromFav(imdbID,"favoritesMovies");
-        // init();
         console.log("PREESED BUY")
     })
     buttonText.appendChild(button);
 
-    newCard.append(Movietitle, img, titleText, ratedText, releasedText, runtimeText, buttonText);
+    newCard.append(cardBadge, img, titleText, categoryText, ratingText, priceText, buttonText);
 
     return newCard;
 }
