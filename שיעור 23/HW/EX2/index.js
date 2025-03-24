@@ -43,11 +43,13 @@ function init() {
     });
 
     DOM.nextButton.addEventListener("click", function () {
+        if (!DOM.dropdown.value) return alert(`select category first!`);
         skipCounter++;
         drawByCategory(DOM.selectedCat.value);
     });
 
     DOM.prevButton.addEventListener("click", function () {
+        if (!DOM.dropdown.value) return alert(`select category first!`);
         if (skipCounter === 0) return;
         skipCounter--;
         drawByCategory(DOM.selectedCat.value);
@@ -55,9 +57,8 @@ function init() {
 }
 
 function drawByCategory(category) {
-    const fetchURL = `https://dummyjson.com/products/category/${category}?limit=${itemsLimit}&skip=${
-        skipCounter * itemsLimit
-    }`;
+    if (typeof category !== `string`) return console.log(`error with category`);
+    const fetchURL = `https://dummyjson.com/products/category/${category}?limit=${itemsLimit}&skip=${skipCounter * itemsLimit}`;
     fetch(fetchURL).then(success).catch(failed);
 
     function success(data) {
@@ -83,6 +84,7 @@ function drawByCategory(category) {
 }
 
 function draw(products) {
+    if (typeof products !== `object`) return console.log(`error with products type`);
     DOM.content.innerHTML = "";
 
     products.forEach((p) => {
@@ -92,16 +94,12 @@ function draw(products) {
 
 function getCategories() {
     const categoriesURL = "https://dummyjson.com/products/categories";
+    DOM.dropdown.innerHTML += `<option value="" disabled selected hidden>Select Category</option>`;
     fetch(categoriesURL)
         .then((result) => {
             result
                 .json()
-                .then((cat) =>
-                    cat.map(
-                        (C) =>
-                            (DOM.dropdown.innerHTML += `<option value=${C.slug} >${C.name}</option>`)
-                    )
-                );
+                .then((cat) => cat.map((C) => (DOM.dropdown.innerHTML += `<option value=${C.slug} >${C.name}</option>`)));
         })
         .catch((err) => console.log(err));
 }
@@ -153,26 +151,22 @@ function createCard(j) {
     priceText.innerHTML = `<b>Price:</b> ${price}$`;
 
     const button = window.document.createElement("button");
-    const buttonText = window.document.createElement("h3");
-    button.classList.add("btn", "btn-md");
-
-    button.classList.add("btn-success");
+    button.classList.add("btn", "btn-success", "w-auto", "mx-auto", "d-block", "d-none");
+    button.setAttribute("hidden", "hidden");
     button.innerHTML = BSIcons.BAG_ADD; //BSIcons.STAR;
 
     button.addEventListener("click", function () {
-        console.log("PREESED BUY");
+        console.log(`pressed buy for ID: ${id}`);
     });
-    buttonText.appendChild(button);
 
-    newCard.append(
-        cardBadge,
-        img,
-        titleText,
-        categoryText,
-        ratingText,
-        priceText,
-        buttonText
-    );
+    newCard.addEventListener("mouseover", function () {
+        button.classList.remove("d-none");
+    });
+    newCard.addEventListener("mouseleave", function () {
+        button.classList.add("d-none");
+    });
+
+    newCard.append(cardBadge, img, titleText, categoryText, ratingText, priceText, button);
 
     return newCard;
 }
