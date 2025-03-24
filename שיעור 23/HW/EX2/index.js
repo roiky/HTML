@@ -1,103 +1,110 @@
 const DOM = {
     selectedCat: null,
     prevButton: null,
-    nextButton: null
-}
+    nextButton: null,
+};
 
-init()
-getCategories()
+init();
+getCategories();
 
 const itemsLimit = 3;
 let skipCounter = 0;
 
 function init() {
+    DOM.selectedCat = document.getElementById("drop");
+    DOM.prevButton = document.getElementById("prevBtn");
+    DOM.nextButton = document.getElementById("nextBtn");
 
-    DOM.selectedCat = document.getElementById("drop")
-    DOM.prevButton = document.getElementById("prevBtn")
-    DOM.nextButton = document.getElementById("nextBtn")
-    
-     
-    DOM.selectedCat.addEventListener("change", function() {
-        console.log(this.value)
+    DOM.selectedCat.addEventListener("change", function () {
+        console.log(this.value);
         skipCounter = 0;
-        showLoader(true)
-        drawByCategory(DOM.selectedCat.value)
+        showLoader(true);
+        drawByCategory(DOM.selectedCat.value);
     });
 
-    DOM.nextButton.addEventListener("click", function(){
+    DOM.nextButton.addEventListener("click", function () {
         skipCounter++;
-        drawByCategory(DOM.selectedCat.value)
-    })
+        drawByCategory(DOM.selectedCat.value);
+    });
 
-    DOM.prevButton.addEventListener("click", function(){
-        if(skipCounter === 0 ) return;
-        skipCounter --;
-        drawByCategory(DOM.selectedCat.value)
-    })
-
+    DOM.prevButton.addEventListener("click", function () {
+        if (skipCounter === 0) return;
+        skipCounter--;
+        drawByCategory(DOM.selectedCat.value);
+    });
 }
 
-function drawByCategory(category){
-    const fetchURL = `https://dummyjson.com/products/category/${category}?limit=${itemsLimit}&skip=${skipCounter * itemsLimit}`
-    fetch(fetchURL).then(success).catch(failed).finally(() => {showLoader(false)})
+function drawByCategory(category) {
+    const fetchURL = `https://dummyjson.com/products/category/${category}?limit=${itemsLimit}&skip=${
+        skipCounter * itemsLimit
+    }`;
+    fetch(fetchURL)
+        .then(success)
+        .catch(failed)
+        .finally(() => {
+            showLoader(false);
+        });
 
     function success(data) {
         data.json().then((s) => {
-            if(s.total < skipCounter * itemsLimit) return console.log("ERR");
-            else draw(s.products)
-        })
+            if (s.total < skipCounter * itemsLimit) return console.log("ERR");
+            else draw(s.products);
+        });
     }
 
     function failed(error) {
-        console.log(error)
-        alert("Something went wrong!")
+        console.log(error);
+        alert("Something went wrong!");
     }
 }
 
-
 function draw(products) {
-    const content = document.getElementById("content")
-    const titles = products.map(p => { 
-        content.appendChild(createCard(p))
-         })
+    const content = document.getElementById("content");
+    const titles = products.map((p) => {
+        content.appendChild(createCard(p));
+    });
 }
 
-function getCategories(){
-    const dropdown = document.getElementById("drop")
-    const categoriesURL =  'https://dummyjson.com/products/categories'
+function getCategories() {
+    const dropdown = document.getElementById("drop");
+    const categoriesURL = "https://dummyjson.com/products/categories";
     fetch(categoriesURL)
-    .then((result) => {
-        result.json().then((cat) => cat.map((C) => dropdown.innerHTML += `<option value=${C.slug} >${C.name}</option>`))
-       
-    })
-    .catch((err) => console.log(err))
-
+        .then((result) => {
+            result
+                .json()
+                .then((cat) =>
+                    cat.map(
+                        (C) =>
+                            (dropdown.innerHTML += `<option value=${C.slug} >${C.name}</option>`)
+                    )
+                );
+        })
+        .catch((err) => console.log(err));
 }
 
 function showLoader(show) {
     if (show) {
-      document.querySelector("#content").innerHTML = "<h1>Loading...</h1>";
+        document.querySelector("#content").innerHTML = "<h1>Loading...</h1>";
     } else {
-      document.querySelector("#content").innerHTML = "";
+        document.querySelector("#content").innerHTML = "";
     }
-  }
-  
+}
 
-function createCard(j){
-    const {id, title, category, price, rating, thumbnail} = j
+function createCard(j) {
+    const { id, title, category, price, rating, thumbnail } = j;
     const newCard = window.document.createElement("div");
     newCard.id = `${id}`;
-    newCard.classList.add("card","mt-2","text-center");
-    newCard.style.border = "2px solid #EBDCCB"
-    newCard.style.width = "300px"
+    newCard.classList.add("card", "mt-2", "text-center");
+    newCard.style.border = "2px solid #a0a0a0";
+    newCard.style.width = "300px";
 
     const cardBadge = window.document.createElement("p");
     const badge = window.document.createElement("span");
-    badge.classList.add("badge","badge-light","mt-2");
-    badge.style.background = "#E6AF2E"; 
-    badge.style.color = "#191716"; 
+    badge.classList.add("badge", "badge-light", "mt-2");
+    badge.style.background = "#a0a0a0";
+    badge.style.color = "#191716";
     badge.textContent = `ID: ${id}`;
-    
+
     cardBadge.appendChild(badge);
 
     //const imagesCarousel = createCarousel(imdbID,Images);
@@ -122,17 +129,25 @@ function createCard(j){
 
     const button = window.document.createElement("button");
     const buttonText = window.document.createElement("h3");
-    button.classList.add("btn","btn-sm");
+    button.classList.add("btn", "btn-sm");
 
-        button.classList.add("btn-success");
-        button.innerHTML = `BUY` //BSIcons.STAR;
+    button.classList.add("btn-success");
+    button.innerHTML = `BUY`; //BSIcons.STAR;
 
-    button.addEventListener("click",function(){
-        console.log("PREESED BUY")
-    })
+    button.addEventListener("click", function () {
+        console.log("PREESED BUY");
+    });
     buttonText.appendChild(button);
 
-    newCard.append(cardBadge, img, titleText, categoryText, ratingText, priceText, buttonText);
+    newCard.append(
+        cardBadge,
+        img,
+        titleText,
+        categoryText,
+        ratingText,
+        priceText,
+        buttonText
+    );
 
     return newCard;
 }
