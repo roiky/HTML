@@ -1,5 +1,6 @@
 const DOM = {
     loader: null,
+    countriesDDL: null,
 };
 
 const BSIcons = {
@@ -15,14 +16,33 @@ const BSIcons = {
 
 function init() {
     DOM.loader = document.getElementById("loader"); //showLoader(DOM.loader);
-    const countriesArr = getCountriesFromAPI();
+    DOM.countriesDDL = document.getElementById("countriesSelect");
+
     loadCountriesToDDL();
 }
 
 init();
 
 async function getCountriesFromAPI() {
-    const fetchURL = ``;
+    const result = await fetch(`https://restcountries.com/v3.1/all`);
+    const data = await result.json();
+    return data;
+}
+
+async function loadCountriesToDDL() {
+    showLoader(DOM.loader);
+    try {
+        const fetchResult = await getCountriesFromAPI();
+        console.log(fetchResult, "drawing...");
+        fetchResult.forEach((currentCountry) => {
+            const optionElement = `<option value='${currentCountry.cca3}'> ${currentCountry?.name?.common} </option>`;
+            DOM.countriesDDL.innerHTML += optionElement;
+        });
+    } catch (error) {
+        console.log(`something went wrong!`, error);
+    } finally {
+        hideLoader(DOM.loader);
+    }
 }
 
 function showLoader(loaderElement) {
