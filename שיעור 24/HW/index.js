@@ -60,14 +60,63 @@ async function loadCountriesToDDL() {
             const optionElement = document.createElement("option");
             optionElement.value = currentCountry.cca3;
             optionElement.innerText = currentCountry?.name?.common;
-
             DOM.countriesDDL.appendChild(optionElement);
         });
+
+        console.log(countRegions(fetchResult)); // return obj with all regions!
     } catch (error) {
         console.log(`something went wrong!`, error);
     } finally {
         showLoader(DOM.loader, false);
     }
+}
+
+function countRegions(arr) {
+    const regionsObj = {};
+    arr.forEach((country) => {
+        if (country.region) {
+            if (regionsObj[country.region]) {
+                regionsObj[country.region] += 1;
+            } else {
+                regionsObj[country.region] = 1;
+            }
+        }
+    });
+    return regionsObj;
+}
+
+function getCountersByBrand(arr) {
+    if (!Array.isArray(arr)) return;
+    let productBrand = {};
+    arr.forEach((p) => {
+        if (p.brand) {
+            if (productBrand[p.brand]) {
+                productBrand[p.brand] = productBrand[p.brand] + 1;
+            } else {
+                productBrand[p.brand] = 1;
+            }
+        }
+    });
+    // implement counters aggregation
+    // Nike: 2
+    // Puma: 1
+    // Levis: 4
+    // Zara: 2
+    return productBrand;
+}
+
+function aggregateTypes(arr, keyToCount) {
+    if (!Array.isArray(arr)) return;
+    let stats = {};
+    arr.forEach(function (currentItem) {
+        if (stats[currentItem[keyToCount]]) {
+            // if true we have something in the object under the relevant key
+            stats[currentItem[keyToCount]] = stats[currentItem[keyToCount]] + 1;
+        } else {
+            stats[currentItem[keyToCount]] = 1;
+        }
+    });
+    return stats;
 }
 
 async function getSpecificCountryByCode(code) {
