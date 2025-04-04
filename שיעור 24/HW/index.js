@@ -5,6 +5,8 @@ const DOM = {
     countriesContent: null,
 };
 
+let charts = {};
+
 const BSIcons = {
     PLUS: '<i class="bi bi-plus"></i>',
     STAR: '<i class="bi bi-star-fill"></i>',
@@ -63,7 +65,11 @@ async function loadCountriesToDDL() {
             DOM.countriesDDL.appendChild(optionElement);
         });
 
-        console.log(countRegions(fetchResult)); // return obj with all regions!
+        const regionCounter = countSomething(fetchResult, "region");
+        const populationCounter = countByKeys(fetchResult, "region", "population");
+        console.log(regionCounter); // return obj with all regions!
+        createChart(regionCounter, "firstChart", "Regions Pie");
+        createChart(populationCounter, "secondChart", "Population Pie");
     } catch (error) {
         console.log(`something went wrong!`, error);
     } finally {
@@ -71,52 +77,35 @@ async function loadCountriesToDDL() {
     }
 }
 
-function countRegions(arr) {
+function countSomething(arr, countWhat) {
     const regionsObj = {};
     arr.forEach((country) => {
-        if (country.region) {
-            if (regionsObj[country.region]) {
-                regionsObj[country.region] += 1;
+        const key = country[countWhat];
+        if (key) {
+            if (regionsObj[key]) {
+                regionsObj[key] += 1;
             } else {
-                regionsObj[country.region] = 1;
+                regionsObj[key] = 1;
             }
         }
     });
     return regionsObj;
 }
 
-function getCountersByBrand(arr) {
-    if (!Array.isArray(arr)) return;
-    let productBrand = {};
-    arr.forEach((p) => {
-        if (p.brand) {
-            if (productBrand[p.brand]) {
-                productBrand[p.brand] = productBrand[p.brand] + 1;
+function countByKeys(arr, categories, whatToCount) {
+    const resultObj = {};
+    arr.forEach((country) => {
+        const category = country[categories];
+        const keyToCount = country[whatToCount];
+        if (category != null && keyToCount != null) {
+            if (resultObj[category]) {
+                resultObj[category] += country[whatToCount];
             } else {
-                productBrand[p.brand] = 1;
+                resultObj[category] = country[whatToCount];
             }
         }
     });
-    // implement counters aggregation
-    // Nike: 2
-    // Puma: 1
-    // Levis: 4
-    // Zara: 2
-    return productBrand;
-}
-
-function aggregateTypes(arr, keyToCount) {
-    if (!Array.isArray(arr)) return;
-    let stats = {};
-    arr.forEach(function (currentItem) {
-        if (stats[currentItem[keyToCount]]) {
-            // if true we have something in the object under the relevant key
-            stats[currentItem[keyToCount]] = stats[currentItem[keyToCount]] + 1;
-        } else {
-            stats[currentItem[keyToCount]] = 1;
-        }
-    });
-    return stats;
+    return resultObj;
 }
 
 async function getSpecificCountryByCode(code) {
@@ -156,4 +145,65 @@ function cleanContent(whereToClean) {
 
 function showLoader(loaderElement, display) {
     display ? (loaderElement.style.display = "") : (loaderElement.style.display = "none");
+}
+
+function createChart(obj, canvasID, chartTitle = "Title") {
+    const content = document.querySelector(`#${canvasID}`);
+    content.style.border = "2px solid rgba(85, 75, 63, 0.23)";
+    content.style.borderRadius = "10px";
+
+    if (!content) return;
+
+    let labels = [];
+    let data = [];
+    for (const property in obj) {
+        labels.push(property);
+        data.push(obj[property]);
+    }
+
+    //const ctx = content.querySelector(`#${canvasID}`)
+    //const ctx = document.getElementById('myChart');
+
+    if (charts[canvasID]) {
+        charts[canvasID].destroy();
+    }
+    charts[canvasID] = new Chart(content, {
+        type: "pie",
+        borderColor: "rgba(0, 0, 0, 0.1)",
+
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: "Counter",
+                    data: data,
+                    borderWidth: 2,
+                    //backgroundColor: ["rgb(21, 7, 102)", "rgb(100, 16, 16)"],
+                },
+            ],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                //   y: {
+                //     beginAtZero: true
+                //   }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: chartTitle,
+                    font: {
+                        size: 20,
+                    },
+                    color: "black",
+                    padding: {
+                        top: 0,
+                        bottom: 0,
+                    },
+                },
+            },
+        },
+    });
 }
