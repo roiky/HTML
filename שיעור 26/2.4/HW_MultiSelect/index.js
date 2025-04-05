@@ -25,7 +25,7 @@ async function init() {
     DOM.countriesContent = document.getElementById("countryDetailsContent");
 
     await loadCountriesToDDL();
-    countriesDDL = createMultiselectDropdown("countriesSelect", "Select Countries");
+    countriesMultiDDL = createMultiselectDropdown("countriesSelect", "Select Countries");
 
     DOM.sendButton.addEventListener("click", async function () {
         const selectedValues = Array.from(DOM.countriesDDL.selectedOptions).map((option) => option.value);
@@ -40,7 +40,7 @@ async function init() {
             console.log(error);
         } finally {
             showLoader(DOM.loader, false);
-            countriesDDL.removeActiveItems();
+            countriesMultiDDL.removeActiveItems();
         }
     });
 
