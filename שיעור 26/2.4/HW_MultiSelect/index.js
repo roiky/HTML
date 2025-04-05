@@ -19,7 +19,7 @@ const BSIcons = {
 };
 
 async function init() {
-    DOM.loader = document.getElementById("loader"); //showLoader(DOM.loader);
+    DOM.loader = document.getElementById("loader");
     DOM.countriesDDL = document.getElementById("countriesSelect");
     DOM.sendButton = document.getElementById("sendBtn");
     DOM.countriesContent = document.getElementById("countryDetailsContent");
@@ -50,6 +50,7 @@ async function init() {
 init();
 
 async function drawMultiCountryFlag(arr, whereToDraw) {
+    if (!Array.isArray(arr) || typeof whereToDraw !== "string") return;
     const allPromieses = arr.map((code) => getSpecificCountryByCode(code));
     const result = await Promise.allSettled(allPromieses);
     const onlySuccesed = result.filter((item) => item.status === "fulfilled").map((item) => item.value);
@@ -57,6 +58,7 @@ async function drawMultiCountryFlag(arr, whereToDraw) {
 }
 
 function createMultiselectDropdown(dropdownID, placeholder = "placeholder") {
+    if (typeof dropdownID !== "string") return;
     const element = document.getElementById(dropdownID);
     const choices = new Choices(element, {
         removeItemButton: true,
@@ -66,7 +68,7 @@ function createMultiselectDropdown(dropdownID, placeholder = "placeholder") {
         itemSelectText: "",
     });
     return choices;
-    //document.querySelector(".choices").style.maxWidth = "6000px";
+    //document.querySelector(".choices").style.maxWidth = "600px";
 }
 
 async function getCountriesFromAPI() {
@@ -101,6 +103,7 @@ async function loadCountriesToDDL() {
 }
 
 function countSomething(arr, countWhat) {
+    if (!Array.isArray(arr) || typeof countWhat !== "string") return;
     const regionsObj = {};
     arr.forEach((country) => {
         const key = country[countWhat];
@@ -116,6 +119,7 @@ function countSomething(arr, countWhat) {
 }
 
 function countByKeys(arr, categories, whatToCount) {
+    if (!Array.isArray(arr) || typeof categories !== "string" || typeof whatToCount !== "string") return;
     const resultObj = {};
     arr.forEach((country) => {
         const category = country[categories];
@@ -132,6 +136,7 @@ function countByKeys(arr, categories, whatToCount) {
 }
 
 async function getSpecificCountryByCode(code) {
+    if (typeof code !== "string") return;
     const result = await fetch(`https://restcountries.com/v3.1/alpha/${code}`);
     const data = await result.json(); // await = take only the value.
     const firstCountry = data[0];
@@ -146,6 +151,7 @@ async function getSpecificCountryByCode(code) {
 }
 
 function drawCountryFlag(item, whereToDraw) {
+    if (typeof item !== "object" || typeof whereToDraw !== "string") return;
     const targetElement = document.getElementById(whereToDraw);
 
     const newDiv = document.createElement("div");
@@ -163,11 +169,13 @@ function drawCountryFlag(item, whereToDraw) {
 }
 
 function cleanContent(whereToClean) {
+    if (typeof whereToClean !== "string") return;
     const targetElement = document.getElementById(whereToClean);
     targetElement.innerHTML = "";
 }
 
 function showLoader(loaderElement, display) {
+    if (typeof loaderElement !== "object") return;
     display ? (loaderElement.style.display = "") : (loaderElement.style.display = "none");
 }
 
