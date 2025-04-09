@@ -91,7 +91,7 @@ async function loadCountriesToDDL() {
         });
 
         const regionCounter = countSomething(fetchResult, "region");
-        const populationCounter = countByKeys(fetchResult, "region", "population");
+        const populationCounter = sumByKeys(fetchResult, "region", "population");
         console.log(regionCounter); // return obj with all regions!
         createChart(regionCounter, "firstChart", "Regions Pie");
         createChart(populationCounter, "secondChart", "Population Pie");
@@ -118,7 +118,7 @@ function countSomething(arr, countWhat) {
     return regionsObj;
 }
 
-function countByKeys(arr, categories, whatToCount) {
+function sumByKeys(arr, categories, whatToCount) {
     if (!Array.isArray(arr) || typeof categories !== "string" || typeof whatToCount !== "string") return;
     const resultObj = {};
     arr.forEach((country) => {
