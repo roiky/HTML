@@ -25,34 +25,26 @@ async function init() {
     DOM.sendButton = document.getElementById("sendBtn");
     DOM.cardsContainer = document.getElementById("cardsContainer");
 
-    // DOM.sendButton.addEventListener("click", async function () {
-    //     const selectedValues = Array.from(DOM.countriesDDL.selectedOptions).map((option) => option.value);
-    //     console.log(selectedValues);
-    //     try {
-    //         if (selectedValues) {
-    //             cleanContent("countryDetailsContent");
-    //             showLoader(DOM.loader, true);
-    //             await drawMultiCountryFlag(selectedValues, "countryDetailsContent");
-    //         }
-    //     } catch (error) {
-    //         console.log(error);
-    //     } finally {
-    //         showLoader(DOM.loader, false);
-    //         countriesMultiDDL.removeActiveItems();
-    //     }
-    // });
-
     DOM.sendButton.addEventListener("click", async function () {
-        const populationObj = await getPopulationAPI();
-        console.log(populationObj);
-        const popByYear = sumByKeys(populationObj.data, "Year", "Population");
-        console.log(popByYear);
-        createChart(popByYear, "firstChart", "Population By Year", "bar");
+        try {
+            cleanContent("firstChart");
+            cleanContent("cardsContainer");
+            showLoader(DOM.loader, true);
 
-        const uniObj = await getUniAPI();
-        console.log(uniObj.results);
+            const [populationObj, uniObj] = await Promise.all([getPopulationAPI(), getUniAPI()]);
 
-        uniObj.results.forEach((uni) => drawUniCards(uni, "cardsContainer"));
+            console.log(populationObj);
+            const popByYear = sumByKeys(populationObj.data, "Year", "Population");
+            console.log(popByYear);
+            createChart(popByYear, "firstChart", "Population By Year", "bar");
+            console.log(uniObj.results);
+
+            uniObj.results.forEach((uni) => drawUniCards(uni, "cardsContainer"));
+        } catch (error) {
+            console.log(error);
+        } finally {
+            showLoader(DOM.loader, false);
+        }
     });
     //showLoader(DOM.loader, true);
 }
