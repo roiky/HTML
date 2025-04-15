@@ -76,11 +76,21 @@ function drawUniCards(item, whereToDraw) {
     const targetElement = document.getElementById(whereToDraw);
 
     const newDiv = document.createElement("div");
-    newDiv.classList.add("p-2", "mt-2", "border", "mx-auto");
+    newDiv.id = item.id;
+    newDiv.classList.add("card", "mt-2", "text-center");
     newDiv.style.width = "fit-content";
     newDiv.style.border = "1px solid black";
-    const Name = document.createElement("h5");
-    Name.innerText = item.name;
+    newDiv.style.width = "300px";
+    newDiv.style.margin = "20px";
+
+    const cardBadge = window.document.createElement("p");
+    const badge = window.document.createElement("span");
+    badge.classList.add("badge", "badge-light", "mt-2");
+    badge.style.background = "#a0a0a0";
+    badge.style.color = "#191716";
+    badge.textContent = item.name;
+
+    cardBadge.appendChild(badge);
 
     const ID = document.createElement("p");
     ID.innerHTML = `<b>University ID: </b>`;
@@ -94,7 +104,7 @@ function drawUniCards(item, whereToDraw) {
         Score.innerHTML += item.score.toFixed(4);
     }
 
-    newDiv.append(Name, ID, Score);
+    newDiv.append(cardBadge, ID, Score);
     targetElement.appendChild(newDiv);
 }
 
