@@ -25,6 +25,8 @@ async function init() {
     DOM.sendButton = document.getElementById("sendBtn");
     DOM.cardsContainer = document.getElementById("cardsContainer");
 
+    //showLoader(DOM.loader, true);
+
     DOM.sendButton.addEventListener("click", async function () {
         try {
             cleanContent("firstChart");
