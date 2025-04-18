@@ -132,6 +132,7 @@ function showLoader(loaderElement, display) {
 
 function createChart(obj, canvasID, chartTitle = "Title", chartType = "pie") {
     const content = document.querySelector(`#${canvasID}`);
+    //content.style.height = "200px";
     content.style.border = "2px solid rgba(85, 75, 63, 0.23)";
     content.style.borderRadius = "10px";
 
