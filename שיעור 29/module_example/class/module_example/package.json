@@ -1,0 +1,19 @@
+{
+  "name": "module_example",
+  "version": "1.0.0",
+  "description": "this is test package for gal amouyal",
+  "main": "index.js",
+  "scripts": {
+    "prod": "npm test && npm start",
+    "start": "node index.js",
+    "test": "echo testPassedSuccsessFully"
+  },
+  "author": "gal amouyal",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.8.4",
+    "mocha": "^11.1.0",
+    "typescript": "^5.8.3",
+    "winston": "^3.17.0"
+  }
+}
