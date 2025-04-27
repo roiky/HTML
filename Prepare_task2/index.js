@@ -50,7 +50,7 @@ async function init() {
     });
     //showLoader(DOM.loader, true);
 }
-
+//כע
 init();
 
 async function getPopulationAPI() {
