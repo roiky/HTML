@@ -70,4 +70,4 @@ type HasTimestamp = {
 
 function logEntity(entity: HasId & HasTimestamp): void {
     console.log(`Entity #${entity.id} was last updated at ${entity.timestamp}`);
-}
+}   
