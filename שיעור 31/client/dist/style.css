@@ -1,0 +1,63 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.07);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    width: 100%;
+    max-width: 400px;
+    text-align: center; /* ✅ טקסט ממורכז */
+  }
+  
+  .card h1 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  
+.card input {
+  width: 90%; /* ⬅️ היה 100% */
+  max-width: 300px; /* ⬅️ גבול קבוע נוסף */
+  margin: 0 auto 0.75rem auto;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  display: block;
+}
+  
+  .card button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    /* width: 100%; */
+  }
+  
+  .card button:hover {
+    background-color: #0056b3;
+  }
+  
+  .card div[id$="Output"] {
+    margin-top: 1rem;
+    background-color: #e9e9e99d; /* ✅ אפור בהיר */
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    word-break: break-word;
+  }
+  

@@ -2,27 +2,51 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./style.css" />
+  <title>Customer App</title>
 </head>
 
 <body>
-    <div>
-        <div>
-            <h1> GET all customer </h1>
-            <button id="getAllCustomersBTN"> GET all customers </button>
-        </div>
 
-        <div>
-            <h1> GET customer by id </h1>
-            <input type="text">
-            <button onclick="getCustomerById()"> GET all customers </button>
-        </div>
-    </div>
+  <div class="card">
+    <h1>GET all customers</h1>
+    <button id="getAllCustomersBTN">GET all customers</button>
+    <div id="allCustomerOutput"></div>
+  </div>
+
+  <div class="card">
+    <h1>GET customer by ID</h1>
+    <input type="text" id="customerIdInput" placeholder="Enter customer ID" />
+    <button id="getCustomerByIdBTN">GET customer by ID</button>
+    <div id="customerByIdOutput"></div>
+  </div>
+
+  <div class="card">
+    <h1>DELETE customer by ID</h1>
+    <input type="text" id="deleteCustomerIdInput" placeholder="Enter customer ID to delete" />
+    <button id="deleteCustomerByIdBTN">DELETE customer by ID</button>
+    <div id="deleteCustomerByIdOutput"></div>
+  </div>
+
+  <div class="card">
+    <h1>UPDATE customer name by ID</h1>
+    <input type="text" id="updateCustomerIdInput" placeholder="Enter customer ID to update" />
+    <input type="text" id="updateCustomerNameInput" placeholder="Enter new customer name" />
+    <button id="updateCustomerBTN">UPDATE customer by ID</button>
+    <div id="updateCustomerOutput"></div>
+  </div>
+
+  <div class="card">
+    <h1>CREATE new customer</h1>
+    <input type="text" id="createCustomerNameInput" placeholder="Enter customer name" />
+    <input type="text" id="createCustomerMailInput" placeholder="Enter customer email" />
+    <button id="createCustomerBTN">CREATE new customer</button>
+    <div id="createCustomerOutput"></div>
+  </div>
+
+  <script src="./index.js"></script>
 </body>
-
-
-<script src="./index.js"></script>
 
 </html>
