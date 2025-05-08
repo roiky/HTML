@@ -18,12 +18,12 @@ const DOM: DOMAttr = {
     password: null,
     registerResponse: null,
 
-    LoginUsername:null,
+    LoginUsername: null,
     LoginPassword: null,
     LoginOutput: null,
     loginBTN: null,
 
-    usersOutput:null,
+    usersOutput: null,
     usersBTN: null,
 
     authInput: null,
@@ -47,7 +47,7 @@ function init() {
 
     DOM.authInput = document.querySelector<HTMLInputElement>("#authInput");
     DOM.authBTN = document.querySelector<HTMLButtonElement>("#authBTN");
-    DOM.authOutput = document.querySelector<HTMLDivElement>("#authOutput"); 
+    DOM.authOutput = document.querySelector<HTMLDivElement>("#authOutput");
 
     document.getElementById("registerAction")?.addEventListener("click", async () => {
         try {
@@ -61,7 +61,7 @@ function init() {
             }
         }
 
-    }) 
+    })
 
     DOM.loginBTN?.addEventListener("click", async () => {
         try {
@@ -69,7 +69,7 @@ function init() {
                 username: DOM.LoginUsername?.value as string,
                 password: DOM.LoginPassword?.value as string
             });
-    
+
             if (DOM.LoginOutput) {
                 DOM.LoginOutput.innerText = result;
             }
@@ -85,19 +85,19 @@ function init() {
 
     })
 
-    DOM.authBTN?.addEventListener("click", async () =>{
+    DOM.authBTN?.addEventListener("click", async () => {
         try {
-            if(!DOM.authInput?.value){
+            if (!DOM.authInput?.value) {
                 if (DOM.authOutput) DOM.authOutput.innerText = "Please insert token!";
-                return; 
+                return;
             }
-            else{
+            else {
                 const token = DOM.authInput.value as string;
                 const result = await checkToken(token);
                 if (DOM.authOutput) DOM.authOutput.innerText = result;
             }
-            
-        } catch (error:any) {
+
+        } catch (error: any) {
             if (DOM.authOutput) DOM.authOutput.innerText = error.message;
         }
     })
@@ -116,8 +116,8 @@ async function registerApi(payload: { username: string, password: string }): Pro
     return content;
 }
 
-async function loginApi(payload:{username:string, password:string}): Promise<string>{
-    const response = await fetch(`http://localhost:3000/api/login`,{
+async function loginApi(payload: { username: string, password: string }): Promise<string> {
+    const response = await fetch(`http://localhost:3000/api/login`, {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -158,9 +158,9 @@ async function usersApi() {
     }
 }
 
-async function checkToken(token:string): Promise<string>{
-    const response = await fetch(`http://localhost:3000/api/token?token=${token}`,{
-        method:'GET'
+async function checkToken(token: string): Promise<string> {
+    const response = await fetch(`http://localhost:3000/api/token?token=${token}`, {
+        method: 'GET'
     })
 
     const content = await response.text()
