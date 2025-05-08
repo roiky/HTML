@@ -49,9 +49,9 @@ app.post("/api/register", (req, res, next) => {
     }
 });
 
-app.get("/api/login", (req, res, next) => {
-    const username = req?.query?.username;
-    const password = req?.query?.password;
+app.post("/api/login", (req, res, next) => {
+    const username = req?.body?.username;
+    const password = req?.body?.password;
 
     if (username && password) {
         const foundUser = users.find((u) => u.username === username && u.password === password);
