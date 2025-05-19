@@ -19,6 +19,7 @@ async function init() {
     DOM.coinsContent = document.getElementById("coinsContent");
 
     try {
+        showLoader(DOM.loader, true);
         const coinsData = await getApiData(mainCurrencyDataURL);
         trimmedCoins = coinsData.map((coin) => {
             return {
@@ -33,54 +34,22 @@ async function init() {
     } catch (error) {
         console.log(error);
     } finally {
+        showLoader(DOM.loader, false);
     }
 }
 init();
 
-async function getApiData(urlToFetch) {
-    const result = await fetch(urlToFetch);
-    const data = await result.json();
-    return data;
-}
+//======================[START]-[custom functions]======================
 
-function LStoArray(LSName) {
-    let LSstring = localStorage.getItem(LSName);
-
-    if (!LSstring) {
-        console.log(`${LSName} do not exist in LocalStorage!`);
-        return [];
-    }
-
-    try {
-        return JSON.parse(LSstring);
-    } catch (error) {
-        console.log(error);
-        return [];
-    }
-}
-
-function loadCards(array, targetContent, action = "add") {
-    if (!Array.isArray(array)) return; // validate that arrayOfCars is array
-    const content = document.getElementById(targetContent); // Tomer remind me!
+function loadCards(array, targetContent) {
+    if (!Array.isArray(array)) return;
+    const content = document.getElementById(targetContent);
     if (!content) return;
     content.innerHTML = "";
     for (let index = 0; index < array.length; index++) {
         const currentObject = array[index];
-        const cardHtml = createCard(currentObject, action);
+        const cardHtml = createCard(currentObject);
         content.appendChild(cardHtml);
-    }
-}
-
-function isInLS(jid, LSName) {
-    const favoritesJokesString = localStorage.getItem(LSName);
-    const TempFavArr = JSON.parse(favoritesJokesString);
-    if (!TempFavArr) return false;
-
-    for (let index = 0; index < TempFavArr.length; index++) {
-        const currentObj = TempFavArr[index];
-        if (currentObj.imdbID === jid) {
-            return true;
-        }
     }
 }
 
@@ -93,11 +62,9 @@ function createCard(coinObj) {
     const cardBody = document.createElement("div");
     cardBody.classList.add("card-body");
 
-    // שם המטבע
     const upperDiv = document.createElement("div");
     upperDiv.classList.add("d-flex", "justify-content-between");
 
-    // תמונה
     const icon = document.createElement("img");
     icon.src = image;
     icon.alt = name;
@@ -124,6 +91,33 @@ function createCard(coinObj) {
             <input class="form-check-input" type="checkbox" role="switch" id="switch-${id}">
         </div>
     `;
+
+    const switchInput = switchContainer.querySelector("input");
+
+    //======================[START]-[select coins to LS]======================
+    if (isInLS(symbol, "trackedCoins")) {
+        switchInput.checked = true;
+    }
+
+    switchInput.addEventListener("change", () => {
+        let tracked = LStoArray("trackedCoins");
+
+        if (switchInput.checked) {
+            if (tracked.length >= 5) {
+                switchInput.checked = false;
+                alert("You can only track up to 5 coins.");
+                //need to pop-up a dialog screen to select
+                return;
+            }
+            tracked.push(symbol.toUpperCase());
+        } else {
+            tracked = tracked.filter((sym) => sym !== symbol.toUpperCase());
+        }
+
+        updateLSArray("trackedCoins", tracked);
+    });
+    //======================[END]-[select coins to LS]======================
+
     upperDiv.append(icon, titleDiv, switchContainer);
 
     const collapserDiv = document.createElement("div");
@@ -131,12 +125,13 @@ function createCard(coinObj) {
     collapserDiv.id = `collapse-${symbol}`;
     //collapserDiv.innerHTML = "test";
 
-    // כפתור More Info (placeholder כרגע)
     const moreInfoBtn = document.createElement("button");
     moreInfoBtn.textContent = "More Info";
     moreInfoBtn.classList.add("btn", "btn-outline-warning", "btn-sm", "m-1", "w-100");
     moreInfoBtn.setAttribute("data-bs-toggle", "collapse");
     moreInfoBtn.setAttribute("data-bs-target", `#collapse-${symbol}`);
+
+    //======================[START]-[MoreInfo to fetch data about coin]======================
     moreInfoBtn.addEventListener("click", async () => {
         const collapseTarget = document.getElementById(`collapse-${symbol}`);
 
@@ -162,83 +157,10 @@ function createCard(coinObj) {
             collapseTarget.innerHTML = `<div class="text-danger">Failed to load coin data</div>`;
         }
     });
+    //======================[END]-[MoreInfo to fetch data about coin]======================
 
-    // הרכבת הכרטיס
     cardBody.append(upperDiv, collapserDiv, moreInfoBtn);
     card.appendChild(cardBody);
 
     return card;
-}
-
-function getObjById(id, fromArray) {
-    if (!Array.isArray(fromArray)) return;
-    for (let index = 0; index < fromArray.length; index++) {
-        const current = fromArray[index];
-        if (current.imdbID === id) {
-            return current;
-        }
-    }
-}
-
-function addOrRemoveFromFav(id, LSName) {
-    const itemToFavorites = getObjById(id, movies);
-
-    const checkLS = localStorage.getItem(LSName);
-    if (!checkLS) {
-        const favoritesArray = [];
-        const favoritesArrayString = JSON.stringify(favoritesArray);
-        localStorage.setItem(LSName, favoritesArrayString);
-    }
-
-    if (itemToFavorites) {
-        const favoritesJokesString = localStorage.getItem(LSName);
-        if (favoritesJokesString) {
-            const itemTitle = getValuebyKey(movies, "imdbID", id, "Title");
-            let favoritesArray = JSON.parse(favoritesJokesString);
-            const found = getObjById(id, favoritesArray);
-
-            if (!found) {
-                favoritesArray.push(itemToFavorites);
-                const favoritesArrayString = JSON.stringify(favoritesArray);
-                console.log(favoritesArray);
-                localStorage.setItem(LSName, favoritesArrayString);
-                console.log(`item id: ${id} added to "${LSName}"!`);
-                alertify.warning(`"${itemTitle}" added to favorites!`);
-            } else {
-                const itemIndex = favoritesArray.findIndex(function (item) {
-                    return item.imdbID === id;
-                });
-                favoritesArray.splice(itemIndex, 1);
-                const favoritesArrayString = JSON.stringify(favoritesArray);
-                localStorage.setItem(LSName, favoritesArrayString);
-                console.log(`item id: ${id} removed from "${LSName}"!`);
-                alertify.error(`"${itemTitle}" removed from favorites!`);
-            }
-        }
-    }
-}
-
-function aggregateTypes(arr, keyToCount) {
-    if (!Array.isArray(arr)) return;
-    let stats = {};
-    arr.forEach(function (currentItem) {
-        if (stats[currentItem[keyToCount]]) {
-            // if true we have something in the object under the relevant key
-            stats[currentItem[keyToCount]] = stats[currentItem[keyToCount]] + 1;
-        } else {
-            stats[currentItem[keyToCount]] = 1;
-        }
-    });
-    return stats;
-}
-
-function getValuebyKey(arr, keySent, keyValue, valueToGet) {
-    if (!Array.isArray(arr)) return;
-
-    const item = arr.find(function (item) {
-        return item[keySent] === keyValue;
-    });
-
-    if (!item) return undefined;
-    if (item) return item[valueToGet];
 }
