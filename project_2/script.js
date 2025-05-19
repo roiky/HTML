@@ -12,22 +12,28 @@ const BSIcons = {
 
 let trimmedCoins = [];
 const mainCurrencyDataURL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd";
+const specificCoinData = "https://api.coingecko.com/api/v3/coins/";
 
 async function init() {
     DOM.loader = document.getElementById("loader");
     DOM.coinsContent = document.getElementById("coinsContent");
 
-    const coinsData = await getApiData(mainCurrencyDataURL);
-    trimmedCoins = coinsData.map((coin) => {
-        return {
-            id: coin.id,
-            symbol: coin.symbol,
-            name: coin.name,
-            image: coin.image,
-        };
-    });
-    console.log(trimmedCoins);
-    loadCards(trimmedCoins, "coinsContent");
+    try {
+        const coinsData = await getApiData(mainCurrencyDataURL);
+        trimmedCoins = coinsData.map((coin) => {
+            return {
+                id: coin.id,
+                symbol: coin.symbol,
+                name: coin.name,
+                image: coin.image,
+            };
+        });
+        console.log(trimmedCoins);
+        loadCards(trimmedCoins, "coinsContent");
+    } catch (error) {
+        console.log(error);
+    } finally {
+    }
 }
 init();
 
@@ -118,16 +124,47 @@ function createCard(coinObj) {
             <input class="form-check-input" type="checkbox" role="switch" id="switch-${id}">
         </div>
     `;
-
     upperDiv.append(icon, titleDiv, switchContainer);
+
+    const collapserDiv = document.createElement("div");
+    collapserDiv.classList.add("collapse", "mt-2", "mb-1");
+    collapserDiv.id = `collapse-${symbol}`;
+    //collapserDiv.innerHTML = "test";
 
     // כפתור More Info (placeholder כרגע)
     const moreInfoBtn = document.createElement("button");
     moreInfoBtn.textContent = "More Info";
     moreInfoBtn.classList.add("btn", "btn-outline-warning", "btn-sm", "m-1", "w-100");
+    moreInfoBtn.setAttribute("data-bs-toggle", "collapse");
+    moreInfoBtn.setAttribute("data-bs-target", `#collapse-${symbol}`);
+    moreInfoBtn.addEventListener("click", async () => {
+        const collapseTarget = document.getElementById(`collapse-${symbol}`);
+
+        try {
+            const data = await getApiData(specificCoinData + id);
+            const prices = data.market_data.current_price;
+            collapseTarget.innerHTML = ``;
+            const usd = document.createElement("p");
+            usd.classList.add("mb-0", "small");
+            usd.innerHTML = `<strong>USD:</strong> $${prices.usd.toLocaleString()}`;
+
+            const eur = document.createElement("p");
+            eur.classList.add("mb-0", "small");
+            eur.innerHTML = `<strong>EUR:</strong> €${prices.eur.toLocaleString()}`;
+
+            const ils = document.createElement("p");
+            ils.classList.add("mb-0", "small");
+            ils.innerHTML = `<strong>ILS:</strong> ₪${prices.ils.toLocaleString()}`;
+
+            collapseTarget.append(usd, eur, ils);
+        } catch (error) {
+            console.log(error);
+            collapseTarget.innerHTML = `<div class="text-danger">Failed to load coin data</div>`;
+        }
+    });
 
     // הרכבת הכרטיס
-    cardBody.append(upperDiv, moreInfoBtn);
+    cardBody.append(upperDiv, collapserDiv, moreInfoBtn);
     card.appendChild(cardBody);
 
     return card;
