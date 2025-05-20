@@ -23,8 +23,6 @@ async function init() {
     DOM.searchInput = document.getElementById("searchInput");
     DOM.errorOutput = document.getElementById("errorOutput");
 
-    setErrorMessage(DOM.errorOutput, "test"); //move it later to when 0 resuls
-
     try {
         showLoader(DOM.loader, true);
         const coinsData = await getApiData(mainCurrencyDataURL);
