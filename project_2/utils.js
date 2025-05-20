@@ -9,6 +9,12 @@ function showLoader(loaderElement, display) {
     display ? (loaderElement.style.display = "") : (loaderElement.style.display = "none");
 }
 
+function setErrorMessage(messageElement, message) {
+    if (typeof message !== "string") return;
+    messageElement.innerHTML = "";
+    messageElement.textContent = message;
+}
+
 function LStoArray(LSName) {
     const LSstring = localStorage.getItem(LSName);
 

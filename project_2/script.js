@@ -1,6 +1,8 @@
 const DOM = {
     loader: null,
     coinsContent: null,
+    searchInput: null,
+    errorOutput: null,
 };
 
 const BSIcons = {
@@ -11,12 +13,17 @@ const BSIcons = {
 };
 
 let trimmedCoins = [];
+let filteredCoins = [];
 const mainCurrencyDataURL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd";
 const specificCoinData = "https://api.coingecko.com/api/v3/coins/";
 
 async function init() {
     DOM.loader = document.getElementById("loader");
     DOM.coinsContent = document.getElementById("coinsContent");
+    DOM.searchInput = document.getElementById("searchInput");
+    DOM.errorOutput = document.getElementById("errorOutput");
+
+    setErrorMessage(DOM.errorOutput, "test"); //move it later to when 0 resuls
 
     try {
         showLoader(DOM.loader, true);
@@ -30,12 +37,33 @@ async function init() {
             };
         });
         console.log(trimmedCoins);
+        DOM.searchInput.value = "";
         loadCards(trimmedCoins, "coinsContent");
+        filteredCoins = trimmedCoins;
     } catch (error) {
         console.log(error);
     } finally {
         showLoader(DOM.loader, false);
     }
+
+    DOM.searchInput.addEventListener("input", (event) => {
+        let userInput = event.target.value.toLowerCase();
+        console.log(userInput);
+
+        filteredCoins = trimmedCoins.filter((coin) => {
+            //i filter trimmedCoins so when the user search i wont delete the original fetched data!
+            return coin.name.toLowerCase().includes(userInput) || coin.symbol.toLowerCase().includes(userInput);
+        });
+
+        if (filteredCoins.length === 0) {
+            setErrorMessage(DOM.errorOutput, "No results found!");
+            loadCards([], "coinsContent");
+        } else {
+            console.log(filteredCoins);
+            setErrorMessage(DOM.errorOutput, "");
+            loadCards(filteredCoins, "coinsContent");
+        }
+    });
 }
 init();
 
@@ -107,7 +135,6 @@ function createCard(coinObj) {
                 switchInput.checked = false;
                 //alert("You can only track up to 5 coins.");
                 buildLimitExceededModal(symbol);
-                //need to pop-up a dialog screen to select
                 return;
             }
             tracked.push(symbol.toUpperCase());
@@ -194,8 +221,8 @@ function buildLimitExceededModal(newSymbol) {
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <p>You can only track 5 coins.<br>
-                        Select one to remove and make room for <strong>${newSymbol.toUpperCase()}</strong>:</p>
+                        <p>You can only track 5 coins<br>
+                        Please select one symbol to remove and make room for <strong>${newSymbol.toUpperCase()}</strong>:</p>
                         <div id="modalSymbolsContainer" class="d-flex flex-column gap-1"></div>
                     </div>
                 </div>
@@ -219,21 +246,20 @@ function buildLimitExceededModal(newSymbol) {
 
         const removeBtn = document.createElement("button");
         removeBtn.innerHTML = "❌";
-        removeBtn.style.background = "none"
-        removeBtn.style.border = "none"
+        removeBtn.style.background = "none";
+        removeBtn.style.border = "none";
         //removeBtn.classList.add("btn", "btn-sm", "btn-danger");
 
         removeBtn.addEventListener("click", () => {
-            let updated = tracked.filter(sym => sym !== symbol);
+            let updated = tracked.filter((sym) => sym !== symbol);
             updated.push(newSymbol.toUpperCase());
             updateLSArray("trackedCoins", updated);
             modal.hide();
 
-            loadCards(trimmedCoins, "coinsContent");
+            loadCards(filteredCoins, "coinsContent");
         });
 
         row.append(removeBtn, label);
         container.appendChild(row);
     });
 }
-
