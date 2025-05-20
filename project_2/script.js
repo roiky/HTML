@@ -105,7 +105,8 @@ function createCard(coinObj) {
         if (switchInput.checked) {
             if (tracked.length >= 5) {
                 switchInput.checked = false;
-                alert("You can only track up to 5 coins.");
+                //alert("You can only track up to 5 coins.");
+                buildLimitExceededModal(symbol);
                 //need to pop-up a dialog screen to select
                 return;
             }
@@ -164,3 +165,75 @@ function createCard(coinObj) {
 
     return card;
 }
+
+function buildLimitExceededModal(newSymbol) {
+    let modalDiv = document.getElementById("limitModal");
+    let modal;
+
+    if (modalDiv) {
+        modal = bootstrap.Modal.getOrCreateInstance(modalDiv);
+        const container = modalDiv.querySelector("#modalSymbolsContainer");
+
+        container.innerHTML = "";
+        modal.show();
+        const strongEl = modalDiv.querySelector("strong");
+        if (strongEl) {
+            strongEl.textContent = newSymbol.toUpperCase();
+        }
+    } else {
+        // יצירה ראשונית של ה־modal
+        modalDiv = document.createElement("div");
+        modalDiv.classList.add("modal", "fade");
+        modalDiv.id = "limitModal";
+        modalDiv.tabIndex = -1;
+        modalDiv.innerHTML = `
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">You've reached the limit</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>You can only track 5 coins.<br>
+                        Select one to remove and make room for <strong>${newSymbol.toUpperCase()}</strong>:</p>
+                        <div id="modalSymbolsContainer" class="d-flex flex-column gap-1"></div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modalDiv);
+        modal = new bootstrap.Modal(modalDiv);
+        modal.show();
+    }
+
+    // בניית כפתורים מעודכנים
+    const container = modalDiv.querySelector("#modalSymbolsContainer");
+    const tracked = LStoArray("trackedCoins");
+
+    tracked.forEach((symbol) => {
+        const row = document.createElement("div");
+        row.classList.add("d-flex", "align-items-center", "p-2", "gap-2");
+
+        const label = document.createElement("span");
+        label.textContent = symbol.toUpperCase();
+
+        const removeBtn = document.createElement("button");
+        removeBtn.innerHTML = "❌";
+        removeBtn.style.background = "none"
+        removeBtn.style.border = "none"
+        //removeBtn.classList.add("btn", "btn-sm", "btn-danger");
+
+        removeBtn.addEventListener("click", () => {
+            let updated = tracked.filter(sym => sym !== symbol);
+            updated.push(newSymbol.toUpperCase());
+            updateLSArray("trackedCoins", updated);
+            modal.hide();
+
+            loadCards(trimmedCoins, "coinsContent");
+        });
+
+        row.append(removeBtn, label);
+        container.appendChild(row);
+    });
+}
+
