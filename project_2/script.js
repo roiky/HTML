@@ -68,7 +68,7 @@ init();
 //======================[START]-[custom functions]======================
 
 function loadCards(array, targetContent) {
-    if (!Array.isArray(array)) return;
+    if (!Array.isArray(array) || typeof targetContent !== "string") return;
     const content = document.getElementById(targetContent);
     if (!content) return;
     content.innerHTML = "";
