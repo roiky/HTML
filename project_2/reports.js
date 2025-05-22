@@ -3,13 +3,15 @@ const DOM = {
     trackerContent: null,
     mainNavbar: null,
     errorOutput: null,
+    chart: null,
 };
 
 let liveChart;
 let chartLabels = [];
 let chartData = {};
 let updateInterval;
-const updateSeconds = 3;
+const updateSeconds = 1;
+const resetChartMinutes = 1;
 let trackedSymbols = [];
 const specificURL = "https://min-api.cryptocompare.com/data/pricemulti?tsyms=usd&fsyms=";
 
@@ -18,6 +20,7 @@ async function init() {
     DOM.trackerContent = document.getElementById("trackerContent");
     DOM.mainNavbar = document.getElementById("mainNavbar");
     DOM.errorOutput = document.getElementById("errorOutput");
+    DOM.chart = document.getElementById("firstChart");
 
     //setErrorMessage(DOM.errorOutput, "TEST");
     trackedSymbols = LStoArray("trackedCoins");
@@ -29,6 +32,12 @@ async function init() {
         console.log(coinsPricesObj);
         startLiveChart("firstChart");
     }
+
+    setTimeout(() => {
+        stopChart(liveChart, updateInterval);
+        setErrorMessage(DOM.errorOutput, `Chart is stopped automatically after ${resetChartMinutes} minutes from site loaded`);
+        DOM.chart.style.display = "none";
+    }, resetChartMinutes * 30 * 1000);
 }
 init();
 
@@ -65,6 +74,7 @@ async function startLiveChart(whereToDraw) {
         label: symbol,
         data: [],
         fill: false,
+        tension: 0.4,
     }));
 
     const ctx = document.getElementById(whereToDraw);
@@ -119,3 +129,19 @@ async function fetchAndUpdatePrices() {
     }
 }
 //======================[END]-[update price]======================
+
+function stopChart(whatChart, pricesInterval) {
+    chartLabels = [];
+    trackedSymbols.forEach((symbol) => {
+        chartData[symbol] = [];
+    });
+
+    whatChart.data.labels = chartLabels;
+
+    whatChart.data.datasets.forEach((dataset) => {
+        dataset.data = [];
+    });
+
+    whatChart.update();
+    clearInterval(pricesInterval);
+}
