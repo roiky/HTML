@@ -1,7 +1,17 @@
 body {
-  background-image: url('./home_light.png');
-  background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+    background-image: url("./home_light.png");
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+/* #firstChart {
+    width: 100%;
+    height: 1000px;
+} */
+
+.chart-wrapper {
+    height: 70vh;
+    max-width: 700px;
 }

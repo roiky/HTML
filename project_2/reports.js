@@ -1,41 +1,121 @@
 const DOM = {
-  loader: null,
-  trackerContent: null,
-  mainNavbar: null,
-  errorOutput: null,
+    loader: null,
+    trackerContent: null,
+    mainNavbar: null,
+    errorOutput: null,
 };
 
-const BSIcons = {
-  PLUS: '<i class="bi bi-plus"></i>',
-  STAR: '<i class="bi bi-star-fill"></i>',
-  TRASH: '<i class="bi bi-trash3-fill"></i>',
-  WAIT: '<i class="bi bi-clock"></i>',
-};
-
-let selectedSymbols = [];
+let liveChart;
+let chartLabels = [];
+let chartData = {};
+let updateInterval;
+const updateSeconds = 3;
+let trackedSymbols = [];
+const specificURL = "https://min-api.cryptocompare.com/data/pricemulti?tsyms=usd&fsyms=";
 
 async function init() {
-  DOM.loader = document.getElementById("loader");
-  DOM.trackerContent = document.getElementById("trackerContent");
-  DOM.mainNavbar = document.getElementById("mainNavbar");
-  DOM.errorOutput = document.getElementById("errorOutput");
+    DOM.loader = document.getElementById("loader");
+    DOM.trackerContent = document.getElementById("trackerContent");
+    DOM.mainNavbar = document.getElementById("mainNavbar");
+    DOM.errorOutput = document.getElementById("errorOutput");
 
-  setErrorMessage(DOM.errorOutput, "TEST");
-  loadSymbolsToNavbar("mainNavbar");
+    //setErrorMessage(DOM.errorOutput, "TEST");
+    trackedSymbols = LStoArray("trackedCoins");
+    loadSymbolsToNavbar("mainNavbar", trackedSymbols);
+    if (!trackedSymbols.length) {
+        setErrorMessage(DOM.errorOutput, "No coins were selected!");
+    } else {
+        const coinsPricesObj = await getApiData(specificURL + trackedSymbols);
+        console.log(coinsPricesObj);
+        startLiveChart("firstChart");
+    }
 }
 init();
 
 //======================[START]-[custom functions]======================
 
-function loadSymbolsToNavbar(targetContent) {
-  if (typeof targetContent !== "string") return;
+function loadSymbolsToNavbar(targetContent, symbolsArr) {
+    if (typeof targetContent !== "string" || !Array.isArray(symbolsArr)) return;
 
-  const content = document.getElementById(targetContent);
+    const content = document.getElementById(targetContent);
 
-  const symbolsDiv = document.createElement("div");
-  symbolsDiv.classList.add("text-warning");
-  const trackedSymbols = LStoArray("trackedCoins").join(" ");
-  symbolsDiv.innerHTML = `Tracked Symbols:<strong> [ ${trackedSymbols} ]</strong>`;
+    const symbolsDiv = document.createElement("div");
+    symbolsDiv.classList.add("text-warning");
 
-  content.append(symbolsDiv);
+    if (symbolsArr.length === 0) {
+        symbolsDiv.innerHTML = `No symbols were selected`;
+    } else {
+        symbolsDiv.innerHTML = `Tracked Symbols:<strong> [ ${symbolsArr.join(" ")} ]</strong>`;
+    }
+
+    content.append(symbolsDiv);
 }
+
+//======================[START]-[create chart]======================
+async function startLiveChart(whereToDraw) {
+    if (typeof whereToDraw !== "string") return;
+    chartLabels = [];
+    chartData = {};
+
+    trackedSymbols.forEach((symbol) => {
+        chartData[symbol] = [];
+    });
+
+    const datasets = trackedSymbols.map((symbol) => ({
+        label: symbol,
+        data: [],
+        fill: false,
+    }));
+
+    const ctx = document.getElementById(whereToDraw);
+    ctx.style.border = "2px solid black";
+    ctx.style.borderRadius = "10px";
+
+    liveChart = new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: chartLabels,
+            datasets: datasets,
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: "Live Crypto Prices",
+                    font: { size: 20 },
+                    color: "black",
+                },
+            },
+        },
+    });
+
+    updateInterval = setInterval(fetchAndUpdatePrices, updateSeconds * 1000);
+}
+//======================[END]-[create chart]======================
+
+//======================[START]-[update price]======================
+async function fetchAndUpdatePrices() {
+    try {
+        const data = await getApiData(specificURL + trackedSymbols);
+        const timestamp = new Date().toLocaleTimeString();
+
+        chartLabels.push(timestamp);
+
+        trackedSymbols.forEach((symbol) => {
+            const price = data[symbol]?.USD || 0;
+            chartData[symbol].push(price);
+        });
+
+        liveChart.data.labels = chartLabels;
+        liveChart.data.datasets.forEach((dataset) => {
+            dataset.data = chartData[dataset.label];
+        });
+
+        liveChart.update();
+    } catch (err) {
+        console.log("Failed to fetch live prices:", err);
+    }
+}
+//======================[END]-[update price]======================

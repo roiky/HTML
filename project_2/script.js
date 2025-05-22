@@ -14,6 +14,7 @@ const BSIcons = {
 
 let trimmedCoins = [];
 let filteredCoins = [];
+const trackerLimit = 5;
 const mainCurrencyDataURL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd";
 const specificCoinData = "https://api.coingecko.com/api/v3/coins/";
 
@@ -129,7 +130,7 @@ function createCard(coinObj) {
         let tracked = LStoArray("trackedCoins");
 
         if (switchInput.checked) {
-            if (tracked.length >= 5) {
+            if (tracked.length >= trackerLimit) {
                 switchInput.checked = false;
                 //alert("You can only track up to 5 coins.");
                 buildLimitExceededModal(symbol);
