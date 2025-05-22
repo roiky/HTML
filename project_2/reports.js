@@ -11,7 +11,7 @@ let chartLabels = [];
 let chartData = {};
 let updateInterval;
 const updateSeconds = 1;
-const resetChartMinutes = 1;
+const resetChartMinutes = 20;
 let trackedSymbols = [];
 const specificURL = "https://min-api.cryptocompare.com/data/pricemulti?tsyms=usd&fsyms=";
 
@@ -28,16 +28,20 @@ async function init() {
     if (!trackedSymbols.length) {
         setErrorMessage(DOM.errorOutput, "No coins were selected!");
     } else {
-        const coinsPricesObj = await getApiData(specificURL + trackedSymbols);
-        console.log(coinsPricesObj);
-        startLiveChart("firstChart");
+        try {
+            const coinsPricesObj = await getApiData(specificURL + trackedSymbols);
+            console.log(coinsPricesObj);
+            startLiveChart("firstChart");
+        } catch (error) {
+            console.log("error:", error);
+        }
     }
 
     setTimeout(() => {
         stopChart(liveChart, updateInterval);
         setErrorMessage(DOM.errorOutput, `Chart is stopped automatically after ${resetChartMinutes} minutes from site loaded`);
         DOM.chart.style.display = "none";
-    }, resetChartMinutes * 30 * 1000);
+    }, resetChartMinutes * 60 * 1000);
 }
 init();
 
