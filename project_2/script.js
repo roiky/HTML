@@ -93,9 +93,10 @@ function createCard(coinObj) {
     upperDiv.classList.add("d-flex", "justify-content-between");
 
     const icon = document.createElement("img");
+    icon.classList.add("coinIcon");
     icon.src = image;
     icon.alt = name;
-    icon.style.width = "50px";
+    //icon.style.width = "50px";
 
     const titleDiv = document.createElement("div");
 
@@ -148,7 +149,7 @@ function createCard(coinObj) {
     upperDiv.append(icon, titleDiv, switchContainer);
 
     const collapserDiv = document.createElement("div");
-    collapserDiv.classList.add("collapse", "mt-2", "mb-1");
+    collapserDiv.classList.add("collapse", "mt-2", "mb-1", "collapseStyle");
     collapserDiv.id = `collapse-${symbol}`;
     //collapserDiv.innerHTML = "test";
 

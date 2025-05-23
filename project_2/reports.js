@@ -82,8 +82,9 @@ async function startLiveChart(whereToDraw) {
     }));
 
     const ctx = document.getElementById(whereToDraw);
-    ctx.style.border = "2px solid black";
-    ctx.style.borderRadius = "10px";
+    ctx.classList.add("chartStyle");
+    // ctx.style.border = "2px solid black";
+    // ctx.style.borderRadius = "10px";
 
     liveChart = new Chart(ctx, {
         type: "line",

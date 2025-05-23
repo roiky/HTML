@@ -13,6 +13,7 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
         <!-- bootstrap icons -->
         <link rel="stylesheet" href="style.css" />
+        <link rel="icon" type="image/x-icon" href="./crypto_icon.ico" />
 
         <title>Live Crypto Tracker</title>
     </head>
@@ -21,7 +22,7 @@
         <!-- navbar -->
         <div id="navbarDiv">
             <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top px-3">
-                <img src="./navbar_icon.png" style="max-height: 40px" />
+                <img src="./navbar_icon.png" />
                 <a class="navbar-brand" href="#">Crypto Project</a>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
@@ -52,17 +53,17 @@
             <h2 class="display-5 text-black mb-3">Live prices for selected coins</h2>
 
             <!-- loader -->
-            <div style="display: flex; justify-content: center">
+            <div id="loaderWrap">
                 <div id="loader" style="display: none" class="loading-wave">
                     <h1>Loading...</h1>
                 </div>
             </div>
 
             <!-- message to user -->
-            <div id="errorOutput" class="text-danger font-weight-bold"></div>
+            <div id="errorOutput"></div>
 
             <!-- tracker content -->
-            <div class="row justify-content-center" id="trackerContent" style="gap: 2px"></div>
+            <div class="row justify-content-center g-1" id="trackerContent"></div>
 
             <div class="row justify-content-center mt-3">
                 <div class="d-flex justify-content-center" id="chart-counter">
