@@ -65,3 +65,24 @@ body {
     border: 1px solid black;
     border-radius: 10px;
 }
+
+#aboutProject {
+    width: 60vh;
+    border: 1px solid black;
+    border-radius: 7px;
+}
+
+.infoBlock {
+    border: 1px solid black;
+    border-radius: 7px;
+    padding: 10px;
+}
+
+.about-block {
+    width: 280px;
+    min-height: 300px;
+}
+
+.about-block ul {
+    text-align: left;
+}
