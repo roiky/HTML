@@ -19,6 +19,10 @@ body {
     /* width: 100%; */
 }
 
+#searchInput {
+    padding-right: 2.5rem;
+}
+
 #cleanInputBtn {
     position: absolute;
     right: 10px;
