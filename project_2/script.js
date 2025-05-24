@@ -3,13 +3,7 @@ const DOM = {
     coinsContent: null,
     searchInput: null,
     errorOutput: null,
-};
-
-const BSIcons = {
-    PLUS: '<i class="bi bi-plus"></i>',
-    STAR: '<i class="bi bi-star-fill"></i>',
-    TRASH: '<i class="bi bi-trash3-fill"></i>',
-    WAIT: '<i class="bi bi-clock"></i>',
+    cleanInput: null,
 };
 
 let trimmedCoins = [];
@@ -23,6 +17,8 @@ async function init() {
     DOM.coinsContent = document.getElementById("coinsContent");
     DOM.searchInput = document.getElementById("searchInput");
     DOM.errorOutput = document.getElementById("errorOutput");
+    DOM.cleanInput = document.getElementById("cleanInputBtn");
+    DOM.searchInput.value = "";
 
     try {
         showLoader(DOM.loader, true);
@@ -36,7 +32,6 @@ async function init() {
             };
         });
         console.log(trimmedCoins);
-        DOM.searchInput.value = "";
         loadCards(trimmedCoins, "coinsContent");
         filteredCoins = trimmedCoins;
     } catch (error) {
@@ -62,6 +57,13 @@ async function init() {
             setErrorMessage(DOM.errorOutput, "");
             loadCards(filteredCoins, "coinsContent");
         }
+    });
+
+    DOM.cleanInput.addEventListener("click", () => {
+        if (!DOM.searchInput.value) return;
+
+        DOM.searchInput.value = "";
+        DOM.searchInput.dispatchEvent(new Event("input"));
     });
 }
 init();

@@ -13,8 +13,21 @@ body {
     background-color: transparent;
 }
 
-#searchInput {
-    width: 200px;
+#searchWrap {
+    position: relative;
+    max-width: 250px;
+    /* width: 100%; */
+}
+
+#cleanInputBtn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.8rem;
+    background: none;
+    border: none;
+    cursor: pointer;
 }
 
 /* =========[container]========= */
