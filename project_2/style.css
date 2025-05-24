@@ -67,7 +67,7 @@ body {
 }
 
 /* =========[about page]========= */
-.about-me-block {
+.aboutMeBlock {
     background-color: rgba(248, 248, 231, 0.2);
     border: 1px solid rgba(128, 128, 128, 0.205);
     border-radius: 10px;
@@ -76,7 +76,7 @@ body {
     margin: 0 auto;
 }
 
-.about-me-block img {
+.aboutMeBlock img {
     width: 150px;
     gap: 10px;
 }
@@ -93,7 +93,7 @@ body {
     padding: 10px;
 }
 
-.about-block {
+.AboutBlock {
     width: 280px;
     min-height: 300px;
     text-align: center;
@@ -102,7 +102,7 @@ body {
     border-radius: 10px;
 }
 
-.about-block ul {
+.AboutBlock ul {
     text-align: left;
     margin: 0 auto;
     display: inline-block;
