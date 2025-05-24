@@ -56,15 +56,62 @@
             <div id="errorOutput"></div>
 
             <div id="aboutContent" class="d-flex flex-column justify-content-center align-items-center">
-                <div id="aboutMe" class="mb-2">about me blablablablablablablablablablablablablablablablablablablablablabla</div>
-                <div id="aboutProject" class="d-flex mb-2">
-                    This project is a full-stack web application designed to track and visualize cryptocurrency prices in real
-                    time. The project was developed as part of a full-stack development program and demonstrates a wide range of
-                    modern front-end techniques and asynchronous data handling strategies.
+                <!-- about me -->
+                <div id="aboutMe" class="about-me-block d-flex align-items-center shadow mb-4">
+                    <!-- <span class="bi bi-person-circle fs-1 text-info me-4"></span> -->
+                    <img src="https://github.com/roiky.png" />
+                    <p class="m-0">
+                        I'm a passionate full-stack web developer learning to build responsive, dynamic, and user-friendly
+                        applications. This project demonstrates my ability to integrate modern front-end techniques, asynchronous
+                        programming, and real-time data visualization into a cohesive, professional platform.
+                    </p>
                 </div>
-                <div id="projectSeperated" class="d-flex flex-wrap justify-content-center gap-4 mt-4">
-                    <div class="about-block p-4 shadow rounded bg-light text-center">
-                        <i class="bi bi-box-seam fs-1 text-primary mb-3"></i>
+                <!-- about project -->
+                <div id="aboutProject" class="about-me-block d-flex align-items-start flex-column shadow mb-4">
+                    <p>
+                        This project is a full-stack web application built with a strong emphasis on data visualization,
+                        responsive design, and user experience.
+                    </p>
+
+                    <p>
+                        The goal of this project was to create an interactive crypto-tracking platform that fetches live data from
+                        public APIs and dynamically renders it in a user-friendly, visually engaging interface.
+                    </p>
+
+                    <p>
+                        The project utilizes <strong>HTML5, CSS3</strong>, and <strong>Bootstrap</strong> for structural layout
+                        and styling, ensuring responsiveness and a clean, modern UI. Interactivity and dynamic behavior are driven
+                        by <strong>Vanilla JavaScript</strong>, without reliance on frameworks, showcasing direct DOM
+                        manipulation, component rendering, and state management.
+                    </p>
+
+                    <p>
+                        Real-time pricing data is fetched using the <strong>Fetch API</strong> with
+                        <strong>asynchronous programming</strong> patterns, including async/await, setInterval, and error
+                        handling. API endpoints from <strong>CoinGecko</strong> and <strong>CryptoCompare</strong> are integrated
+                        to retrieve both static metadata and live pricing updates.
+                    </p>
+                    <p>
+                        The application uses <strong>Chart.js</strong> to present real-time updates in an animated line chart,
+                        with data updated every second. User selections are preserved using <strong>localStorage</strong>, and
+                        coin selection is limited to 5, with an elegant modal interface for managing tracked symbols.
+                    </p>
+                    <p>
+                        Additional techniques include <strong>dynamic HTML generation (DHTML)</strong>, custom loader animations,
+                        parallax backgrounds, responsive grid layouts, and modular code separation (utils.js, reports.js, etc.).
+                    </p>
+                    <p>
+                        This project demonstrates a complete front-end solution for integrating external data sources, handling
+                        state and UI logic, managing local persistence, and delivering a polished, production-ready interface -
+                        all built with native web technologies.
+                    </p>
+
+                    <!-- המשך פסקאות -->
+                </div>
+                <!-- about project (blocks) -->
+                <div id="projectSeperated" class="d-flex flex-wrap justify-content-center gap-2 mt-4">
+                    <div class="about-block p-4 shadow">
+                        <span class="bi bi-currency-bitcoin fs-1 text-warning mb-3"></span>
                         <h5 class="fw-bold">Project Purpose</h5>
                         <p>
                             This project is a full-stack web application designed to track and visualize cryptocurrency prices in
@@ -72,8 +119,8 @@
                         </p>
                     </div>
 
-                    <div class="about-block p-4 shadow rounded bg-light text-center">
-                        <i class="bi bi-code-slash fs-1 text-success mb-3"></i>
+                    <div class="about-block p-4 shadow">
+                        <span class="bi bi-code-slash fs-1 text-success mb-3"></span>
                         <h5 class="fw-bold">Technologies</h5>
                         <ul>
                             <li>HTML</li>
@@ -86,8 +133,8 @@
                         </ul>
                     </div>
 
-                    <div class="about-block p-4 shadow rounded bg-light text-center">
-                        <i class="bi bi-cpu fs-1 text-warning mb-3"></i>
+                    <div class="about-block p-4 shadow">
+                        <span class="bi bi-cpu fs-1 text-primary mb-3"></span>
                         <h5 class="fw-bold">Features</h5>
                         <ul>
                             <li>Live tracking</li>
@@ -98,8 +145,8 @@
                         </ul>
                     </div>
 
-                    <div class="about-block p-4 shadow rounded bg-light text-center">
-                        <i class="bi bi-lightning fs-1 text-danger mb-3"></i>
+                    <div class="about-block p-4 shadow">
+                        <span class="bi bi-lightning fs-1 text-danger mb-3"></span>
                         <h5 class="fw-bold">Asynchronous Logic</h5>
                         <p>
                             Utilizes asynchronous data handling with fetch API and interval-based updates, displaying dynamic
