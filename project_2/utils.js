@@ -1,4 +1,5 @@
 async function getApiData(urlToFetch) {
+    if (typeof urlToFetch !== "string") return;
     const result = await fetch(urlToFetch);
     const data = await result.json();
     return data;
@@ -16,8 +17,9 @@ function setErrorMessage(messageElement, message) {
 }
 
 function LStoArray(LSName) {
-    const LSstring = localStorage.getItem(LSName);
+    if (typeof LSName !== "string") return;
 
+    const LSstring = localStorage.getItem(LSName);
     if (!LSstring) {
         localStorage.setItem(LSName, JSON.stringify([]));
         return [];
