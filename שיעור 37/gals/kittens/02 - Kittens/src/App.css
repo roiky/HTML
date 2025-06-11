@@ -1,0 +1,6 @@
+/* CSS-Leaking */
+/* p { color: green; }  */
+
+.App > p {
+    color: green;
+}

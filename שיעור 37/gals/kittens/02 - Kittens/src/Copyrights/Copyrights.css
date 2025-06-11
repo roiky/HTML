@@ -1,0 +1,12 @@
+.Copyrights > p {
+    color: goldenrod;
+    background-color: black;
+    display: inline;
+}
+
+.Copyrights {
+    position: absolute;
+    bottom: 10px;
+    left: 50px;
+    right: 50px;
+}
