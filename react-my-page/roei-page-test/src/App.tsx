@@ -4,6 +4,7 @@ import "./App.css";
 import SetHeader from "./components/SetHeader";
 import CreateButton from "./components/Buttons";
 import css from "./custom.module.css";
+import Navbar from "./components/Navbar";
 
 function App() {
     const Chocolates = [
@@ -71,6 +72,7 @@ function App() {
 
     return (
         <>
+            <Navbar />
             <div className="headersDiv">
                 <SetHeader text="Welcome to Roei's React test page!" color="orange" />
             </div>
