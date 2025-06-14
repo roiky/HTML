@@ -1,0 +1,15 @@
+.customButton {
+    background-color: rgb(39, 61, 134);
+    border: 1px solid rgb(27, 43, 95);
+    color: white;
+    height: 100px;
+    width: 100px;
+}
+
+.buttonDiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1px;
+}
