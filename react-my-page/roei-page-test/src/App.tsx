@@ -23,7 +23,7 @@ function App() {
                     <Route path="/contact" element={<Contact />} />
                 </Routes>
 
-                <Footer version="0.1" />
+                <Footer version="1.0.0" />
             </BrowserRouter>
         </>
     );
