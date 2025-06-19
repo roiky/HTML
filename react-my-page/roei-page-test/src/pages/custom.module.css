@@ -1,0 +1,6 @@
+.buttonGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /*how many chocolates in one row*/
+    gap: 15px;
+    padding: 20px;
+}
