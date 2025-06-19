@@ -6,6 +6,7 @@
     padding: 5px 10px;
     gap: 20px;
     overflow: hidden;
+    width: 100%;
 }
 
 .siteName {
@@ -73,4 +74,16 @@
 
 .navLinks a:hover {
     color: #ffb703;
+}
+
+.footer {
+    padding: 10px 20px;
+    color: black;
+    text-align: center;
+    background-color: #f7f7f78f;
+    font-size: 12px;
+}
+
+.footer p {
+    margin: 0;
 }

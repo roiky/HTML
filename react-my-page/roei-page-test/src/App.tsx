@@ -5,6 +5,7 @@ import SetHeader from "./components/SetHeader";
 import CreateButton from "./components/Buttons";
 import css from "./custom.module.css";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Navbar/Footer";
 
 function App() {
     const Chocolates = [
@@ -74,13 +75,15 @@ function App() {
         <>
             <Navbar />
             <div className="headersDiv">
-                <SetHeader text="Welcome to Roei's React test page!" color="orange" />
+                <SetHeader text="Welcome to Roei's React test page!" color="#819A91" />
             </div>
             <div className={css.buttonGrid}>
                 {Chocolates.map((btn) => (
                     <CreateButton key={btn.id} {...btn} />
                 ))}
             </div>
+
+            <Footer version="0.1" />
         </>
     );
 }
