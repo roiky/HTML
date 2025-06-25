@@ -1,18 +1,18 @@
 import axios from "axios";
 import "./Home.css";
 import { useEffect, useState } from "react";
-import { render } from "@testing-library/react";
 let renders = 0;
 const URL = "http://localhost:2200";
 
 export function Home(): JSX.Element {
     const [isSalesLoading, setIsSalesLoading] = useState<boolean>(false);
-    const [sales, setSales] = useState<{
-        description: string;
-        price: string;
-        endDate: string;
-        // @ts-ignore
-    }>([]);
+    const [sales, setSales] = useState<
+        {
+            description: string;
+            price: string;
+            endDate: string;
+        }[]
+    >([]);
     // lifecycle
     // mounted
     renders++;
@@ -39,13 +39,9 @@ export function Home(): JSX.Element {
         <div className="Home">
             <h1> Home</h1>
 
-            <button
-                onClick={() => {
-                    getSales();
-                }}
-            >
-                Get data?
-            </button>
+            <button>This Month Sales</button>
+            <button>All Sales</button>
+
             {isSalesLoading ? <h2>Loading...</h2> : <div>{JSON.stringify(sales)}</div>}
         </div>
     );
