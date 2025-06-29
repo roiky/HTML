@@ -10,7 +10,7 @@ export function Menu(): JSX.Element {
             <NavLink to="/about-us">About</NavLink>
             <NavLink to="/sales-statistics">sales statistics</NavLink>
             <NavLink to="/login">Login</NavLink>
-
+            <NavLink to="/new-car">Add New Car</NavLink>
         </div>
     );
 }

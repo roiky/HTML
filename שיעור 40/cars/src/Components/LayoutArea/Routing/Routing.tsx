@@ -8,6 +8,7 @@ import "./Routing.css";
 import LoginPage from "../Login";
 import RegisterPage from "../Register";
 import { SalesStatistics } from "../../Pages/Stats";
+import { AddNewCar } from "../../Pages/NewCar";
 
 export function Routing(): JSX.Element {
     return (
@@ -21,6 +22,7 @@ export function Routing(): JSX.Element {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/sales-statistics" element={<SalesStatistics />} />
+                <Route path="/new-car" element={<AddNewCar />} />
                 <Route path="*" element={<Page404 />} />
             </Routes>
         </div>
