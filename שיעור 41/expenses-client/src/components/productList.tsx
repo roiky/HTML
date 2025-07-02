@@ -1,5 +1,5 @@
 // ProductList.tsx
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import "./productList.css";
 import { CartContext } from "../context/cartContext";
 
@@ -20,6 +20,11 @@ const products: Product[] = [
 
 const ProductList: React.FC = () => {
     const contextCart = useContext(CartContext);
+
+    useEffect(() => {
+        console.log("currenct cart:", contextCart.cart);
+    }, [contextCart.cart]);
+
     return (
         <div className="product-list">
             {products.map((product) => (
@@ -29,8 +34,7 @@ const ProductList: React.FC = () => {
                     <p>{product.price}</p>
                     <button
                         onClick={() => {
-                            contextCart.addToCart(product.id);
-                            console.log(contextCart.cart);
+                            contextCart.addToCart(product);
                         }}
                         className="add-to-cart-btn"
                     >
