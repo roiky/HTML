@@ -1,0 +1,21 @@
+{
+    "_id": 1,
+    "newField": 1,
+    "CHOPER": "FZ",
+    "CHFLTN": "1328",
+    "CHOPERD": "FLYDUBAI",
+    "CHSTOL": "2025-07-05T17:45:00",
+    "CHPTOL": "2025-07-05T17:48:00",
+    "CHAORD": "D",
+    "CHLOC1": "DXB",
+    "CHLOC1D": "DUBAI",
+    "CHLOC1TH": "דובאי",
+    "CHLOC1T": "DUBAI",
+    "CHLOC1CH": "איחוד האמירויות הערב",
+    "CHLOCCT": "UNITED ARAB EMIRATES",
+    "CHTERM": 3,
+    "CHCINT": "59-61",
+    "CHCKZN": "C",
+    "CHRMINE": "DEPARTED",
+    "CHRMINH": "המריאה"
+}
