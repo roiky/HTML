@@ -1,4 +1,4 @@
-import data from "./car-example.json";
+import data from "./car.json";
 
 export type CarApiType = typeof data;
 
