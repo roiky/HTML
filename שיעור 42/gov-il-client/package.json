@@ -8,7 +8,7 @@
         "build": "tsc -b && vite build",
         "lint": "eslint .",
         "preview": "vite preview",
-        "update-flight-model": "node ./update-scripts/flight.js"
+        "update-model": "node ./update-scripts/updates.js"
     },
     "dependencies": {
         "@emotion/react": "^11.14.0",
