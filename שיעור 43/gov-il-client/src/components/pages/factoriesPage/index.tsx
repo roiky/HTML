@@ -1,4 +1,4 @@
-import { Box, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { Box, CircularProgress, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 import { useEffect, useState } from "react";
 import { getFactoriesApi, type FactoryClient } from "./service/getFactoriesApi";
@@ -10,7 +10,7 @@ export default function FactoryPage() {
     const [factories, setFactories] = useState<Array<Partial<FactoryClient>>>([]);
     const [limit, setLimit] = useState("10");
 
-    const limitOptions = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+    const limitOptions = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 1000];
 
     useEffect(() => {
         async function getFactories() {
@@ -34,7 +34,9 @@ export default function FactoryPage() {
         setLimit(event.target.value as string);
     };
 
-    return (
+    return isLoading ? (
+        <CircularProgress />
+    ) : (
         <div style={{ margin: "auto", width: "80%" }}>
             <h1> Factory Page</h1>
             <div>
