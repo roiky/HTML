@@ -18,13 +18,22 @@ app.get("/", (req, res) => {
     res.send("Welcome to my API!");
 });
 
-app.post("/register", (req, res, next) => {
-    //const { userName, password } = req.body;
-    const userName = req.body.userName;
-    const password = req.body.password;
+//function that validate that it recived username or password, later i will use it as a middleware
+function validateCredentials(req, res, next) {
+    const { userName, password } = req.body;
     if (!userName || !password) {
         return next(new Error("Missing"));
     }
+    next();
+}
+
+app.post("/register", validateCredentials, (req, res, next) => {
+    const { userName, password } = req.body;
+    // const userName = req.body.userName;
+    // const password = req.body.password;
+    // if (!userName || !password) {
+    //     return next(new Error("Missing"));
+    // }
 
     const userExists = users.find((user) => user.userName === userName);
     if (userExists) {
@@ -35,12 +44,13 @@ app.post("/register", (req, res, next) => {
     res.status(201).json({ message: "User registered successfully" });
 });
 
-app.post("/login", (req, res, next) => {
-    const userName = req.body.userName;
-    const password = req.body.password;
-    if (!userName || !password) {
-        return next(new Error("Missing"));
-    }
+app.post("/login", validateCredentials, (req, res, next) => {
+    const { userName, password } = req.body;
+    // const userName = req.body.userName;
+    // const password = req.body.password;
+    // if (!userName || !password) {
+    //     return next(new Error("Missing"));
+    // }
 
     const validUser = users.find((user) => user.userName === userName && user.password === password);
     if (validUser) {
