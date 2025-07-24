@@ -2,23 +2,19 @@ import express from "express";
 import { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 
-import { checkApiKey } from "./middlewares/checkApiKey";
+import limiter from "./middlewares/rateLimiter";
+import checkApiKey from "./middlewares/checkApiKey";
+import logDuration from "./middlewares/logDuration";
 
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use((req, res, next) => {
-    const startTime = Date.now();
-    res.on("finish", () => {
-        const endTime = Date.now();
-        console.log(`[${req.url} Duration]: ${endTime - startTime}ms`);
-    });
-    next();
-});
+app.use(limiter);
+app.use(logDuration);
 
 app.get("/protected", checkApiKey, (req, res, next) => {
-    res.send("You're in!");
+    res.send("You're in!!");
 });
 
 //[=================================================================================]

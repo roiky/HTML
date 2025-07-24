@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 
-export function checkApiKey(req: Request, res: Response, next: NextFunction) {
+export default function checkApiKey(req: Request, res: Response, next: NextFunction) {
     const apiKeyFromQuery = req.query.apiKey;
     const validApiKey = process.env.TOKEN;
 

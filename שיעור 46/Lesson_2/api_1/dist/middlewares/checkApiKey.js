@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkApiKey = checkApiKey;
+exports.default = checkApiKey;
 function checkApiKey(req, res, next) {
     const apiKeyFromQuery = req.query.apiKey;
     const validApiKey = process.env.TOKEN;

@@ -5,20 +5,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
-const checkApiKey_1 = require("./middlewares/checkApiKey");
+const rateLimiter_1 = __importDefault(require("./middlewares/rateLimiter"));
+const checkApiKey_1 = __importDefault(require("./middlewares/checkApiKey"));
+const logDuration_1 = __importDefault(require("./middlewares/logDuration"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3000;
-app.use((req, res, next) => {
-    const startTime = Date.now();
-    res.on("finish", () => {
-        const endTime = Date.now();
-        console.log(`[${req.url} Duration]: ${endTime - startTime}ms`);
-    });
-    next();
-});
-app.get("/protected", checkApiKey_1.checkApiKey, (req, res, next) => {
-    res.send("You're in!");
+app.use(rateLimiter_1.default);
+app.use(logDuration_1.default);
+app.get("/protected", checkApiKey_1.default, (req, res, next) => {
+    res.send("You're in!!");
 });
 //[=================================================================================]
 //API LISTENER
