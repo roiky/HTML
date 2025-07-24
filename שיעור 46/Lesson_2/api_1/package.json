@@ -1,0 +1,24 @@
+{
+    "name": "lesson_2",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "compile": "tsc --watch",
+        "dev": "nodemon ./dist/index.js",
+        "all": "concurrently --names \"TSCompiler,Node_js_API\" --prefix-colors \"red,green\" \"npm run compile\" \"npm run dev\""
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "description": "",
+    "dependencies": {
+        "@types/dotenv": "^6.1.1",
+        "concurrently": "^9.2.0",
+        "dotenv": "^17.2.0",
+        "express": "^5.1.0",
+        "nodemon": "^3.1.10"
+    },
+    "devDependencies": {
+        "@types/express": "^5.0.3"
+    }
+}
