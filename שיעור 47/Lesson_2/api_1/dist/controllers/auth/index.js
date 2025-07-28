@@ -47,22 +47,24 @@ dotenv_1.default.config();
 const router = express_1.default.Router();
 const User = z.object({
     userName: z.email().max(30),
-    password: z.string().min(4).max(20)
+    password: z.string().min(4).max(20),
 });
 const UserRegister = z.object({
     userName: z.email().max(30),
     password: z.string().min(4).max(20),
     age: z.number(),
-    phone: z.string()
+    phone: z.string(),
 });
-const fp = z.object({
-    userName: z.email().max(30)
-}).strict();
+const fp = z
+    .object({
+    userName: z.email().max(30),
+})
+    .strict();
 exports.users = [{ userName: "admin@gmail.com", password: "admin" }];
 const mappingSchemaValidation = {
     login: User,
     register: UserRegister,
-    "forgat-password": fp
+    "forgat-password": fp,
 };
 function authInputValidation(req, res, next) {
     const url = req.url.replace("/", "");
@@ -81,7 +83,9 @@ router.post("/login", authInputValidation, (req, res, next) => {
         const foundUser = (0, loginHandler_1.login)({ userName, password });
         if (foundUser) {
             console.log(process.env.SECRET);
-            const token = jsonwebtoken_1.default.sign({ userName: foundUser.userName, isAdmin: true, }, process.env.SECRET || "secret");
+            const token = jsonwebtoken_1.default.sign({ userName: foundUser.userName, isAdmin: true }, process.env.SECRET || "secret", {
+                expiresIn: "20s",
+            });
             // sign JWT token for user
             return res.setHeader("Authorization", token).json({ message: "User logged in successfully", token });
         }

@@ -5,18 +5,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = jwtProtected;
 const express_1 = __importDefault(require("express"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv_1 = __importDefault(require("dotenv"));
-const httpStatus_1 = require("../enum/httpStatus");
 dotenv_1.default.config();
 const router = express_1.default.Router();
 function jwtProtected(req, res, next) {
-    const authHeader = req.headers.authorization;
-    //const authHeader = req.body.key;
-    if (!authHeader) {
-        throw new Error(httpStatus_1.ERRORS.BAD_REQUEST);
+    const token = req.headers["authorization"];
+    //const token = const authHeader = req.body.key;
+    if (token) {
+        jsonwebtoken_1.default.verify(token, process.env.SECRET, function (err, data) {
+            if (err)
+                return next(new Error("Error JWT"));
+            else {
+                const { isAdmin, userName } = data;
+                req.userClaims = { isAdmin, userName };
+                return next();
+            }
+        });
     }
     else {
-        //const isVerified = jwt.verify(authHeader,process.env.SECRET as string, )
-        return next();
+        return next(new Error("Error JWT"));
     }
 }

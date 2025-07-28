@@ -10,6 +10,8 @@ const requestDuration_1 = __importDefault(require("./middleware/requestDuration"
 const rateLimiter_1 = __importDefault(require("./middleware/rateLimiter"));
 const auth_1 = __importDefault(require("./controllers/auth"));
 const expenses_1 = __importDefault(require("./controllers/expenses"));
+const path_1 = __importDefault(require("path"));
+const logger_1 = __importDefault(require("./logger"));
 const httpStatus_1 = require("./enum/httpStatus");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
@@ -18,6 +20,10 @@ app.use(express_1.default.json());
 app.use(requestDuration_1.default);
 app.use(api_token_1.default);
 app.use(rateLimiter_1.default);
+app.use(express_1.default.static(path_1.default.join(__dirname, "public")));
+app.get("/", (req, res, next) => {
+    res.sendFile(path_1.default.join(__dirname, "public", "index.html"));
+});
 app.get("/hc", (req, res, next) => {
     res.send("Api is Running");
 });
@@ -44,5 +50,6 @@ app.listen(PORT, (err) => {
     }
     else {
         console.log(`Api is running on port ${PORT}`);
+        logger_1.default.info(`Api is running on port ${PORT}`);
     }
 });
