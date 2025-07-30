@@ -5,15 +5,28 @@ const axios = require("axios");
 const URL = "http://localhost:3000/auth/";
 
 describe("Test Login API POST /Login", () => {
-    it("login - success", async () => {
-        const result = await axios.post(URL + "login", {
-            userName: "admin@gmail.com",
-            password: "admin",
+    it("login success", async () => {
+        const uniqueEmail = `roei${Date.now()}@gmail.com`;
+
+        const registerResult = await axios.post(URL + "register", {
+            userName: uniqueEmail,
+            age: 20,
+            password: "1234ww",
+            phone: "0501234567",
         });
-        const data = result.data;
-        expect(result.status).equal(200);
-        expect(data.message).equal("User logged in successfully");
+
+        expect(registerResult.status).equal(200);
+        expect(registerResult.data.message).equal("User Registered in successfully");
+
+        const loginResult = await axios.post(URL + "login", {
+            userName: uniqueEmail,
+            password: "1234ww",
+        });
+
+        expect(loginResult.status).equal(200);
+        expect(loginResult.data.message).equal("User logged in successfully");
     });
+
     it("login input validation", async () => {
         try {
             await axios.post(URL + "login", {
@@ -48,6 +61,7 @@ describe("Test Login API POST /Login", () => {
             expect(error.response.data).equal("Unauthorized___");
         }
     });
+
     it("login - bad request (missing username/password)", async () => {
         try {
             await axios.post(URL + "login", {
