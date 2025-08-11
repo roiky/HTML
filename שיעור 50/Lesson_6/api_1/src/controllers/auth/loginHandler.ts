@@ -12,7 +12,7 @@ export async function login(user: User): Promise<Partial<User> | undefined> {
     if (Array.isArray(rows) && rows.length > 0) {
         const foundUser = rows[0];
         console.log("✅ Found user:", foundUser);
-        return foundUser; // מחזיר את המשתמש מה-SQL
+        return foundUser;
     }
 
     console.log("❌ No user found");
