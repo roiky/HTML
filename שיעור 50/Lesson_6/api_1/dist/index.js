@@ -45,9 +45,6 @@ const PORT = process.env.PORT || 3000;
         // הרצת שאילתה והדפסת התוצאות
         const [rows] = yield conn.query("SELECT * FROM northwind.users LIMIT 10");
         console.table(rows); // מציג יפה את השורות בקונסול
-        // או: אם הגדרת כבר database= 'northwind' בחיבור
-        // const [rows] = await conn.query("SELECT * FROM users LIMIT 10");
-        // console.table(rows);
     }
     catch (err) {
         console.error("❌ MySQL connection failed:", (err === null || err === void 0 ? void 0 : err.sqlMessage) || (err === null || err === void 0 ? void 0 : err.message) || err);
