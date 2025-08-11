@@ -1,9 +1,34 @@
 import { expect } from "chai";
 import axios from "axios";
+import mysql2 from "mysql2/promise";
+import dotenv from "dotenv";
+dotenv.config();
 
 const URL = "http://localhost:3000/auth/";
+let testUserID;
 
 describe("Test Login API POST /Login", () => {
+    after(async () => {
+        if (!testUserID) return;
+
+        try {
+            const connection = await mysql2.createConnection({
+                host: process.env.HOST,
+                user: process.env.USER,
+                password: process.env.PASSWORD,
+                database: process.env.DATABASE,
+                port: Number(process.env.DB_PORT) || 3306,
+            });
+
+            await connection.execute("DELETE FROM northwind.users WHERE id = ?", [testUserID]);
+            await connection.end();
+
+            console.log(`Deleted test user ID: ${testUserID}`);
+        } catch (err) {
+            console.error("Failed to delete test user:", err.message);
+        }
+    });
+
     it("login success", async () => {
         const uniqueEmail = `roei${Date.now()}@gmail.com`;
 
@@ -24,6 +49,9 @@ describe("Test Login API POST /Login", () => {
 
         expect(loginResult.status).equal(200);
         expect(loginResult.data.message).equal("User logged in successfully");
+
+        testUserID = registerResult.data.id;
+        expect(testUserID).to.be.a("number");
     });
 
     it("login input validation", async () => {

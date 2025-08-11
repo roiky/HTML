@@ -68,8 +68,8 @@ router.post("/register", authInputValidation, async (req, res, next) => {
     try {
         const { userName, password, phone, age } = req.body;
         const result = await register({ userName, password, phone, age });
-        if (result) {
-            return res.json({ message: "User Registered in successfully" });
+        if (result > 0) {
+            return res.json({ message: "User Registered in successfully", id: result });
         } else throw new Error("user already exist");
     } catch (error: any) {
         console.log(error.message);
