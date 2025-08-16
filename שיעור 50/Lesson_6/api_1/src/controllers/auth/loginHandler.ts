@@ -13,9 +13,10 @@ export async function login(user: User): Promise<Partial<User> | undefined> {
         const foundUser = rows[0];
         console.log("✅ Found user:", foundUser);
         return foundUser;
+    } else {
+        console.log("❌ No user found");
     }
 
-    console.log("❌ No user found");
     return undefined;
 }
 

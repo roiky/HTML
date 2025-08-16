@@ -6,26 +6,33 @@ dotenv.config();
 
 const URL = "http://localhost:3000/auth/";
 let testUserID;
+let dbConnection;
 
 describe("Test Login API POST /Login", () => {
+    // BEFORE – פותחים את החיבור
+    before(async () => {
+        dbConnection = await mysql2.createConnection({
+            host: process.env.HOST,
+            user: process.env.USER,
+            password: process.env.PASSWORD,
+            database: process.env.DATABASE,
+            port: Number(process.env.DB_PORT) || 3306,
+        });
+    });
+
+    // AFTER – סוגרים את החיבור ומוחקים את היוזר
     after(async () => {
-        if (!testUserID) return;
+        if (testUserID && dbConnection) {
+            try {
+                await dbConnection.execute("DELETE FROM northwind.users WHERE id = ?", [testUserID]);
+                console.log(`Deleted test user ID: ${testUserID}`);
+            } catch (err) {
+                console.error("Failed to delete test user:", err.message);
+            }
+        }
 
-        try {
-            const connection = await mysql2.createConnection({
-                host: process.env.HOST,
-                user: process.env.USER,
-                password: process.env.PASSWORD,
-                database: process.env.DATABASE,
-                port: Number(process.env.DB_PORT) || 3306,
-            });
-
-            await connection.execute("DELETE FROM northwind.users WHERE id = ?", [testUserID]);
-            await connection.end();
-
-            console.log(`Deleted test user ID: ${testUserID}`);
-        } catch (err) {
-            console.error("Failed to delete test user:", err.message);
+        if (dbConnection) {
+            await dbConnection.end();
         }
     });
 

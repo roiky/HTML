@@ -25,7 +25,9 @@ function login(user) {
             console.log("✅ Found user:", foundUser);
             return foundUser;
         }
-        console.log("❌ No user found");
+        else {
+            console.log("❌ No user found");
+        }
         return undefined;
     });
 }
