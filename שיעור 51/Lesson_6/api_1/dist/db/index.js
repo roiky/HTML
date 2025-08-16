@@ -16,13 +16,12 @@ const promise_1 = __importDefault(require("mysql2/promise"));
 function getConnection() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const connection = yield promise_1.default.createPool({
+            const connection = yield promise_1.default.createConnection({
                 host: process.env.HOST,
                 user: process.env.USER,
                 password: process.env.PASSWORD,
                 database: process.env.DATABASE,
-                port: Number(process.env.DB_PORT) || 3306,
-                connectionLimit: 10
+                port: Number(process.env.DB_PORT) || 3306
             });
             return connection;
         }

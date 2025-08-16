@@ -9,9 +9,7 @@ import govILRouter from "./controllers/govIlData";
 import uploaderRouter from "./controllers/uploader";
 import path from "path";
 import { ERRORS } from "./enum/httpStatus";
-import authorizationMiddleware, {
-    ReqLocal,
-} from "./middleware/authorizationMiddleware";
+import authorizationMiddleware, { ReqLocal } from "./middleware/authorizationMiddleware";
 import logger from "./logger";
 import addRequestId from "./middleware/addRequestId";
 import cors from "cors";
@@ -25,6 +23,23 @@ import getConnection from "./db";
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+(async () => {
+    try {
+        const conn = await getConnection();
+        console.log("✅ MySQL connection successful!");
+
+        // בדיקה שה־DB הנכון בשימוש
+        const [db] = await conn.query("SELECT DATABASE() AS db");
+        console.log("Using DB:", (db as any)[0].db);
+
+        // הרצת שאילתה והדפסת התוצאות
+        const [rows] = await conn.query("SELECT * FROM northwind.users LIMIT 10");
+        console.table(rows); // מציג יפה את השורות בקונסול
+    } catch (err: any) {
+        console.error("❌ MySQL connection failed:", err?.sqlMessage || err?.message || err);
+    }
+})();
 
 app.use(cors());
 app.use(express.json());
@@ -46,8 +61,8 @@ app.get("/hc", (req, res, next) => {
 app.use("/auth", authRouter);
 app.use("/gov-il-data", govILRouter);
 app.use("/uploader", uploaderRouter);
-app.use(authorizationMiddleware); // all the routers below protected!!!
 app.use("/api/expenses", expensesRouter);
+app.use(authorizationMiddleware); // all the routers below protected!!!
 
 app.use((error: any, req: Request, res: Response, next: NextFunction) => {
     logger.error(`${error.message} reqeustId: ${(req as ReqLocal).requestId}`);
@@ -60,11 +75,7 @@ app.use((error: any, req: Request, res: Response, next: NextFunction) => {
             return res.status(401).send("Unauthorized___");
         }
         default: {
-            return res
-                .status(500)
-                .send(
-                    "Something went wrong Yam is working to fix it & flight to America"
-                );
+            return res.status(500).send("Something went wrong Yam is working to fix it & flight to America");
         }
     }
 });

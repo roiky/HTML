@@ -20,11 +20,11 @@ function register(user) {
         const params = [user.userName, user.password, user.age, user.phone];
         const result = yield (yield (0, db_1.default)()).execute(getRegisterQuery(), params);
         console.log(result);
-        // @ts-ignore 
+        // @ts-ignore
         if (result[0].insertId)
-            return true;
+            return result[0].insertId;
         else
-            return false;
+            return 0;
     });
 }
 const getRegisterQuery = () => {

@@ -1,78 +1,107 @@
-// const chai = require("chai")
 import { expect } from "chai";
 import axios from "axios";
-import mysql2 from "mysql2/promise"
-import dotenv from "dotenv"
-dotenv.config()
-// const { expect } = chai;
-// const axios = require("axios");
+import mysql2 from "mysql2/promise";
+import dotenv from "dotenv";
+dotenv.config();
 
 const URL = "http://localhost:3000/auth/";
+let testUserID;
+let dbConnection;
 
-let connection;
-before(async function () {
-    try {
-        connection = await mysql2.createConnection({
+describe("Test Login API POST /Login", () => {
+    // BEFORE – פותחים את החיבור
+    before(async () => {
+        dbConnection = await mysql2.createConnection({
             host: process.env.HOST,
             user: process.env.USER,
             password: process.env.PASSWORD,
             database: process.env.DATABASE,
-            port: Number(process.env.DB_PORT) || 3306
-        })
-
-
-
-    } catch (error) {
-        throw error;
-    }
-})
-
-describe("Test Login API POST /Login", () => {
-    it("login - bad request, user name is missing", async () => {
-        try {
-            const result = await axios.post(URL + "login", {
-                password: "1234ww",
-            });
-            throw new Error({ status: 500 });
-        } catch (error) {
-            expect(error.status).equal(400);
-        }
-    });
-    it("login - failed authenticating user", async () => {
-        try {
-            const result = await axios.post(URL + "login", {
-                password: "password_not_exist",
-                userName: "email_not_exist@gmail.com",
-            });
-            throw new Error({ status: 500 });
-        } catch (error) {
-            expect(error.status).equal(401);
-        }
-    });
-    it("login - success authenticating user", async () => {
-        const password = "not_relevant"
-        const dummyRandomUserName = `dummy${Math.ceil(Math.random() * 999)}@gmail.com`
-        const getInsertQuery = () => {
-            return `INSERT INTO northwind.users (email, password) VALUES (?,?);`
-        }
-        const queryResult = await connection.execute(getInsertQuery(), [dummyRandomUserName, password])
-        const idToDelete = queryResult[0].insertId
-        const result = await axios.post(URL + "login", {
-            password,
-            userName: dummyRandomUserName,
+            port: Number(process.env.DB_PORT) || 3306,
         });
-        expect(result.status).equal(200);
-        const getDeleteQuery = () => {
-            return `DELETE FROM users WHERE id = ?`
-        }
-        await connection.execute(getDeleteQuery(), [idToDelete])
     });
 
+    // AFTER – סוגרים את החיבור ומוחקים את היוזר
+    after(async () => {
+        if (testUserID && dbConnection) {
+            try {
+                await dbConnection.execute("DELETE FROM northwind.users WHERE id = ?", [testUserID]);
+                console.log(`Deleted test user ID: ${testUserID}`);
+            } catch (err) {
+                console.error("Failed to delete test user:", err.message);
+            }
+        }
+
+        if (dbConnection) {
+            await dbConnection.end();
+        }
+    });
+
+    it("login success", async () => {
+        const uniqueEmail = `roei${Date.now()}@gmail.com`;
+
+        const registerResult = await axios.post(URL + "register", {
+            userName: uniqueEmail,
+            age: 20,
+            password: "1234ww",
+            phone: "0501234567",
+        });
+
+        expect(registerResult.status).equal(200);
+        expect(registerResult.data.message).equal("User Registered in successfully");
+
+        const loginResult = await axios.post(URL + "login", {
+            userName: uniqueEmail,
+            password: "1234ww",
+        });
+
+        expect(loginResult.status).equal(200);
+        expect(loginResult.data.message).equal("User logged in successfully");
+
+        testUserID = registerResult.data.id;
+        expect(testUserID).to.be.a("number");
+    });
+
+    it("login input validation", async () => {
+        try {
+            await axios.post(URL + "login", { userName: "admin", password: "admin" });
+            throw new Error("Expected validation error");
+        } catch (error) {
+            expect(error.response.status).equal(400);
+        }
+
+        try {
+            await axios.post(URL + "login", { userName: "admin@gmail.com", password: "ad" });
+            throw new Error("Expected validation error");
+        } catch (error) {
+            expect(error.response.status).equal(400);
+        }
+    });
+
+    it("login failed", async () => {
+        try {
+            await axios.post(URL + "login", { userName: "admin@gmail.com", password: "admin123" });
+            throw new Error("Expected parameters error");
+        } catch (error) {
+            expect(error.response.status).equal(401);
+            expect(error.response.data).equal("Unauthorized___");
+        }
+    });
+
+    it("login - bad request (missing username/password)", async () => {
+        try {
+            await axios.post(URL + "login", { userName: "admin" });
+            throw new Error("Expected param error");
+        } catch (error) {
+            expect(error.response.status).equal(400);
+            expect(error.response.data).equal("Bad Request");
+        }
+
+        try {
+            await axios.post(URL + "login", { password: "ad" });
+            throw new Error("Expected param error");
+        } catch (error) {
+            expect(error.response.status).equal(400);
+            expect(error.response.data).equal("Bad Request");
+        }
+    });
 });
-
-
-// insert dummy user into db
-// Call HTTP /POST login
-// Assert result
-// Delete User
-// Finish

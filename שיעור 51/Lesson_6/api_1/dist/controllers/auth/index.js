@@ -57,29 +57,30 @@ dotenv_1.default.config();
 const router = express_1.default.Router();
 const User = z.object({
     userName: z.email().max(30),
-    password: z.string().min(4).max(20)
+    password: z.string().min(4).max(20),
 });
 const UserRegister = z.object({
     userName: z.email().max(30),
     password: z.string().min(4).max(20),
     age: z.number(),
-    phone: z.string()
+    phone: z.string(),
 });
-const fp = z.object({
-    userName: z.email().max(30)
-}).strict();
+const fp = z
+    .object({
+    userName: z.email().max(30),
+})
+    .strict();
 exports.users = [{ userName: "admin@gmail.com", password: "admin" }];
 const mappingSchemaValidation = {
     login: User,
     register: UserRegister,
-    "forgat-password": fp
+    "forgat-password": fp,
 };
 function authInputValidation(req, res, next) {
     const url = req.url.replace("/", "");
     const currentSchema = mappingSchemaValidation[url];
     const validation = currentSchema.safeParse(req.body);
     if (!validation.success) {
-        console.log(validation.error);
         throw new Error(httpStatus_1.ERRORS.BAD_REQUEST);
     }
     else {
@@ -89,16 +90,13 @@ function authInputValidation(req, res, next) {
 router.post("/login", authInputValidation, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userName, password } = req.body;
-        console.log("====================================");
-        console.log("====================================");
-        console.log("====================================");
         const foundUser = yield (0, loginHandler_1.login)({ userName, password });
-        console.log("====================================");
-        console.log("====================================");
-        console.log("====================================");
-        console.log(foundUser);
         if (foundUser) {
-            const token = jsonwebtoken_1.default.sign({ userName: foundUser.userName, isAdmin: true, }, process.env.SECRET || "secret", { expiresIn: '1m' });
+            console.log(process.env.SECRET);
+            const token = jsonwebtoken_1.default.sign({ userName: foundUser.userName, isAdmin: true }, process.env.SECRET || "secret", {
+                expiresIn: "1m",
+            });
+            // sign JWT token for user
             return res.setHeader("Authorization", token).json({ message: "User logged in successfully", token });
         }
         else
@@ -113,8 +111,8 @@ router.post("/register", authInputValidation, (req, res, next) => __awaiter(void
     try {
         const { userName, password, phone, age } = req.body;
         const result = yield (0, registrationHandler_1.register)({ userName, password, phone, age });
-        if (result) {
-            return res.json({ message: "User Registered in successfully" });
+        if (result > 0) {
+            return res.json({ message: "User Registered in successfully", id: result });
         }
         else
             throw new Error("user already exist");

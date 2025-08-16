@@ -10,7 +10,7 @@ const URL = "http://localhost:3000/auth/";
 describe("Test Register API POST /register", () => {
     it("register is completed", async function () {
         const result = await axios.post(URL + "register", {
-            userName: `Bart11${Math.ceil(Math.random() * 999)}@gmail.com`,
+            userName: `Roei1${Math.ceil(Math.random() * 999)}@gmail.com`,
             age: 20,
             password: "1234ww",
             phone: "|sdsfsfs",
@@ -33,7 +33,7 @@ describe("Test Register API POST /register", () => {
     });
     it("register - user already exist", async () => {
         try {
-            const userThatAlreadyExist = `Bart11${Math.ceil(Math.random() * 999)}@gmail.com`
+            const userThatAlreadyExist = `Roei_Exist${Math.ceil(Math.random() * 999)}@gmail.com`;
             await axios.post(URL + "register", {
                 userName: userThatAlreadyExist,
                 age: 20,

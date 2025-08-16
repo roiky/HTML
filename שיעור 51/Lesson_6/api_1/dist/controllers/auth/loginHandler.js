@@ -16,13 +16,24 @@ exports.login = login;
 const db_1 = __importDefault(require("../../db"));
 function login(user) {
     return __awaiter(this, void 0, void 0, function* () {
-        const params = [user.userName, user.password];
-        const query = getLoginQuery();
-        const result = yield ((yield (0, db_1.default)()).execute(query, params));
-        console.log(result);
-        return result[0] && result[0][0];
+        const conn = yield (0, db_1.default)();
+        const email = (user.userName || "").toLowerCase().trim();
+        const params = [email, user.password];
+        const [rows] = yield conn.execute(getLoginQuery(), params);
+        if (Array.isArray(rows) && rows.length > 0) {
+            const foundUser = rows[0];
+            console.log("✅ Found user:", foundUser);
+            return foundUser;
+        }
+        else {
+            console.log("❌ No user found");
+        }
+        return undefined;
     });
 }
-const getLoginQuery = () => {
-    return 'SELECT * FROM users WHERE email = ? AND password = ?';
-};
+const getLoginQuery = () => `
+  SELECT *
+  FROM northwind.users
+  WHERE LOWER(email) = ? AND password = ?
+  LIMIT 1
+`;

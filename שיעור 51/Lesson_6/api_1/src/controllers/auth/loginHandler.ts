@@ -1,14 +1,28 @@
-import { User, users } from "."
-import getConnection from "../../db"
+import getConnection from "../../db";
+import { User } from ".";
 
-export async function login(user: User): any {
-    const params = [user.userName, user.password]
-    const query = getLoginQuery()
-    const result = await ((await getConnection()).execute(query, params))
-    console.log(result)
-    return result[0] && result[0][0]
+export async function login(user: User): Promise<Partial<User> | undefined> {
+    const conn = await getConnection();
+
+    const email = (user.userName || "").toLowerCase().trim();
+    const params = [email, user.password];
+
+    const [rows]: any = await conn.execute(getLoginQuery(), params);
+
+    if (Array.isArray(rows) && rows.length > 0) {
+        const foundUser = rows[0];
+        console.log("✅ Found user:", foundUser);
+        return foundUser;
+    } else {
+        console.log("❌ No user found");
+    }
+
+    return undefined;
 }
 
-const getLoginQuery = () => {
-    return 'SELECT * FROM users WHERE email = ? AND password = ?';
-}
+const getLoginQuery = () => `
+  SELECT *
+  FROM northwind.users
+  WHERE LOWER(email) = ? AND password = ?
+  LIMIT 1
+`;

@@ -5,11 +5,7 @@ import axios from "axios";
 const URL = "http://localhost:3000/api/expenses";
 let token = null;
 before(async () => {
-    token = jwt.sign(
-        { userName: "foundUser.userName", isAdmin: true },
-        "eitanTheKingLikeFish" || "secret",
-        { expiresIn: "1m" }
-    );
+    token = jwt.sign({ userName: "foundUser.userName", isAdmin: true }, "eitanTheKingLikeFish" || "secret", { expiresIn: "1m" });
 });
 
 describe("GET /api/expenses", () => {
@@ -18,5 +14,7 @@ describe("GET /api/expenses", () => {
             headers: { authorization: `${token}` },
         });
         expect(res.status).to.equal(200);
+        expect(res.data).to.have.property("message");
+        expect(res.data.message).to.equal("i am protected!!!");
     });
 });
