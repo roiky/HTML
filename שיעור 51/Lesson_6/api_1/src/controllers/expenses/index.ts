@@ -73,8 +73,20 @@ const insertExpenses = `
         VALUES (?, ?, ?, ?, ?)
     `;
 
-router.get("/", (req, res, next) => {
-    res.json({ expensesLastWeek });
+router.get("/", async (req, res, next) => {
+    try {
+        const conn = await getConnection();
+        const getExpensesBetweenDates = `SELECT *
+            FROM northwind.expenses
+            ORDER BY date ASC`;
+
+        const [rows] = await conn.execute(getExpensesBetweenDates, []);
+
+        return res.json({ data: rows });
+    } catch (error) {
+        res.json({ message: `there was an error ${error}` });
+        return res.status(500).json({ message: "Expenses Error" });
+    }
 });
 
 router.get("/reset", async (req, res, next) => {

@@ -84,9 +84,20 @@ const insertExpenses = `
         INSERT INTO northwind.expenses (id, date, category, amount, description)
         VALUES (?, ?, ?, ?, ?)
     `;
-router.get("/", (req, res, next) => {
-    res.json({ expensesLastWeek });
-});
+router.get("/", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const conn = yield (0, db_1.default)();
+        const getExpensesBetweenDates = `SELECT *
+            FROM northwind.expenses
+            ORDER BY date ASC`;
+        const [rows] = yield conn.execute(getExpensesBetweenDates, []);
+        return res.json({ data: rows });
+    }
+    catch (error) {
+        res.json({ message: `there was an error ${error}` });
+        return res.status(500).json({ message: "Expenses Error" });
+    }
+}));
 router.get("/reset", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const conn = yield (0, db_1.default)();
