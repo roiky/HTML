@@ -16,6 +16,7 @@ exports.sumTotal = sumTotal;
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const db_1 = __importDefault(require("../../db"));
+const getCategories_1 = __importDefault(require("./getCategories"));
 dotenv_1.default.config();
 const router = express_1.default.Router();
 const expensesLastWeek = [
@@ -153,6 +154,37 @@ router.post("/expenses", (req, res, next) => __awaiter(void 0, void 0, void 0, f
     catch (error) {
         console.error("Failed to insert expense:", error);
         return res.status(500).json({ message: "expenses insert error" });
+    }
+}));
+router.get("/get-category", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const result = yield (0, getCategories_1.default)();
+        return res.json({ data: result });
+    }
+    catch (error) {
+        res.json({ message: `there was an error ${error}` });
+        return res.status(500).json({ message: "Expenses Error" });
+    }
+}));
+router.get("/category-min", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const min = Number(req.query.min);
+        if (!min) {
+            return res.status(400).json({ message: "Missing 'minimum' query parameters" });
+        }
+        const conn = yield (0, db_1.default)();
+        const getCategoriesOverMin = `
+        SELECT category, SUM(amount) AS total_amount
+        FROM northwind.expenses
+        GROUP BY category
+        HAVING total_amount > ?
+        ORDER BY total_amount DESC`;
+        const [rows] = yield conn.execute(getCategoriesOverMin, [min]);
+        return res.json({ data: rows });
+    }
+    catch (error) {
+        res.json({ message: `there was an error ${error}` });
+        return res.status(500).json({ message: "Expenses Error" });
     }
 }));
 router.get("/sum-all-expenses", (req, res, next) => {

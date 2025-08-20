@@ -8,10 +8,22 @@ import { createValidToken } from "./Utils/generateToekn.js";
 dotenv.config();
 
 const BASE_URL = "http://localhost:3000/api/expenses";
-let testUserID;
 let dbConnection;
 
-describe("Test Login API POST /Login", () => {
+const axiosInstanceApi = axios.create({
+    baseURL: BASE_URL,
+});
+
+axiosInstanceApi.interceptors.request.use((config) => {
+    const token = createValidToken();
+    if (token) {
+        config.headers = config.headers || {};
+        config.headers.Authorization = token; // or `Bearer ${token}` if your API expects it
+    }
+    return config;
+});
+
+describe("Test Expenses API", () => {
     before(async () => {
         dbConnection = await mysql2.createConnection({
             host: "localhost",
@@ -34,19 +46,16 @@ describe("Test Login API POST /Login", () => {
       INSERT INTO expenses (amount, date, category, description)
       VALUES (?, ?, ?, ?)
     `;
-        const amount = (Math.random() * 500).toFixed(2); // random 0 - 500
+        const amount = (Math.random() * 500).toFixed(2);
         const expenseDate = dateMonthsAgo(1);
         const category = `Office Supplies ${Date.now()}`;
         const description = `Dummy expense ${Date.now()}`;
 
         const [result] = await dbConnection.execute(sql, [amount, expenseDate, category, description]);
-        const res = await axios.get(`${BASE_URL}/dates`, {
+        const res = await axiosInstanceApi.get(`${BASE_URL}/dates`, {
             params: {
                 from: dateMonthsAgo(2),
                 to: dateMonthsAgo(0),
-            },
-            headers: {
-                authorization: createValidToken(),
             },
         });
         expect(res.status).to.equal(200);
@@ -58,7 +67,7 @@ describe("Test Login API POST /Login", () => {
         expect(isIdIncluded).to.be.equal(true);
 
         await deleteExpenseById(result.insertId);
-        console.log(`deleted ID [${result.insertId}]`);
+        //console.log(`deleted ID [${result.insertId}]`);
         // const sqlCleanup = `DELETE FROM northwind.expenses where id = ?`;
         // await dbConnection.execute(sqlCleanup, [result.insertId]);
     });
@@ -76,13 +85,10 @@ describe("Test Login API POST /Login", () => {
         const [result] = await dbConnection.execute(sql, [amount, expenseDate, category, description]);
         const d1 = dateMonthsAgo(10);
         const d2 = dateMonthsAgo(8);
-        const res = await axios.get(`${BASE_URL}/dates`, {
+        const res = await axiosInstanceApi.get(`${BASE_URL}/dates`, {
             params: {
                 from: d1,
                 to: d2,
-            },
-            headers: {
-                authorization: createValidToken(),
             },
         });
         expect(res.status).to.equal(200);
@@ -90,7 +96,7 @@ describe("Test Login API POST /Login", () => {
         expect(res.data.data.length).to.be.equal(0);
 
         await deleteExpenseById(result.insertId);
-        console.log(`deleted ID [${result.insertId}]`);
+        //console.log(`deleted ID [${result.insertId}]`);
         // const sqlCleanup = `DELETE FROM northwind.expenses where id = ?`;
         // await dbConnection.execute(sqlCleanup, [result.insertId.toString()]);
     });
@@ -104,17 +110,13 @@ describe("Test Login API POST /Login", () => {
             description: "Test expense entry",
         };
 
-        const res = await axios.post(`${BASE_URL}/expenses`, newExpense, {
-            headers: {
-                authorization: createValidToken(),
-            },
-        });
+        const res = await axiosInstanceApi.post(`${BASE_URL}/expenses`, newExpense);
 
         expect(res.status).to.equal(201);
         expect(res.data).to.have.property("id");
         const insertedId = res.data.id;
         await deleteExpenseById(insertedId);
-        console.log(`deleted ID [${insertedId}]`);
+        //console.log(`deleted ID [${insertedId}]`);
         // const sqlCleanup = `DELETE FROM northwind.expenses where id = ?`;
         // await dbConnection.execute(sqlCleanup, [insertedId]);
     });

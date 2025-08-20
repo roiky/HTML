@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import getConnection from "../../db";
+import getCategories from "./getCategories";
 
 dotenv.config();
 const router = express.Router();
@@ -153,6 +154,41 @@ router.post("/expenses", async (req, res, next) => {
     } catch (error) {
         console.error("Failed to insert expense:", error);
         return res.status(500).json({ message: "expenses insert error" });
+    }
+});
+
+router.get("/get-category", async (req, res, next) => {
+    try {
+        const result = await getCategories();
+
+        return res.json({ data: result });
+    } catch (error) {
+        res.json({ message: `there was an error ${error}` });
+        return res.status(500).json({ message: "Expenses Error" });
+    }
+});
+
+router.get("/category-min", async (req, res, next) => {
+    try {
+        const min = Number(req.query.min);
+        if (!min) {
+            return res.status(400).json({ message: "Missing 'minimum' query parameters" });
+        }
+
+        const conn = await getConnection();
+        const getCategoriesOverMin = `
+        SELECT category, SUM(amount) AS total_amount
+        FROM northwind.expenses
+        GROUP BY category
+        HAVING total_amount > ?
+        ORDER BY total_amount DESC`;
+
+        const [rows] = await conn.execute(getCategoriesOverMin, [min]);
+
+        return res.json({ data: rows });
+    } catch (error) {
+        res.json({ message: `there was an error ${error}` });
+        return res.status(500).json({ message: "Expenses Error" });
     }
 });
 
