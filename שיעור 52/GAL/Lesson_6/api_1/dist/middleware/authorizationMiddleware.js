@@ -9,19 +9,18 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 // Example of token api validation, not production
 function authorizationMiddleware(req, res, next) {
-    const token = req.headers["authorization"];
-    if (token) {
-        jsonwebtoken_1.default.verify(token, process.env.SECRET, function (err, data) {
-            if (err)
-                return next(new Error("UNAUTH"));
-            else {
-                const { isAdmin, userName } = data;
-                req.userClaims = { isAdmin, userName };
-                return next();
-            }
-        });
-    }
-    else {
+    const authHeader = req.headers["authorization"];
+    const token = typeof authHeader === "string" && authHeader.startsWith("Bearer ")
+        ? authHeader.split(" ")[1] // מחלץ רק את הטוקן
+        : authHeader;
+    if (!token || typeof token !== "string") {
         return next(new Error("UNAUTH"));
     }
+    jsonwebtoken_1.default.verify(token, process.env.SECRET, function (err, data) {
+        if (err)
+            return next(new Error("UNAUTH"));
+        const { isAdmin, userName } = data;
+        req.userClaims = { isAdmin, userName };
+        return next();
+    });
 }

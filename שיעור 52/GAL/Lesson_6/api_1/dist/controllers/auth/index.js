@@ -70,9 +70,7 @@ const fp = z
     userName: z.email().max(30),
 })
     .strict();
-exports.users = [
-    { userName: "admin@gmail.com", password: "admin" },
-];
+exports.users = [{ userName: "admin@gmail.com", password: "admin" }];
 const mappingSchemaValidation = {
     login: User,
     register: UserRegister,
@@ -95,10 +93,10 @@ router.post("/login", authInputValidation, (req, res, next) => __awaiter(void 0,
         const { userName, password } = req.body;
         const foundUser = yield (0, loginHandler_1.login)({ userName, password });
         if (foundUser) {
-            const token = jsonwebtoken_1.default.sign({ userName: foundUser.userName, isAdmin: true }, process.env.SECRET || "secret", { expiresIn: "1m" });
-            return res
-                .setHeader("Authorization", token)
-                .json({ message: "User logged in successfully", token });
+            const token = jsonwebtoken_1.default.sign({ userName: foundUser.userName, isAdmin: true }, process.env.SECRET || "secret", {
+                expiresIn: "1d",
+            });
+            return res.setHeader("Authorization", token).json({ message: "User logged in successfully", token });
         }
         else
             throw new Error(httpStatus_1.ERRORS.UNAUTH);
