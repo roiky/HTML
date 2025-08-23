@@ -11,6 +11,7 @@ export default function Data() {
     const [loading, setLoading] = useState(false);
     const [items, setItems] = useState<any[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const [categoriesCount, setCategoriesCount] = useState<Record<string, number>>({});
 
     async function load() {
         setLoading(true);
@@ -29,6 +30,21 @@ export default function Data() {
         load();
     }, []);
 
+    useEffect(() => {
+        console.log("Categories Count Start");
+        if (!items.length) return;
+
+        const counts: Record<string, number> = {};
+
+        items.forEach((it) => {
+            const category = it.category ?? "Unknown-category";
+            counts[category] = (counts[category] || 0) + 1;
+        });
+
+        setCategoriesCount(counts);
+        console.log(categoriesCount);
+    }, [items]);
+
     return (
         <section className="card">
             <div className="card-header">
@@ -46,23 +62,39 @@ export default function Data() {
                 </div>
             </div>
             {error && <div className="error">{error}</div>}
+
+            <div className="summary">
+                <h3>Categories Summary</h3>
+                <ul>
+                    {Object.entries(categoriesCount).map(([category, count]) => (
+                        <li key={category}>
+                            {category} - {count}
+                        </li>
+                    ))}
+                </ul>
+            </div>
+
             <div className="grid">
-                {items.map((it, idx) => (
-                    <div key={idx} className="tile">
-                        <div className="tile-title">Session #{it.session ?? it.id ?? idx + 1}</div>
-                        <div className="tile-body">
-                            <div>
-                                <strong>Date:</strong> {it.date ?? it.createdAt ?? "-"}
-                            </div>
-                            <div>
-                                <strong>Category:</strong> {it.category ?? "-"}
-                            </div>
-                            <div>
-                                <strong>Amount:</strong> {it.amount ?? "-"}
+                {items.map((it, idx) => {
+                    //console.log(`[${it.id}] category: ${it.category}`);
+
+                    return (
+                        <div key={idx} className="tile">
+                            <div className="tile-title">Session #{it.session ?? it.id ?? idx + 1}</div>
+                            <div className="tile-body">
+                                <div>
+                                    <strong>Date:</strong> {it.date ?? it.createdAt ?? "-"}
+                                </div>
+                                <div>
+                                    <strong>Category:</strong> {it.category ?? "-"}
+                                </div>
+                                <div>
+                                    <strong>Amount:</strong> {it.amount ?? "-"}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
                 {!loading && items.length === 0 && <p className="muted">No results for the selected range.</p>}
             </div>
         </section>
