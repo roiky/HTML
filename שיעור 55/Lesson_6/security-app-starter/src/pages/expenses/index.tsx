@@ -31,13 +31,19 @@ export default function Expenses() {
     const [modalOpen, setModalOpen] = useState(false);
     const handleOpenModal = () => setModalOpen(true);
     const handleCloseModal = () => setModalOpen(false);
+
     const handleSaveExpense = async (data: { category: string; amount: number; date: string }) => {
-        await createExpenseApi({
-            category: data.category,
-            amount: Number(data.amount),
-            date: data.date,
-            // description: "...",        // אם תוסיף בהמשך שדה תיאור במודל
-        });
+        try {
+            const newExpense = await createExpenseApi({
+                category: data.category,
+                amount: Number(data.amount),
+                date: data.date,
+                // description: "...",
+            });
+            console.log(`Created new Expense, [ID = ${newExpense.id}]`);
+        } catch (error) {
+            console.log(`[ERROR - create expense failed] ${error}`);
+        }
     };
     // Expense Modal - END
 
@@ -47,7 +53,7 @@ export default function Expenses() {
         try {
             const res = await getExpensesByDates({
                 from: "2025-05-25 09:08:04",
-                to: "2025-08-22 12:39:23",
+                to: "2026-08-22 12:39:23",
             });
             const sortedData = res.sort(
                 // @ts-ignore
