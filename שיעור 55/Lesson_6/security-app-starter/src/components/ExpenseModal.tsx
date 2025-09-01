@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 type ExpenseModalProps = {
     open: boolean;
     onClose: () => void;
-    onSave: (data: { category: string; amount: number; date: string }) => void;
+    onSave: (data: { category: string; amount: number; date: string; description: string }) => void;
     categories: string[];
 };
 
@@ -12,7 +12,7 @@ export default function ExpenseModal({ open, onClose, onSave, categories }: Expe
     const [category, setCategory] = useState<string>("");
     const [amount, setAmount] = useState<string>("");
     const [date, setDate] = useState<string>("");
-    const [desc, setDesc] = useState<string>("");
+    const [description, setDesc] = useState<string>("");
 
     useEffect(() => {
         if (open && categories.length && !category) {
@@ -25,7 +25,7 @@ export default function ExpenseModal({ open, onClose, onSave, categories }: Expe
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (isSaveDisabled) return;
-        onSave({ category, amount: Number(amount), date });
+        onSave({ category, amount: Number(amount), date, description });
         onClose();
         // cleanup
         handleCleanup();
@@ -87,7 +87,7 @@ export default function ExpenseModal({ open, onClose, onSave, categories }: Expe
                     <TextField
                         label="Description"
                         type="text"
-                        value={desc}
+                        value={description}
                         onChange={(e) => setDesc(e.target.value)}
                         InputLabelProps={{ shrink: true }}
                         fullWidth

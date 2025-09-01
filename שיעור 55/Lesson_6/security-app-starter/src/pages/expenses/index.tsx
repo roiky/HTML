@@ -32,14 +32,15 @@ export default function Expenses() {
     const handleOpenModal = () => setModalOpen(true);
     const handleCloseModal = () => setModalOpen(false);
 
-    const handleSaveExpense = async (data: { category: string; amount: number; date: string }) => {
+    const handleSaveExpense = async (data: { category: string; amount: number; date: string; description: string }) => {
         try {
             const newExpense = await createExpenseApi({
                 category: data.category,
                 amount: Number(data.amount),
                 date: data.date,
-                // description: "...",
+                description: data.description,
             });
+            console.log(data);
             console.log(`Created new Expense, [ID = ${newExpense.id}]`);
         } catch (error) {
             console.log(`[ERROR - create expense failed] ${error}`);
