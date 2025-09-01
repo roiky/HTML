@@ -51,7 +51,6 @@ export default function ExpenseModal({ open, onClose, onSave, categories }: Expe
 
             <form onSubmit={handleSubmit}>
                 <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
-                    {/* Categories DDL */}
                     <TextField
                         select
                         label="Category"
