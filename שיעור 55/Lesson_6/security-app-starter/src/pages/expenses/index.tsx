@@ -1,6 +1,6 @@
 import { getUserDetailsApi } from "../../services/user.api";
 import { getExpensesByDates } from "../../services/expenses.api";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { RolesWrapper } from "@/components/RolesWrapper";
 import DataTable from "./dataTable";
 
@@ -42,13 +42,14 @@ export default function Expenses() {
             });
             console.log(data);
             console.log(`Created new Expense, [ID = ${newExpense.id}]`);
+            await load();
         } catch (error) {
             console.log(`[ERROR - create expense failed] ${error}`);
         }
     };
     // Expense Modal - END
 
-    async function load() {
+    const load = useCallback(async () => {
         setLoading(true);
         setError(null);
         try {
@@ -66,7 +67,7 @@ export default function Expenses() {
         } finally {
             setLoading(false);
         }
-    }
+    }, []);
 
     async function loadCategories() {
         const categ = await getExpensesCategories();
@@ -88,7 +89,7 @@ export default function Expenses() {
         load();
         // getUserDetails();
         loadCategories();
-    }, []);
+    }, [load]);
 
     return (
         <section className="card">

@@ -35,6 +35,7 @@ export default function ExpenseModal({ open, onClose, onSave, categories }: Expe
         setCategory("");
         setAmount("");
         setDate("");
+        setDesc("");
     };
 
     return (
