@@ -38,7 +38,7 @@ router.get("/", (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
         return res.status(500).json({ message: "Expenses Error" });
     }
 }));
-router.get("/categories", (0, authorizations_1.validateAutMiddleware)(["configurator"]), (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/categories", (0, authorizations_1.validateAutMiddleware)(["configurator", "admin"]), (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const result = yield (0, getCategories_1.default)();
         return res.json({ data: result });
@@ -53,9 +53,7 @@ router.get("/dates", (req, res, next) => __awaiter(void 0, void 0, void 0, funct
         const from = req.query.from;
         const to = req.query.to;
         if (!from || !to) {
-            return res
-                .status(400)
-                .json({ message: "Missing 'from' or 'to' query parameters" });
+            return res.status(400).json({ message: "Missing 'from' or 'to' query parameters" });
         }
         const conn = yield (0, db_1.default)();
         const getExpensesBetweenDates = `SELECT *
@@ -75,9 +73,7 @@ router.post("/expenses", (0, authorizations_1.validateAutMiddleware)(["admin", "
     try {
         const { amount, category, date, description } = req.body;
         if (!amount || !category || !date) {
-            return res
-                .status(400)
-                .json({
+            return res.status(400).json({
                 message: "Missing required fields: amount, category or date",
             });
         }
