@@ -21,7 +21,7 @@ app.use("/lecturers", lecturersRouter);
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/hc", (req, res, next) => {
-    res.send("Api is Running!!");
+    res.status(200).send("Api is Running!!!");
 });
 
 app.get("/checkDB", async (req, res, next) => {
@@ -34,12 +34,6 @@ app.get("/checkDB", async (req, res, next) => {
         return res.status(500).json({ message: "Expenses Error" });
     }
 });
-// app.use("/auth", authRouter);
-// app.use("/gov-il-data", govILRouter);
-// app.use("/uploader", uploaderRouter);
-// app.use(authorizationMiddleware); // all the routers below protected!!!
-// app.use("/api/expenses", expensesRouter);
-// app.use("/api/orders", ordersRouter);
 
 app.use((error: any, req: Request, res: Response, next: NextFunction) => {
     logger.error(`${error.message} reqeustId: ${(req as ReqLocal).requestId}`);
@@ -66,3 +60,5 @@ app.listen(PORT, (err) => {
         console.log(`Api is running on port ${PORT}`);
     }
 });
+
+export default app;

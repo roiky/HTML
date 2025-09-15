@@ -28,7 +28,7 @@ app.use(express_1.default.json());
 app.use("/lecturers", lecturers_1.default);
 app.use(express_1.default.static(path_1.default.join(__dirname, "public")));
 app.get("/hc", (req, res, next) => {
-    res.send("Api is Running!!");
+    res.status(200).send("Api is Running!!!");
 });
 app.get("/checkDB", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -40,12 +40,6 @@ app.get("/checkDB", (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         return res.status(500).json({ message: "Expenses Error" });
     }
 }));
-// app.use("/auth", authRouter);
-// app.use("/gov-il-data", govILRouter);
-// app.use("/uploader", uploaderRouter);
-// app.use(authorizationMiddleware); // all the routers below protected!!!
-// app.use("/api/expenses", expensesRouter);
-// app.use("/api/orders", ordersRouter);
 app.use((error, req, res, next) => {
     logger_1.default.error(`${error.message} reqeustId: ${req.requestId}`);
     switch (error.message) {
@@ -70,3 +64,4 @@ app.listen(PORT, (err) => {
         console.log(`Api is running on port ${PORT}`);
     }
 });
+exports.default = app;

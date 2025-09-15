@@ -25,7 +25,7 @@ const insertExpenses = `
 router.get("/", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const result = yield (0, lecturers_service_1.getLecturers)();
-        return res.json({ data: result });
+        return res.status(200).json({ data: result });
     }
     catch (error) {
         res.json({ message: `there was an error ${error}` });
