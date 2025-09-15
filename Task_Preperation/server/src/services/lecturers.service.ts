@@ -54,3 +54,53 @@ export async function updateLecturerKnowledgeById(
     const [res]: any = await conn.execute(`UPDATE lecturer_management.lecturer SET ${column} = ? WHERE id = ?`, [levelId, id]);
     return res.affectedRows as number;
 }
+
+export async function isEmailExists(email: string): Promise<boolean> {
+    const conn = await getConnection();
+    const sql = `SELECT COUNT(*) as count FROM lecturer_management.lecturer WHERE email = ?`;
+    const [rows]: any = await conn.execute(sql, [email]);
+    const count = rows[0]?.count ?? 0;
+    return count > 0;
+}
+
+export async function createLecturer(payload: {
+    first_name: string;
+    last_name: string;
+    email: string;
+    age: number;
+    course_count: number;
+}): Promise<number> {
+    const conn = await getConnection();
+
+    // אימייל ייחודי
+    if (await isEmailExists(payload.email)) {
+        const err: any = new Error("Email already exists");
+        err.code = "EMAIL_EXISTS";
+        throw err;
+    }
+
+    // כל הדומיינים יקבלו levelID = 1 ("No knowledge")
+    const defaultLevelId = 1;
+
+    const sql = `
+    INSERT INTO lecturer_management.lecturer (
+      first_name, last_name, age, course_count, email, created_at,
+      level_n8n, level_fullstack, level_AI, level_MySQL
+    )
+    VALUES (?, ?, ?, ?, ?, NOW(), ?, ?, ?, ?)
+  `;
+
+    const [res]: any = await conn.execute(sql, [
+        payload.first_name,
+        payload.last_name,
+        payload.age,
+        payload.course_count,
+        payload.email,
+        defaultLevelId,
+        defaultLevelId,
+        defaultLevelId,
+        defaultLevelId,
+    ]);
+
+    return res.insertId as number;
+}

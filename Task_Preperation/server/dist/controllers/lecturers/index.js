@@ -16,12 +16,9 @@ const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const putKnowLedge_1 = require("./putKnowLedge");
 const lecturers_service_1 = require("../../services/lecturers.service");
+const postNewLecturer_1 = require("./postNewLecturer");
 dotenv_1.default.config();
 const router = express_1.default.Router();
-const insertExpenses = `
-        INSERT INTO northwind.expenses (id, date, category, amount, description)
-        VALUES (?, ?, ?, ?, ?)
-    `;
 router.get("/", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const result = yield (0, lecturers_service_1.getLecturers)();
@@ -33,4 +30,5 @@ router.get("/", (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
     }
 }));
 router.put("/:id/knowledge", putKnowLedge_1.putKnowledgeHandler);
+router.post("/addLecturer", postNewLecturer_1.postNewLecturer);
 exports.default = router;

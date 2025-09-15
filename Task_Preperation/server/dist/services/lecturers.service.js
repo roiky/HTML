@@ -16,6 +16,8 @@ exports.getLecturers = getLecturers;
 exports.getLevels = getLevels;
 exports.getLevelIdByName = getLevelIdByName;
 exports.updateLecturerKnowledgeById = updateLecturerKnowledgeById;
+exports.isEmailExists = isEmailExists;
+exports.createLecturer = createLecturer;
 const db_1 = __importDefault(require("../db"));
 function getLecturers() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -71,5 +73,47 @@ levelId // EXAMPLE: 3
         const conn = yield (0, db_1.default)();
         const [res] = yield conn.execute(`UPDATE lecturer_management.lecturer SET ${column} = ? WHERE id = ?`, [levelId, id]);
         return res.affectedRows;
+    });
+}
+function isEmailExists(email) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var _a, _b;
+        const conn = yield (0, db_1.default)();
+        const sql = `SELECT COUNT(*) as count FROM lecturer_management.lecturer WHERE email = ?`;
+        const [rows] = yield conn.execute(sql, [email]);
+        const count = (_b = (_a = rows[0]) === null || _a === void 0 ? void 0 : _a.count) !== null && _b !== void 0 ? _b : 0;
+        return count > 0;
+    });
+}
+function createLecturer(payload) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const conn = yield (0, db_1.default)();
+        // אימייל ייחודי
+        if (yield isEmailExists(payload.email)) {
+            const err = new Error("Email already exists");
+            err.code = "EMAIL_EXISTS";
+            throw err;
+        }
+        // כל הדומיינים יקבלו levelID = 1 ("No knowledge")
+        const defaultLevelId = 1;
+        const sql = `
+    INSERT INTO lecturer_management.lecturer (
+      first_name, last_name, age, course_count, email, created_at,
+      level_n8n, level_fullstack, level_AI, level_MySQL
+    )
+    VALUES (?, ?, ?, ?, ?, NOW(), ?, ?, ?, ?)
+  `;
+        const [res] = yield conn.execute(sql, [
+            payload.first_name,
+            payload.last_name,
+            payload.age,
+            payload.course_count,
+            payload.email,
+            defaultLevelId,
+            defaultLevelId,
+            defaultLevelId,
+            defaultLevelId,
+        ]);
+        return res.insertId;
     });
 }

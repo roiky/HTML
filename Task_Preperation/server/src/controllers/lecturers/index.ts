@@ -2,14 +2,10 @@ import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import { putKnowledgeHandler } from "./putKnowLedge";
 import { getLecturers } from "../../services/lecturers.service";
+import { postNewLecturer } from "./postNewLecturer";
 
 dotenv.config();
 const router = express.Router();
-
-const insertExpenses = `
-        INSERT INTO northwind.expenses (id, date, category, amount, description)
-        VALUES (?, ?, ?, ?, ?)
-    `;
 
 router.get("/", async (req, res, next) => {
     try {
@@ -23,5 +19,6 @@ router.get("/", async (req, res, next) => {
 });
 
 router.put("/:id/knowledge", putKnowledgeHandler);
+router.post("/addLecturer", postNewLecturer);
 
 export default router;
