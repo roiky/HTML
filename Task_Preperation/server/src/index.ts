@@ -1,25 +1,10 @@
 import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
-import apiToken from "./middleware/api.token";
-import requestDuration from "./middleware/requestDuration";
-import limiter from "./middleware/rateLimiter";
-import authRouter from "./controllers/auth";
-import expensesRouter from "./controllers/expenses";
-import ordersRouter from "./controllers/orders";
-import govILRouter from "./controllers/govIlData";
-import uploaderRouter from "./controllers/uploader";
 import path from "path";
 import { ERRORS } from "./enum/httpStatus";
-import authorizationMiddleware, { ReqLocal } from "./middleware/authorizationMiddleware";
 import logger from "./logger";
-import addRequestId from "./middleware/addRequestId";
 import cors from "cors";
 import getConnection from "./db";
-
-// setTimeout(async () => {
-//     const result = await (await getConnection()).query("select * from customers")
-//     console.log(result)
-// }, 5000);
 
 dotenv.config();
 const app = express();
@@ -27,10 +12,6 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
-app.use(addRequestId);
-app.use(requestDuration);
-app.use(apiToken);
-app.use(limiter);
 
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -39,15 +20,15 @@ app.get("/", (req, res, next) => {
 });
 
 app.get("/hc", (req, res, next) => {
-    res.send("Api is Running");
+    res.send("Api is Running!!");
 });
 
-app.use("/auth", authRouter);
-app.use("/gov-il-data", govILRouter);
-app.use("/uploader", uploaderRouter);
-app.use(authorizationMiddleware); // all the routers below protected!!!
-app.use("/api/expenses", expensesRouter);
-app.use("/api/orders", ordersRouter);
+// app.use("/auth", authRouter);
+// app.use("/gov-il-data", govILRouter);
+// app.use("/uploader", uploaderRouter);
+// app.use(authorizationMiddleware); // all the routers below protected!!!
+// app.use("/api/expenses", expensesRouter);
+// app.use("/api/orders", ordersRouter);
 
 app.use((error: any, req: Request, res: Response, next: NextFunction) => {
     logger.error(`${error.message} reqeustId: ${(req as ReqLocal).requestId}`);
@@ -60,7 +41,7 @@ app.use((error: any, req: Request, res: Response, next: NextFunction) => {
             return res.status(401).send("Unauthorized___");
         }
         default: {
-            return res.status(500).send("Something went wrong Yam is working to fix it & flight to America");
+            return res.status(500).send("Something went wrong! contact Roei Kalimi and report it!");
         }
     }
 });

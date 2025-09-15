@@ -5,46 +5,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
-const api_token_1 = __importDefault(require("./middleware/api.token"));
-const requestDuration_1 = __importDefault(require("./middleware/requestDuration"));
-const rateLimiter_1 = __importDefault(require("./middleware/rateLimiter"));
-const auth_1 = __importDefault(require("./controllers/auth"));
-const expenses_1 = __importDefault(require("./controllers/expenses"));
-const orders_1 = __importDefault(require("./controllers/orders"));
-const govIlData_1 = __importDefault(require("./controllers/govIlData"));
-const uploader_1 = __importDefault(require("./controllers/uploader"));
 const path_1 = __importDefault(require("path"));
 const httpStatus_1 = require("./enum/httpStatus");
-const authorizationMiddleware_1 = __importDefault(require("./middleware/authorizationMiddleware"));
 const logger_1 = __importDefault(require("./logger"));
-const addRequestId_1 = __importDefault(require("./middleware/addRequestId"));
 const cors_1 = __importDefault(require("cors"));
-// setTimeout(async () => {
-//     const result = await (await getConnection()).query("select * from customers")
-//     console.log(result)
-// }, 5000);
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3000;
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
-app.use(addRequestId_1.default);
-app.use(requestDuration_1.default);
-app.use(api_token_1.default);
-app.use(rateLimiter_1.default);
 app.use(express_1.default.static(path_1.default.join(__dirname, "public")));
 app.get("/", (req, res, next) => {
     res.sendFile(path_1.default.join(__dirname, "public", "index.html"));
 });
 app.get("/hc", (req, res, next) => {
-    res.send("Api is Running");
+    res.send("Api is Running!!");
 });
-app.use("/auth", auth_1.default);
-app.use("/gov-il-data", govIlData_1.default);
-app.use("/uploader", uploader_1.default);
-app.use(authorizationMiddleware_1.default); // all the routers below protected!!!
-app.use("/api/expenses", expenses_1.default);
-app.use("/api/orders", orders_1.default);
+// app.use("/auth", authRouter);
+// app.use("/gov-il-data", govILRouter);
+// app.use("/uploader", uploaderRouter);
+// app.use(authorizationMiddleware); // all the routers below protected!!!
+// app.use("/api/expenses", expensesRouter);
+// app.use("/api/orders", ordersRouter);
 app.use((error, req, res, next) => {
     logger_1.default.error(`${error.message} reqeustId: ${req.requestId}`);
     switch (error.message) {
@@ -55,7 +37,7 @@ app.use((error, req, res, next) => {
             return res.status(401).send("Unauthorized___");
         }
         default: {
-            return res.status(500).send("Something went wrong Yam is working to fix it & flight to America");
+            return res.status(500).send("Something went wrong! contact Roei Kalimi and report it!");
         }
     }
 });
