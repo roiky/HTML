@@ -1,0 +1,42 @@
+version: "3.8"
+services:
+  db:
+    image: mysql:8.0
+    container_name: lks-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: lecturer_management
+      TZ: Asia/Jerusalem
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+      - ./db/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
+
+  server:
+    build: ./server
+    container_name: lks-server
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: lecturer_management
+      DB_PORT: 3306
+      NODE_ENV: development
+      PORT: 3000
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+
+  client:
+    build: ./client
+    container_name: lks-client
+    environment:
+      VITE_API_BASE_URL: http://localhost:3000
+    command: sh -c "npm run dev -- --host 0.0.0.0 --port 5173"
+    ports:
+      - "5173:5173"
+    depends_on:
+      - server
