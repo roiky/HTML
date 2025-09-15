@@ -7,7 +7,7 @@ import cors from "cors";
 import getConnection from "./db";
 
 import lecturersRouter from "./controllers/lecturers";
-import { getLevels } from "./controllers/lecturers/getLecturers";
+import { getLevels } from "./services/lecturers.service";
 
 dotenv.config();
 const app = express();

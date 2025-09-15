@@ -19,7 +19,7 @@ const httpStatus_1 = require("./enum/httpStatus");
 const logger_1 = __importDefault(require("./logger"));
 const cors_1 = __importDefault(require("cors"));
 const lecturers_1 = __importDefault(require("./controllers/lecturers"));
-const getLecturers_1 = require("./controllers/lecturers/getLecturers");
+const lecturers_service_1 = require("./services/lecturers.service");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3000;
@@ -32,7 +32,7 @@ app.get("/hc", (req, res, next) => {
 });
 app.get("/checkDB", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = yield (0, getLecturers_1.getLevels)();
+        const result = yield (0, lecturers_service_1.getLevels)();
         return res.json({ data: result });
     }
     catch (error) {

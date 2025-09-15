@@ -1,8 +1,8 @@
 import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import getConnection from "../../db";
-import getLecturers from "./getLecturers";
 import { putKnowledgeHandler } from "./putKnowLedge";
+import { getLecturers } from "../../services/lecturers.service";
 
 dotenv.config();
 const router = express.Router();

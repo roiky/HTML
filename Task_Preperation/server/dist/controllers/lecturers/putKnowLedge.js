@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.putKnowledgeHandler = putKnowledgeHandler;
 const domainMap_1 = require("./domainMap");
 const lecturers_service_1 = require("../../services/lecturers.service");
-const getLecturers_1 = require("./getLecturers");
 function putKnowledgeHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -24,7 +23,7 @@ function putKnowledgeHandler(req, res, next) {
             if (!domain || !domainMap_1.DOMAIN_TO_COLUMN[domain])
                 return res.status(400).json({ message: "Invalid domain" });
             // get Allowed Levels from DB
-            const allowedLevels = yield (0, getLecturers_1.getLevels)();
+            const allowedLevels = yield (0, lecturers_service_1.getLevels)();
             if (!level || !allowedLevels.includes(level)) {
                 return res.status(400).json({ message: "Invalid level" });
             }

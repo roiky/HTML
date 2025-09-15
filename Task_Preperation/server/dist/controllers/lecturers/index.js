@@ -14,8 +14,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
-const getLecturers_1 = __importDefault(require("./getLecturers"));
 const putKnowLedge_1 = require("./putKnowLedge");
+const lecturers_service_1 = require("../../services/lecturers.service");
 dotenv_1.default.config();
 const router = express_1.default.Router();
 const insertExpenses = `
@@ -24,7 +24,7 @@ const insertExpenses = `
     `;
 router.get("/", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = yield (0, getLecturers_1.default)();
+        const result = yield (0, lecturers_service_1.getLecturers)();
         return res.json({ data: result });
     }
     catch (error) {

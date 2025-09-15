@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { DOMAIN_TO_COLUMN } from "./domainMap";
-import { getLevelIdByName, updateLecturerKnowledgeById } from "../../services/lecturers.service";
-import { getLevels } from "./getLecturers";
+import { getLevelIdByName, getLevels, updateLecturerKnowledgeById } from "../../services/lecturers.service";
 
 export async function putKnowledgeHandler(req: Request, res: Response, next: NextFunction) {
     try {
