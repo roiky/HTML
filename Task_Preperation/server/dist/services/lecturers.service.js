@@ -52,9 +52,12 @@ function getLecturers() {
 function getLevels() {
     return __awaiter(this, void 0, void 0, function* () {
         const conn = yield (0, db_1.default)();
-        const sql = `SELECT DISTINCT levelName FROM lecturer_management.knowledgeLevel`;
+        const sql = `SELECT levelID, levelName FROM lecturer_management.knowledgeLevel`;
         const [rows] = yield conn.execute(sql);
-        return rows.map((r) => r.levelName);
+        return rows.map((r) => ({
+            levelID: r.levelID,
+            levelName: r.levelName,
+        }));
     });
 }
 function getLevelIdByName(levelName) {

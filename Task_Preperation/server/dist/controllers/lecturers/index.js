@@ -29,6 +29,7 @@ router.get("/", (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
         return res.status(500).json({ message: "Expenses Error" });
     }
 }));
+router.get("/levels", putKnowLedge_1.putKnowledgeHandler);
 router.put("/:id/knowledge", putKnowLedge_1.putKnowledgeHandler);
 router.post("/addLecturer", postNewLecturer_1.postNewLecturer);
 exports.default = router;

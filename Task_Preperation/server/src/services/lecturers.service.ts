@@ -30,11 +30,19 @@ export async function getLecturers() {
     return rows;
 }
 
-export async function getLevels(): Promise<string[]> {
+export type Level = {
+    levelID: number;
+    levelName: string;
+};
+
+export async function getLevels(): Promise<Level[]> {
     const conn = await getConnection();
-    const sql = `SELECT DISTINCT levelName FROM lecturer_management.knowledgeLevel`;
+    const sql = `SELECT levelID, levelName FROM lecturer_management.knowledgeLevel`;
     const [rows]: any = await conn.execute(sql);
-    return rows.map((r: any) => r.levelName);
+    return rows.map((r: any) => ({
+        levelID: r.levelID,
+        levelName: r.levelName,
+    }));
 }
 
 export async function getLevelIdByName(levelName: string): Promise<number | null> {

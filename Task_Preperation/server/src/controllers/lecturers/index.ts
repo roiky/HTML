@@ -18,6 +18,7 @@ router.get("/", async (req, res, next) => {
     }
 });
 
+router.get("/levels", putKnowledgeHandler);
 router.put("/:id/knowledge", putKnowledgeHandler);
 router.post("/addLecturer", postNewLecturer);
 
