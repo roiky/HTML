@@ -15,16 +15,16 @@ CREATE TABLE IF NOT EXISTS `lecturer_management`.`lecturer` (
   course_count INT,
   email VARCHAR(100) NOT NULL UNIQUE,
   created_at DATETIME NOT NULL,
-  subject_nn VARCHAR(100), 
-  subject_fullstack VARCHAR(100), 
-  subject_nodejs VARCHAR(100), 
-  subject_typescript VARCHAR(100), 
+  level_n8n VARCHAR(100), 
+  level_fullstack VARCHAR(100), 
+  level_AI VARCHAR(100), 
+  level_MySQL VARCHAR(100), 
   PRIMARY KEY (id),
   UNIQUE INDEX id_UNIQUE (id ASC)
 );
 
-INSERT INTO `lecturer_management`.`lecturer` (`first_name`, `last_name`, `age`, `course_count`, `email`, `created_at`, `subject_nn`, `subject_fullstack`, `subject_nodejs`, `subject_typescript`) VALUES ('roei', 'kalimi', '30', '3', 'roeik@gmail.com', '2025-09-15', '1', '2', '2', '2');
-INSERT INTO `lecturer_management`.`lecturer` (`first_name`, `last_name`, `age`, `course_count`, `email`, `created_at`, `subject_nn`, `subject_fullstack`, `subject_nodejs`, `subject_typescript`) VALUES ('dummy', 'user', '19', '8', 'dummy@user.com', '2025-09-15', '3', '3', '3', '3');
+INSERT INTO `lecturer_management`.`lecturer` (`first_name`, `last_name`, `age`, `course_count`, `email`, `created_at`, `level_n8n`, `level_fullstack`, `level_AI`, `level_MySQL`) VALUES ('roei', 'kalimi', '30', '3', 'roeik@gmail.com', '2025-09-15', '1', '2', '2', '2');
+INSERT INTO `lecturer_management`.`lecturer` (`first_name`, `last_name`, `age`, `course_count`, `email`, `created_at`, `level_n8n`, `level_fullstack`, `level_AI`, `level_MySQL`) VALUES ('dummy', 'user', '19', '8', 'dummy@user.com', '2025-09-15', '3', '3', '3', '3');
 
 
 CREATE TABLE IF NOT EXISTS `lecturer_management`.`knowledgeLevel` (
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `lecturer_management`.`knowledgeLevel` (
   `levelName` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`levelID`));
 
-INSERT INTO `lecturer_management`.`knowledgeLevel` (`levelName`) VALUES ('no knowledge');
+INSERT INTO `lecturer_management`.`knowledgeLevel` (`levelName`) VALUES ('No Knowledge');
 INSERT INTO `lecturer_management`.`knowledgeLevel` (`levelName`) VALUES ('Low');
 INSERT INTO `lecturer_management`.`knowledgeLevel` (`levelName`) VALUES ('Medium');
 INSERT INTO `lecturer_management`.`knowledgeLevel` (`levelName`) VALUES ('Expert');

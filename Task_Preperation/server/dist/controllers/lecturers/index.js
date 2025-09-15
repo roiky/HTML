@@ -12,21 +12,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.register = register;
-const db_1 = __importDefault(require("../../db"));
-// INSERT INTO`northwind`.`users`(`email`, `password`, `age`, `address`) VALUES('nerya@gmail.com', 'test1122', '25', 'eilat');
-function register(user) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const params = [user.userName, user.password, user.age, user.phone];
-        const result = yield (yield (0, db_1.default)()).execute(getRegisterQuery(), params);
-        console.log(result);
-        // @ts-ignore 
-        if (result[0].insertId)
-            return true;
-        else
-            return false;
-    });
-}
-const getRegisterQuery = () => {
-    return `INSERT INTO northwind.users (email, password, age, address) VALUES (?,?,?,?);`;
-};
+const express_1 = __importDefault(require("express"));
+const dotenv_1 = __importDefault(require("dotenv"));
+const getLecturers_1 = __importDefault(require("./getLecturers"));
+const putKnowLedge_1 = require("./putKnowLedge");
+dotenv_1.default.config();
+const router = express_1.default.Router();
+const insertExpenses = `
+        INSERT INTO northwind.expenses (id, date, category, amount, description)
+        VALUES (?, ?, ?, ?, ?)
+    `;
+router.get("/", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const result = yield (0, getLecturers_1.default)();
+        return res.json({ data: result });
+    }
+    catch (error) {
+        res.json({ message: `there was an error ${error}` });
+        return res.status(500).json({ message: "Expenses Error" });
+    }
+}));
+router.put("/:id/knowledge", putKnowLedge_1.putKnowledgeHandler);
+exports.default = router;

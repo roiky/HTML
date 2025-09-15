@@ -23,6 +23,7 @@ function getConnection() {
                 database: process.env.DATABASE,
                 port: Number(process.env.DB_PORT) || 3306,
                 connectionLimit: 10,
+                waitForConnections: true,
             });
             return connection;
         }

@@ -6,6 +6,9 @@ import logger from "./logger";
 import cors from "cors";
 import getConnection from "./db";
 
+import lecturersRouter from "./controllers/lecturers";
+import { getLevels } from "./controllers/lecturers/getLecturers";
+
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -13,16 +16,24 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-app.use(express.static(path.join(__dirname, "public")));
+app.use("/lecturers", lecturersRouter);
 
-app.get("/", (req, res, next) => {
-    res.sendFile(path.join(__dirname, "public", "index.html"));
-});
+app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/hc", (req, res, next) => {
     res.send("Api is Running!!");
 });
 
+app.get("/checkDB", async (req, res, next) => {
+    try {
+        const result = await getLevels();
+
+        return res.json({ data: result });
+    } catch (error) {
+        res.json({ message: `there was an error ${error}` });
+        return res.status(500).json({ message: "Expenses Error" });
+    }
+});
 // app.use("/auth", authRouter);
 // app.use("/gov-il-data", govILRouter);
 // app.use("/uploader", uploaderRouter);
