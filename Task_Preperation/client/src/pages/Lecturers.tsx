@@ -9,6 +9,8 @@ import {
     deleteLecturer,
 } from "../services/data";
 import { Button } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+
 import LecurerModal from "../components/LecturerModal";
 
 const DOMAIN_TO_FIELD: Record<DomainLabel, keyof any> = {
@@ -224,7 +226,8 @@ export default function Data() {
                                             handleDeleteLecturer(it.id);
                                         }}
                                     >
-                                        Delete
+                                        {/* Delete */}
+                                        <DeleteIcon fontSize="small" />
                                     </Button>
                                 </td>
                             </tr>
