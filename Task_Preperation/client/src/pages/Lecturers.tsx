@@ -138,6 +138,7 @@ export default function Data() {
             // setItems(res);
             await load();
         } catch (error) {
+            alert("Failed to create lecturer!");
             console.log(`[ERROR - create lecturer failed] ${error}`);
         }
     };
@@ -151,7 +152,7 @@ export default function Data() {
             {error && <div className="error">{error}</div>}
 
             <div className="newLecturer">
-                <Button size="small" variant="contained" onClick={handleOpenModal}>
+                <Button size="small" variant="contained" color="success" onClick={handleOpenModal}>
                     Create New Lecturer
                 </Button>
             </div>
