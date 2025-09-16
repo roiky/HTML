@@ -39,10 +39,7 @@ export async function getLevels(): Promise<Level[]> {
     const conn = await getConnection();
     const sql = `SELECT levelID, levelName FROM lecturer_management.knowledgeLevel`;
     const [rows]: any = await conn.execute(sql);
-    return rows.map((r: any) => ({
-        levelID: r.levelID,
-        levelName: r.levelName,
-    }));
+    return rows.map((r: any) => r.levelName);
 }
 
 export async function getLevelIdByName(levelName: string): Promise<number | null> {

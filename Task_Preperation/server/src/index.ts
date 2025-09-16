@@ -24,17 +24,6 @@ app.get("/hc", (req, res, next) => {
     res.status(200).send("Api is Running!!!");
 });
 
-app.get("/checkDB", async (req, res, next) => {
-    try {
-        const result = await getLevels();
-
-        return res.json({ data: result });
-    } catch (error) {
-        res.json({ message: `there was an error ${error}` });
-        return res.status(500).json({ message: "Expenses Error" });
-    }
-});
-
 app.use((error: any, req: Request, res: Response, next: NextFunction) => {
     logger.error(`${error.message} reqeustId: ${(req as ReqLocal).requestId}`);
 

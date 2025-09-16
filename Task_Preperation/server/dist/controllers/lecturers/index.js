@@ -29,7 +29,16 @@ router.get("/", (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
         return res.status(500).json({ message: "Expenses Error" });
     }
 }));
-router.get("/levels", putKnowLedge_1.putKnowledgeHandler);
+router.get("/levels", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const result = yield (0, lecturers_service_1.getLevels)();
+        return res.json({ data: result });
+    }
+    catch (error) {
+        res.json({ message: `there was an error ${error}` });
+        return res.status(500).json({ message: "Expenses Error" });
+    }
+}));
 router.put("/:id/knowledge", putKnowLedge_1.putKnowledgeHandler);
 router.post("/addLecturer", postNewLecturer_1.postNewLecturer);
 exports.default = router;

@@ -1,25 +1,30 @@
 import { useEffect, useState } from "react";
-import { createLecturer, fetchLecturers } from "../services/data";
+import { createLecturer, fetchLecturers, updateKnowledge, fetchLevels, KnowledgeLevel, DomainLabel } from "../services/data";
 import { Button } from "@mui/material";
 import LecurerModal from "../components/LecturerModal";
 
-function formatDateInput(d: Date) {
-    return d.toISOString().slice(0, 10);
-}
+const DOMAIN_TO_FIELD: Record<DomainLabel, keyof any> = {
+    n8n: "n8n_level",
+    "AI Tools": "ai_level",
+    MySQL: "mysql_level",
+    "Full Stack Dev": "fullstack_level",
+};
 
 export default function Data() {
+    const [levels, setLevels] = useState<KnowledgeLevel[]>([]);
     const [loading, setLoading] = useState(false);
     const [items, setItems] = useState<any[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const [saving, setSaving] = useState<Record<string, boolean>>({});
 
     async function load() {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetchLecturers();
-            setItems(res);
-            console.log(res);
-            // console.log(newLecturer);
+            // טען במקביל
+            const [lvls, rows] = await Promise.all([fetchLevels(), fetchLecturers()]);
+            setLevels(lvls);
+            setItems(rows);
         } catch (e: any) {
             setError(e?.message ?? "Failed to load");
         } finally {
@@ -31,18 +36,57 @@ export default function Data() {
         load();
     }, []);
 
-    const newLecturerTest = async () => {
-        const randMail = `test${Date.now()}@example.com`;
-        const newLecturer = await createLecturer({
-            first_name: "test",
-            last_name: "last",
-            age: 13,
-            email: randMail,
-            course_count: 4,
-        });
-        const res = await fetchLecturers();
-        setItems(res);
-    };
+    async function handleLevelChange(rowId: number, domain: DomainLabel, newLevel: KnowledgeLevel) {
+        const field = DOMAIN_TO_FIELD[domain];
+        const key = `${rowId}:${String(field)}`;
+        const prev = items.find((x) => x.id === rowId);
+        if (!prev) return;
+        const prevLevel = prev[field];
+
+        // Optimistic UI
+        setItems((cur) => cur.map((r) => (r.id === rowId ? { ...r, [field]: newLevel } : r)));
+        setSaving((cur) => ({ ...cur, [key]: true }));
+        try {
+            await updateKnowledge(rowId, domain, newLevel);
+        } catch (err: any) {
+            // revert
+            setItems((cur) => cur.map((r) => (r.id === rowId ? { ...r, [field]: prevLevel } : r)));
+            alert(err?.response?.data?.message || "Failed to save knowledge level!");
+        } finally {
+            setSaving((cur) => {
+                const copy = { ...cur };
+                delete copy[key];
+                return copy;
+            });
+        }
+    }
+
+    function KnowledgeSelect({
+        value,
+        options,
+        onChange,
+        disabled,
+        saving,
+    }: {
+        value: KnowledgeLevel;
+        options: KnowledgeLevel[]; // מגיע מהשרת
+        onChange: (v: KnowledgeLevel) => void;
+        disabled?: boolean;
+        saving?: boolean;
+    }) {
+        return (
+            <div style={{ display: "inline-flex", gap: 8, alignItems: "center" }}>
+                <select value={value} disabled={disabled} onChange={(e) => onChange(e.target.value)}>
+                    {options.map((lvl) => (
+                        <option key={lvl} value={lvl}>
+                            {lvl}
+                        </option>
+                    ))}
+                </select>
+                {saving ? <span title="Saving…">⏳</span> : null}
+            </div>
+        );
+    }
 
     // Modal - START
     const [modalOpen, setModalOpen] = useState(false);
@@ -95,7 +139,7 @@ export default function Data() {
                             <th>ID</th>
                             <th>Name</th>
                             <th>Age</th>
-                            <th>E-Mail</th>
+                            <th>Email</th>
                             <th>Course Count</th>
                             <th>n8n Knowledge</th>
                             <th>AI Knowledge</th>
@@ -113,10 +157,42 @@ export default function Data() {
                                 <td>{it.age}</td>
                                 <td>{it.email}</td>
                                 <td>{Number(it.course_count).toFixed(2)}</td>
-                                <td>{it.n8n_level}</td>
-                                <td>{it.ai_level}</td>
-                                <td>{it.mysql_level}</td>
-                                <td>{it.fullstack_level}</td>
+                                <td>
+                                    <KnowledgeSelect
+                                        value={it.n8n_level}
+                                        options={levels}
+                                        disabled={!!saving[`${it.id}:n8n_level`]}
+                                        saving={!!saving[`${it.id}:n8n_level`]}
+                                        onChange={(val) => handleLevelChange(it.id, "n8n", val)}
+                                    />
+                                </td>
+                                <td>
+                                    <KnowledgeSelect
+                                        value={it.ai_level}
+                                        options={levels}
+                                        disabled={!!saving[`${it.id}:ai_level`]}
+                                        saving={!!saving[`${it.id}:ai_level`]}
+                                        onChange={(val) => handleLevelChange(it.id, "AI Tools", val)}
+                                    />
+                                </td>
+                                <td>
+                                    <KnowledgeSelect
+                                        value={it.mysql_level}
+                                        options={levels}
+                                        disabled={!!saving[`${it.id}:mysql_level`]}
+                                        saving={!!saving[`${it.id}:mysql_level`]}
+                                        onChange={(val) => handleLevelChange(it.id, "MySQL", val)}
+                                    />
+                                </td>
+                                <td>
+                                    <KnowledgeSelect
+                                        value={it.fullstack_level}
+                                        options={levels}
+                                        disabled={!!saving[`${it.id}:fullstack_level`]}
+                                        saving={!!saving[`${it.id}:fullstack_level`]}
+                                        onChange={(val) => handleLevelChange(it.id, "Full Stack Dev", val)}
+                                    />
+                                </td>
                             </tr>
                         ))}
                     </tbody>

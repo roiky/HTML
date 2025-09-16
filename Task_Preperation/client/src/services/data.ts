@@ -33,3 +33,15 @@ export async function createLecturer({ first_name, last_name, email, age, course
 
     return rows;
 }
+
+export type DomainLabel = "n8n" | "AI Tools" | "MySQL" | "Full Stack Dev";
+export type KnowledgeLevel = string;
+
+export async function fetchLevels(): Promise<KnowledgeLevel[]> {
+    const { data } = await api.get("/lecturers/levels");
+    return data?.data ?? []; // ["No knowledge","Low","Medium","Expert"]
+}
+
+export async function updateKnowledge(id: number, domain: DomainLabel, level: KnowledgeLevel) {
+    await api.put(base_url + `/lecturers/${id}/knowledge`, { domain, level });
+}

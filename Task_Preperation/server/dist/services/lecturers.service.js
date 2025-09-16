@@ -54,10 +54,7 @@ function getLevels() {
         const conn = yield (0, db_1.default)();
         const sql = `SELECT levelID, levelName FROM lecturer_management.knowledgeLevel`;
         const [rows] = yield conn.execute(sql);
-        return rows.map((r) => ({
-            levelID: r.levelID,
-            levelName: r.levelName,
-        }));
+        return rows.map((r) => r.levelName);
     });
 }
 function getLevelIdByName(levelName) {
