@@ -45,3 +45,11 @@ export async function fetchLevels(): Promise<KnowledgeLevel[]> {
 export async function updateKnowledge(id: number, domain: DomainLabel, level: KnowledgeLevel) {
     await api.put(base_url + `/lecturers/${id}/knowledge`, { domain, level });
 }
+
+export async function deleteLecturer(id: number) {
+    const response = await api.delete(base_url + `/lecturers/remove/${id}`, {});
+
+    const rows = response.data ?? [];
+
+    return rows;
+}

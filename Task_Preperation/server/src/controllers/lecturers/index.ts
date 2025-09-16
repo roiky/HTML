@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import { putKnowledgeHandler } from "./putKnowLedge";
 import { getLecturers, getLevels } from "../../services/lecturers.service";
 import { postNewLecturer } from "./postNewLecturer";
+import { removeLecturer } from "./removeLecturer";
 
 dotenv.config();
 const router = express.Router();
@@ -31,5 +32,6 @@ router.get("/levels", async (req, res, next) => {
 
 router.put("/:id/knowledge", putKnowledgeHandler);
 router.post("/addLecturer", postNewLecturer);
+router.delete("/remove/:id", removeLecturer);
 
 export default router;

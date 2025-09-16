@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
-import { createLecturer, fetchLecturers, updateKnowledge, fetchLevels, KnowledgeLevel, DomainLabel } from "../services/data";
+import {
+    createLecturer,
+    fetchLecturers,
+    updateKnowledge,
+    fetchLevels,
+    KnowledgeLevel,
+    DomainLabel,
+    deleteLecturer,
+} from "../services/data";
 import { Button } from "@mui/material";
 import LecurerModal from "../components/LecturerModal";
 
@@ -93,6 +101,20 @@ export default function Data() {
     const handleOpenModal = () => setModalOpen(true);
     const handleCloseModal = () => setModalOpen(false);
 
+    async function handleDeleteLecturer(id: number) {
+        if (!id) return;
+
+        try {
+            setLoading(true);
+            await deleteLecturer(id);
+            load();
+        } catch (e: any) {
+            setError(e?.message ?? "Failed to load");
+        } finally {
+            setLoading(false);
+        }
+    }
+
     const handleSaveLecturer = async (data: {
         first_name: string;
         last_name: string;
@@ -145,6 +167,7 @@ export default function Data() {
                             <th>AI Knowledge</th>
                             <th>MySQL Knowledge</th>
                             <th>Fullstack Knowledge</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -192,6 +215,17 @@ export default function Data() {
                                         saving={!!saving[`${it.id}:fullstack_level`]}
                                         onChange={(val) => handleLevelChange(it.id, "Full Stack Dev", val)}
                                     />
+                                </td>
+                                <td>
+                                    <Button
+                                        variant="contained"
+                                        color="error"
+                                        onClick={() => {
+                                            handleDeleteLecturer(it.id);
+                                        }}
+                                    >
+                                        Delete
+                                    </Button>
                                 </td>
                             </tr>
                         ))}

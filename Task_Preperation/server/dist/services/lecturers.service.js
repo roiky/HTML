@@ -18,6 +18,7 @@ exports.getLevelIdByName = getLevelIdByName;
 exports.updateLecturerKnowledgeById = updateLecturerKnowledgeById;
 exports.isEmailExists = isEmailExists;
 exports.createLecturer = createLecturer;
+exports.deleteLecturer = deleteLecturer;
 const db_1 = __importDefault(require("../db"));
 function getLecturers() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -115,5 +116,15 @@ function createLecturer(payload) {
             defaultLevelId,
         ]);
         return res.insertId;
+    });
+}
+function deleteLecturer(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var _a, _b;
+        const conn = yield (0, db_1.default)();
+        const sql = `DELETE FROM lecturer_management.lecturer WHERE id = ?`;
+        const [rows] = yield conn.execute(sql, [id]);
+        const count = (_b = (_a = rows[0]) === null || _a === void 0 ? void 0 : _a.count) !== null && _b !== void 0 ? _b : 0;
+        return count > 0;
     });
 }

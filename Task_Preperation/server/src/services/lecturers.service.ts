@@ -109,3 +109,11 @@ export async function createLecturer(payload: {
 
     return res.insertId as number;
 }
+
+export async function deleteLecturer(id: number): Promise<boolean> {
+    const conn = await getConnection();
+    const sql = `DELETE FROM lecturer_management.lecturer WHERE id = ?`;
+    const [rows]: any = await conn.execute(sql, [id]);
+    const count = rows[0]?.count ?? 0;
+    return count > 0;
+}

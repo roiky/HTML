@@ -17,6 +17,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const putKnowLedge_1 = require("./putKnowLedge");
 const lecturers_service_1 = require("../../services/lecturers.service");
 const postNewLecturer_1 = require("./postNewLecturer");
+const removeLecturer_1 = require("./removeLecturer");
 dotenv_1.default.config();
 const router = express_1.default.Router();
 router.get("/", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -41,4 +42,5 @@ router.get("/levels", (req, res, next) => __awaiter(void 0, void 0, void 0, func
 }));
 router.put("/:id/knowledge", putKnowLedge_1.putKnowledgeHandler);
 router.post("/addLecturer", postNewLecturer_1.postNewLecturer);
+router.delete("/remove/:id", removeLecturer_1.removeLecturer);
 exports.default = router;
