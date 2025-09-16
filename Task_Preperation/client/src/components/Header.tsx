@@ -11,9 +11,12 @@ export default function Header() {
                 <span className="accent">Lecturers List</span>
             </div>
             <nav className="nav">
-                {/* <Link className={location.pathname === "/data" ? "active" : ""} to="/data">
+                {
+                    /* <Link className={location.pathname === "/data" ? "active" : ""} to="/data">
                     Data
-                </Link> */}
+                </Link> */
+                    "Roei Kalimi - Task3 Prepare"
+                }
             </nav>
             <div className="actions"></div>
         </header>

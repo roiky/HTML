@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { createLecturer, fetchLecturers } from "../services/data";
+import { Button } from "@mui/material";
+import LecurerModal from "../components/LecturerModal";
 
 function formatDateInput(d: Date) {
     return d.toISOString().slice(0, 10);
@@ -14,14 +16,6 @@ export default function Data() {
         setLoading(true);
         setError(null);
         try {
-            const randMail = `test${Date.now()}@example.com`;
-            // const newLecturer = await createLecturer({
-            //     first_name: "test",
-            //     last_name: "last",
-            //     age: 13,
-            //     email: randMail,
-            //     course_count: 4,
-            // });
             const res = await fetchLecturers();
             setItems(res);
             console.log(res);
@@ -50,6 +44,37 @@ export default function Data() {
         setItems(res);
     };
 
+    // Modal - START
+    const [modalOpen, setModalOpen] = useState(false);
+    const handleOpenModal = () => setModalOpen(true);
+    const handleCloseModal = () => setModalOpen(false);
+
+    const handleSaveLecturer = async (data: {
+        first_name: string;
+        last_name: string;
+        age: number;
+        email: string;
+        course_count: number;
+    }) => {
+        try {
+            const newLecturer = await createLecturer({
+                first_name: data.first_name,
+                last_name: data.last_name,
+                email: data.email,
+                age: Number(data.age),
+                course_count: Number(data.course_count),
+            });
+            console.log(data);
+            console.log(`Created new lecturer, [ID = ${newLecturer.id}]`);
+            const res = await fetchLecturers();
+            setItems(res);
+            await load();
+        } catch (error) {
+            console.log(`[ERROR - create lecturer failed] ${error}`);
+        }
+    };
+    // Modal - END
+
     return (
         <section className="card">
             <div className="card-header">
@@ -58,7 +83,9 @@ export default function Data() {
             {error && <div className="error">{error}</div>}
 
             <div className="newLecturer">
-                <button onClick={newLecturerTest}>test</button>
+                <Button size="small" variant="contained" onClick={handleOpenModal}>
+                    Create New Lecturer
+                </Button>
             </div>
 
             <div className="tableData">
@@ -95,6 +122,7 @@ export default function Data() {
                     </tbody>
                 </table>
             </div>
+            <LecurerModal open={modalOpen} onClose={handleCloseModal} onSave={handleSaveLecturer} />
         </section>
     );
 }
