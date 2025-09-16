@@ -107,7 +107,7 @@ export default function Data() {
         try {
             setLoading(true);
             await deleteLecturer(id);
-            load();
+            await load();
         } catch (e: any) {
             setError(e?.message ?? "Failed to load");
         } finally {
@@ -132,8 +132,8 @@ export default function Data() {
             });
             console.log(data);
             console.log(`Created new lecturer, [ID = ${newLecturer.id}]`);
-            const res = await fetchLecturers();
-            setItems(res);
+            // const res = await fetchLecturers();
+            // setItems(res);
             await load();
         } catch (error) {
             console.log(`[ERROR - create lecturer failed] ${error}`);
