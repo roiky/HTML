@@ -11,9 +11,9 @@ export default function Header() {
                 <span className="accent">Lecturers List</span>
             </div>
             <nav className="nav">
-                <Link className={location.pathname === "/data" ? "active" : ""} to="/data">
+                {/* <Link className={location.pathname === "/data" ? "active" : ""} to="/data">
                     Data
-                </Link>
+                </Link> */}
             </nav>
             <div className="actions"></div>
         </header>

@@ -6,30 +6,26 @@ function formatDateInput(d: Date) {
 }
 
 export default function Data() {
-    const [from, setFrom] = useState(formatDateInput(new Date(new Date().setMonth(new Date().getMonth() - 2))));
-    const [to, setTo] = useState(formatDateInput(new Date()));
     const [loading, setLoading] = useState(false);
     const [items, setItems] = useState<any[]>([]);
     const [error, setError] = useState<string | null>(null);
-    const [categoriesCount, setCategoriesCount] = useState<Record<string, number>>({});
 
     async function load() {
         setLoading(true);
         setError(null);
         try {
+            const randMail = `test${Date.now()}@example.com`;
+            // const newLecturer = await createLecturer({
+            //     first_name: "test",
+            //     last_name: "last",
+            //     age: 13,
+            //     email: randMail,
+            //     course_count: 4,
+            // });
             const res = await fetchLecturers();
             setItems(res);
             console.log(res);
-
-            const randMail = `test${Date.now()}@example.com`;
-            const newLecturer = await createLecturer({
-                first_name: "test",
-                last_name: "last",
-                age: 13,
-                email: randMail,
-                course_count: 4,
-            });
-            console.log(newLecturer);
+            // console.log(newLecturer);
         } catch (e: any) {
             setError(e?.message ?? "Failed to load");
         } finally {
@@ -41,72 +37,63 @@ export default function Data() {
         load();
     }, []);
 
-    useEffect(() => {
-        console.log("Categories Count Start");
-        if (!items.length) return;
-
-        const counts: Record<string, number> = {};
-
-        items.forEach((it) => {
-            const category = it.category ?? "Unknown-category";
-            counts[category] = (counts[category] || 0) + 1;
+    const newLecturerTest = async () => {
+        const randMail = `test${Date.now()}@example.com`;
+        const newLecturer = await createLecturer({
+            first_name: "test",
+            last_name: "last",
+            age: 13,
+            email: randMail,
+            course_count: 4,
         });
-
-        setCategoriesCount(counts);
-        console.log(categoriesCount);
-    }, [items]);
+        const res = await fetchLecturers();
+        setItems(res);
+    };
 
     return (
         <section className="card">
             <div className="card-header">
-                <h2>Data</h2>
-                <div className="filters">
-                    <label>
-                        From <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} />
-                    </label>
-                    <label>
-                        To <input type="date" value={to} onChange={(e) => setTo(e.target.value)} />
-                    </label>
-                    <button className="btn" onClick={load} disabled={loading}>
-                        {loading ? "Loading..." : "Refresh"}
-                    </button>
-                </div>
+                <h2>Lecturers Data</h2>
             </div>
             {error && <div className="error">{error}</div>}
 
-            <div className="summary">
-                <h3>Categories Summary</h3>
-                <ul>
-                    {Object.entries(categoriesCount).map(([category, count]) => (
-                        <li key={category}>
-                            {category} - {count}
-                        </li>
-                    ))}
-                </ul>
+            <div className="newLecturer">
+                <button onClick={newLecturerTest}>test</button>
             </div>
 
-            <div className="grid">
-                {items.map((it, idx) => {
-                    //console.log(`[${it.id}] category: ${it.category}`);
-
-                    return (
-                        <div key={idx} className="tile">
-                            <div className="tile-title">Session #{it.session ?? it.id ?? idx + 1}</div>
-                            <div className="tile-body">
-                                <div>
-                                    <strong>Date:</strong> {it.date ?? it.createdAt ?? "-"}
-                                </div>
-                                <div>
-                                    <strong>Category:</strong> {it.category ?? "-"}
-                                </div>
-                                <div>
-                                    <strong>Amount:</strong> {it.amount ?? "-"}
-                                </div>
-                            </div>
-                        </div>
-                    );
-                })}
-                {!loading && items.length === 0 && <p className="muted">No results for the selected range.</p>}
+            <div className="tableData">
+                <table className="table" style={{ width: "100%" }}>
+                    <thead>
+                        <tr style={{ textAlign: "center" }}>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Age</th>
+                            <th>E-Mail</th>
+                            <th>Course Count</th>
+                            <th>n8n Knowledge</th>
+                            <th>AI Knowledge</th>
+                            <th>MySQL Knowledge</th>
+                            <th>Fullstack Knowledge</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {(items ?? []).map((it: any) => (
+                            <tr style={{ textAlign: "center" }} key={it.id}>
+                                <td>{it.id}</td>
+                                <td>
+                                    {it.first_name} {it.last_name}
+                                </td>
+                                <td>{it.age}</td>
+                                <td>{it.email}</td>
+                                <td>{Number(it.course_count).toFixed(2)}</td>
+                                <td>{it.n8n_level}</td>
+                                <td>{it.ai_level}</td>
+                                <td>{it.mysql_level}</td>
+                                <td>{it.fullstack_level}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
         </section>
     );
