@@ -1,0 +1,18 @@
+import { Router } from "express";
+import {
+    getActiveVacationsHandler,
+    getAllVacationsHandler,
+    getFollowedVacationsHandler,
+    getUpcomingVacationsHandler,
+} from "../controllers/vacations.controller";
+import { requireAuth } from "../middleware/auth.middleware";
+
+const router = Router();
+//router.get("/test", testAuth);
+
+router.get("/all", getAllVacationsHandler);
+router.get("/active", getActiveVacationsHandler);
+router.get("/upcoming", getUpcomingVacationsHandler);
+router.get("/followed", requireAuth, getFollowedVacationsHandler); // requires auth
+
+export default router;

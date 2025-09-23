@@ -13,23 +13,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const promise_1 = __importDefault(require("mysql2/promise"));
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
+let pool = null;
 function getConnection() {
     return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const connection = yield promise_1.default.createPool({
-                host: "localhost",
-                user: "root",
-                password: process.env.PASSWORD,
-                database: process.env.DATABASE,
-                port: Number(process.env.DB_PORT) || 3306,
+        if (!pool) {
+            pool = promise_1.default.createPool({
+                host: process.env.DB_HOST || "localhost",
+                user: process.env.DB_USER || process.env.USER || "root",
+                password: process.env.DB_PASSWORD || process.env.PASSWORD || "root",
+                database: process.env.DB_NAME || process.env.DATABASE || "vacations_app",
+                port: Number(process.env.DB_PORT || 3306),
                 connectionLimit: 10,
                 waitForConnections: true,
             });
-            return connection;
         }
-        catch (error) {
-            throw error;
-        }
+        return pool;
     });
 }
 exports.default = getConnection;
