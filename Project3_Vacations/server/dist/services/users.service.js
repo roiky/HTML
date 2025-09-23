@@ -16,7 +16,6 @@ exports.isEmailExists = isEmailExists;
 exports.createUser = createUser;
 exports.findUserByEmail = findUserByEmail;
 exports.findUserById = findUserById;
-const bcrypt_1 = __importDefault(require("bcrypt"));
 const db_1 = __importDefault(require("../db"));
 function isEmailExists(email) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -28,15 +27,14 @@ function isEmailExists(email) {
 function createUser(_a) {
     return __awaiter(this, arguments, void 0, function* ({ first_name, last_name, email, password, role = "user", }) {
         const conn = yield (0, db_1.default)();
-        const hashedPass = yield bcrypt_1.default.hash(password, 10);
-        const [res] = yield conn.execute("INSERT INTO users (first_name, last_name, email, password_hash, role) VALUES (?, ?, ?, ?, ?)", [first_name, last_name, email, hashedPass, role]);
+        const [res] = yield conn.execute("INSERT INTO vacations_app.users (first_name, last_name, email, password_hash, role) VALUES (?, ?, ?, ?, ?)", [first_name, last_name, email, password, role]);
         return res.insertId;
     });
 }
 function findUserByEmail(email) {
     return __awaiter(this, void 0, void 0, function* () {
         const conn = yield (0, db_1.default)();
-        const [rows] = yield conn.execute("SELECT user_id, first_name, last_name, email, role, password_hash FROM users WHERE email = ? LIMIT 1", [email]);
+        const [rows] = yield conn.execute("SELECT user_id, first_name, last_name, email, role, password_hash FROM vacations_app.users WHERE email = ? LIMIT 1", [email]);
         if (rows.length === 0)
             return null;
         return rows[0];
@@ -45,7 +43,7 @@ function findUserByEmail(email) {
 function findUserById(id) {
     return __awaiter(this, void 0, void 0, function* () {
         const conn = yield (0, db_1.default)();
-        const [rows] = yield conn.execute("SELECT user_id, first_name, last_name, email, role FROM users WHERE user_id = ? LIMIT 1", [id]);
+        const [rows] = yield conn.execute("SELECT user_id, first_name, last_name, email, role FROM vacations_app.users WHERE user_id = ? LIMIT 1", [id]);
         if (rows.length === 0)
             return null;
         return rows[0];

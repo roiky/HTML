@@ -13,7 +13,7 @@ export async function registerHandler(req: Request, res: Response, next: NextFun
     try {
         const parsed = registerSchema.safeParse(req.body);
         if (!parsed.success) {
-            return res.status(400).json({ message: "Validation error", details: parsed.error });
+            return res.status(400).json({ message: "Validation error", details: parsed.error.message });
         }
         const { first_name, last_name, email, password } = parsed.data;
         if (await usersService.isEmailExists(email)) {
@@ -37,8 +37,6 @@ export async function loginHandler(req: Request, res: Response, next: NextFuncti
         if (!user || !user.password_hash) {
             return res.status(401).json({ message: "Invalid credentials" });
         }
-        const ok = await bcrypt.compare(password, user.password_hash);
-        if (!ok) return res.status(401).json({ message: "Invalid credentials" });
 
         // token payload
         const payload = {

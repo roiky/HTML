@@ -13,14 +13,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const promise_1 = __importDefault(require("mysql2/promise"));
-const dotenv_1 = __importDefault(require("dotenv"));
-dotenv_1.default.config();
 function getConnection() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const connection = yield promise_1.default.createPool({
-                host: process.env.HOST,
-                user: process.env.ROOT,
+                host: "localhost",
+                user: "root",
                 password: process.env.PASSWORD,
                 database: process.env.DATABASE,
                 port: Number(process.env.DB_PORT) || 3306,

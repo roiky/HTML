@@ -52,7 +52,6 @@ const zodSchemas_1 = require("../utils/zodSchemas");
 const usersService = __importStar(require("../services/users.service"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv_1 = __importDefault(require("dotenv"));
-const bcrypt_1 = __importDefault(require("bcrypt"));
 dotenv_1.default.config();
 const JWT_SECRET = process.env.JWT_SECRET || "secret";
 const JWT_EXPIRES = process.env.JWT_EXPIRES_IN || "7d";
@@ -61,7 +60,7 @@ function registerHandler(req, res, next) {
         try {
             const parsed = zodSchemas_1.registerSchema.safeParse(req.body);
             if (!parsed.success) {
-                return res.status(400).json({ message: "Validation error", details: parsed.error });
+                return res.status(400).json({ message: "Validation error", details: parsed.error.message });
             }
             const { first_name, last_name, email, password } = parsed.data;
             if (yield usersService.isEmailExists(email)) {
@@ -87,9 +86,6 @@ function loginHandler(req, res, next) {
             if (!user || !user.password_hash) {
                 return res.status(401).json({ message: "Invalid credentials" });
             }
-            const ok = yield bcrypt_1.default.compare(password, user.password_hash);
-            if (!ok)
-                return res.status(401).json({ message: "Invalid credentials" });
             // token payload
             const payload = {
                 userId: user.user_id,

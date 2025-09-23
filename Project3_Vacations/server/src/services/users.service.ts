@@ -30,10 +30,9 @@ export async function createUser({
     role?: "user" | "admin";
 }): Promise<number> {
     const conn = await getConnection();
-    const hashedPass = await bcrypt.hash(password, 10);
     const [res]: any = await conn.execute(
-        "INSERT INTO users (first_name, last_name, email, password_hash, role) VALUES (?, ?, ?, ?, ?)",
-        [first_name, last_name, email, hashedPass, role]
+        "INSERT INTO vacations_app.users (first_name, last_name, email, password_hash, role) VALUES (?, ?, ?, ?, ?)",
+        [first_name, last_name, email, password, role]
     );
     return res.insertId as number;
 }
@@ -41,7 +40,7 @@ export async function createUser({
 export async function findUserByEmail(email: string): Promise<UserRow | null> {
     const conn = await getConnection();
     const [rows]: any = await conn.execute(
-        "SELECT user_id, first_name, last_name, email, role, password_hash FROM users WHERE email = ? LIMIT 1",
+        "SELECT user_id, first_name, last_name, email, role, password_hash FROM vacations_app.users WHERE email = ? LIMIT 1",
         [email]
     );
     if (rows.length === 0) return null;
@@ -51,7 +50,7 @@ export async function findUserByEmail(email: string): Promise<UserRow | null> {
 export async function findUserById(id: number): Promise<UserRow | null> {
     const conn = await getConnection();
     const [rows]: any = await conn.execute(
-        "SELECT user_id, first_name, last_name, email, role FROM users WHERE user_id = ? LIMIT 1",
+        "SELECT user_id, first_name, last_name, email, role FROM vacations_app.users WHERE user_id = ? LIMIT 1",
         [id]
     );
     if (rows.length === 0) return null;

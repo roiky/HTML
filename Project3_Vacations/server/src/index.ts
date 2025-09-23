@@ -1,31 +1,17 @@
 import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
-import { ERRORS } from "./enum/httpStatus";
 import logger from "./logger";
 import authRouter from "./routes/auth.routes";
 
 dotenv.config();
 const app = express();
+app.use(express.json());
 const PORT = process.env.PORT || 3000;
 
 app.use("/auth", authRouter);
 
 app.get("/hc", (req, res, next) => {
     res.status(200).send("Api is Running!!!");
-});
-
-app.use((error: any, req: Request, res: Response, next: NextFunction) => {
-    switch (error.message) {
-        case ERRORS.BAD_REQUEST: {
-            return res.status(400).send("Bad Request");
-        }
-        case ERRORS.UNAUTH: {
-            return res.status(401).send("Unauthorized___");
-        }
-        default: {
-            return res.status(500).send("Something went wrong! contact Roei Kalimi and report it!");
-        }
-    }
 });
 
 app.listen(PORT, (err) => {
