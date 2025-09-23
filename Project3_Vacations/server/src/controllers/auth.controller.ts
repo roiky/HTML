@@ -38,6 +38,9 @@ export async function loginHandler(req: Request, res: Response, next: NextFuncti
             return res.status(401).json({ message: "Invalid credentials" });
         }
 
+        const ok = await bcrypt.compare(password, user.password_hash);
+        if (!ok) return res.status(401).json({ message: "Invalid credentials" });
+
         // token payload
         const payload = {
             userId: user.user_id,

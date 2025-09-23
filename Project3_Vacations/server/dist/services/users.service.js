@@ -16,6 +16,7 @@ exports.isEmailExists = isEmailExists;
 exports.createUser = createUser;
 exports.findUserByEmail = findUserByEmail;
 exports.findUserById = findUserById;
+const bcrypt_1 = __importDefault(require("bcrypt"));
 const db_1 = __importDefault(require("../db"));
 function isEmailExists(email) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -27,7 +28,8 @@ function isEmailExists(email) {
 function createUser(_a) {
     return __awaiter(this, arguments, void 0, function* ({ first_name, last_name, email, password, role = "user", }) {
         const conn = yield (0, db_1.default)();
-        const [res] = yield conn.execute("INSERT INTO vacations_app.users (first_name, last_name, email, password_hash, role) VALUES (?, ?, ?, ?, ?)", [first_name, last_name, email, password, role]);
+        const hashed = yield bcrypt_1.default.hash(password, 10);
+        const [res] = yield conn.execute("INSERT INTO users (first_name, last_name, email, password_hash, role) VALUES (?, ?, ?, ?, ?)", [first_name, last_name, email, hashed, role]);
         return res.insertId;
     });
 }

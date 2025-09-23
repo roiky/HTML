@@ -30,9 +30,10 @@ export async function createUser({
     role?: "user" | "admin";
 }): Promise<number> {
     const conn = await getConnection();
+    const hashed = await bcrypt.hash(password, 10);
     const [res]: any = await conn.execute(
-        "INSERT INTO vacations_app.users (first_name, last_name, email, password_hash, role) VALUES (?, ?, ?, ?, ?)",
-        [first_name, last_name, email, password, role]
+        "INSERT INTO users (first_name, last_name, email, password_hash, role) VALUES (?, ?, ?, ?, ?)",
+        [first_name, last_name, email, hashed, role]
     );
     return res.insertId as number;
 }
