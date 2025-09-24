@@ -57,9 +57,26 @@ export async function loginHandler(req: Request, res: Response, next: NextFuncti
     }
 }
 
-export async function testAuth(req: Request, res: Response, next: NextFunction) {
+export async function setAdminHandler(req: Request, res: Response, next: NextFunction) {
     try {
-        return res.status(200).json({ message: "OK" });
+        const userIdRaw = req.params.id;
+        const id = Number(userIdRaw);
+
+        if (!id || Number.isNaN(id) || id <= 0) {
+            return res.status(400).json({ message: "Invalid user id" });
+        }
+
+        const user = await usersService.findUserById(id);
+        if (!user) {
+            return res.status(404).json({ message: "User not exist" });
+        }
+
+        const updated = await usersService.setUserAdmin(id);
+        if (!updated) {
+            return res.status(500).json({ message: "Failed to set user as admin" });
+        }
+
+        return res.status(200).json({ message: "User set to admin role", user: updated });
     } catch (err) {
         next(err);
     }

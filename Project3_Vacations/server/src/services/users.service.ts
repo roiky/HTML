@@ -57,3 +57,19 @@ export async function findUserById(id: number): Promise<UserRow | null> {
     if (rows.length === 0) return null;
     return rows[0] as UserRow;
 }
+
+export async function setUserAdmin(id: number): Promise<UserRow | null> {
+    const conn = await getConnection();
+    const [result]: any = await conn.execute("UPDATE vacations_app.users SET role = 'admin' WHERE user_id = ?", [id]);
+
+    if (!result || result.affectedRows === 0) {
+        return null;
+    }
+
+    const [rows]: any = await conn.execute(
+        "SELECT user_id, first_name, last_name, email, role, created_at FROM vacations_app.users WHERE user_id = ?",
+        [id]
+    );
+
+    return rows && rows[0] ? (rows[0] as UserRow) : null;
+}

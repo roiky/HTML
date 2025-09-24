@@ -47,7 +47,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.registerHandler = registerHandler;
 exports.loginHandler = loginHandler;
-exports.testAuth = testAuth;
+exports.setAdminHandler = setAdminHandler;
 const zodSchemas_1 = require("../utils/zodSchemas");
 const usersService = __importStar(require("../services/users.service"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -106,10 +106,23 @@ function loginHandler(req, res, next) {
         }
     });
 }
-function testAuth(req, res, next) {
+function setAdminHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            return res.status(200).json({ message: "OK" });
+            const userIdRaw = req.params.id;
+            const id = Number(userIdRaw);
+            if (!id || Number.isNaN(id) || id <= 0) {
+                return res.status(400).json({ message: "Invalid user id" });
+            }
+            const user = yield usersService.findUserById(id);
+            if (!user) {
+                return res.status(404).json({ message: "User not exist" });
+            }
+            const updated = yield usersService.setUserAdmin(id);
+            if (!updated) {
+                return res.status(500).json({ message: "Failed to set user as admin" });
+            }
+            return res.status(200).json({ message: "User set to admin role", user: updated });
         }
         catch (err) {
             next(err);

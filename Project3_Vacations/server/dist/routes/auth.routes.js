@@ -6,4 +6,5 @@ const router = (0, express_1.Router)();
 //router.get("/test", testAuth);
 router.post("/register", auth_controller_1.registerHandler);
 router.post("/login", auth_controller_1.loginHandler);
+router.put("/setAdmin/:id", auth_controller_1.setAdminHandler);
 exports.default = router;

@@ -16,6 +16,7 @@ exports.isEmailExists = isEmailExists;
 exports.createUser = createUser;
 exports.findUserByEmail = findUserByEmail;
 exports.findUserById = findUserById;
+exports.setUserAdmin = setUserAdmin;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const db_1 = __importDefault(require("../db"));
 function isEmailExists(email) {
@@ -49,5 +50,16 @@ function findUserById(id) {
         if (rows.length === 0)
             return null;
         return rows[0];
+    });
+}
+function setUserAdmin(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const conn = yield (0, db_1.default)();
+        const [result] = yield conn.execute("UPDATE vacations_app.users SET role = 'admin' WHERE user_id = ?", [id]);
+        if (!result || result.affectedRows === 0) {
+            return null;
+        }
+        const [rows] = yield conn.execute("SELECT user_id, first_name, last_name, email, role, created_at FROM vacations_app.users WHERE user_id = ?", [id]);
+        return rows && rows[0] ? rows[0] : null;
     });
 }
