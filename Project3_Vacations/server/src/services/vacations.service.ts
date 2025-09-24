@@ -34,15 +34,12 @@ async function getVacationsBase(sqlParams: {
 
     const conn = await getConnection();
 
-    // COUNT
     const countSql = `SELECT COUNT(*) AS cnt FROM vacations v ${whereSql}`;
     const [countRows]: any = await conn.execute(countSql, baseParams);
     const total = Number(countRows[0]?.cnt ?? 0);
 
-    // safe user id (0 means "not following" for any real user id)
-    const safeUserId = sqlParams.userId != null ? Number(sqlParams.userId) : 0;
+    const safeUserId = sqlParams.userId != null ? Number(sqlParams.userId) : 0; // to fix a bug when invalid userID broke the app
 
-    // SELECT (LIMIT/OFFSET inserted inline after validation)
     const selectSql = `
     SELECT
       v.vacation_id,
@@ -78,7 +75,7 @@ async function getVacationsBase(sqlParams: {
     return { rows: mapped, total, page, pageSize };
 }
 
-/* ---------- exported convenient functions ---------- */
+/* ---------- now use "getVacationsBase" to get all kinds of filters  ---------- */
 
 export async function getAllVacations(args: BaseArgs) {
     return getVacationsBase({ whereClause: "", whereParams: [], ...args });
@@ -103,7 +100,7 @@ export async function getUpcomingVacations(args: BaseArgs) {
 export async function getFollowedVacations(args: BaseArgs & { userId?: number | null }) {
     if (!args.userId) {
         const err: any = new Error("userId is required for getFollowedVacations");
-        err.code = "MISSING_USER";
+        //err.code = "MISSING_USER";
         throw err;
     }
     return getVacationsBase({

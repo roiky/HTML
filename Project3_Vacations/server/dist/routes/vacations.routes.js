@@ -9,4 +9,7 @@ router.get("/all", vacations_controller_1.getAllVacationsHandler);
 router.get("/active", vacations_controller_1.getActiveVacationsHandler);
 router.get("/upcoming", vacations_controller_1.getUpcomingVacationsHandler);
 router.get("/followed", auth_middleware_1.requireAuth, vacations_controller_1.getFollowedVacationsHandler); // requires auth
+router.post("/:id/follow", vacations_controller_1.postFollowHandler);
+router.delete("/:id/follow", vacations_controller_1.deleteFollowHandler);
+//router.delete("/:id/follow", requireAuth, deleteFollowHandler);
 exports.default = router;

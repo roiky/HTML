@@ -13,6 +13,8 @@ exports.getAllVacationsHandler = getAllVacationsHandler;
 exports.getActiveVacationsHandler = getActiveVacationsHandler;
 exports.getUpcomingVacationsHandler = getUpcomingVacationsHandler;
 exports.getFollowedVacationsHandler = getFollowedVacationsHandler;
+exports.postFollowHandler = postFollowHandler;
+exports.deleteFollowHandler = deleteFollowHandler;
 const vacations_service_1 = require("../services/vacations.service");
 function getAllVacationsHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -70,6 +72,46 @@ function getFollowedVacationsHandler(req, res, next) {
                 return res.status(401).json({ message: "Unauthorized" });
             const result = yield (0, vacations_service_1.getFollowedVacations)({ userId, page, pageSize });
             res.json({ data: result.rows, meta: { total: result.total, page: result.page, pageSize: result.pageSize } });
+        }
+        catch (err) {
+            next(err);
+        }
+    });
+}
+function postFollowHandler(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var _a;
+        try {
+            const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId;
+            // const userId = Number(req.body.userId);
+            if (!userId)
+                return res.status(401).json({ message: "Unauthorized" });
+            const vacationId = Number(req.params.id);
+            if (!vacationId || Number.isNaN(vacationId) || vacationId <= 0) {
+                return res.status(400).json({ message: "Invalid vacation id" });
+            }
+            yield (0, vacations_service_1.followVacation)(userId, vacationId);
+            return res.status(204).send();
+        }
+        catch (err) {
+            next(err);
+        }
+    });
+}
+function deleteFollowHandler(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var _a;
+        try {
+            const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId;
+            // const userId = Number(req.body.userId);
+            if (!userId)
+                return res.status(401).json({ message: "Unauthorized" });
+            const vacationId = Number(req.params.id);
+            if (!vacationId || Number.isNaN(vacationId) || vacationId <= 0) {
+                return res.status(400).json({ message: "Invalid vacation id" });
+            }
+            yield (0, vacations_service_1.unfollowVacation)(userId, vacationId);
+            return res.status(204).send();
         }
         catch (err) {
             next(err);

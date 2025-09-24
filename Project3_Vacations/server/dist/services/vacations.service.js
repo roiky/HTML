@@ -28,13 +28,10 @@ function getVacationsBase(sqlParams) {
         const whereSql = sqlParams.whereClause && sqlParams.whereClause.trim() ? `WHERE ${sqlParams.whereClause}` : "";
         const baseParams = Array.isArray(sqlParams.whereParams) ? [...sqlParams.whereParams] : [];
         const conn = yield (0, db_1.default)();
-        // COUNT
         const countSql = `SELECT COUNT(*) AS cnt FROM vacations v ${whereSql}`;
         const [countRows] = yield conn.execute(countSql, baseParams);
         const total = Number((_d = (_c = countRows[0]) === null || _c === void 0 ? void 0 : _c.cnt) !== null && _d !== void 0 ? _d : 0);
-        // safe user id (0 means "not following" for any real user id)
-        const safeUserId = sqlParams.userId != null ? Number(sqlParams.userId) : 0;
-        // SELECT (LIMIT/OFFSET inserted inline after validation)
+        const safeUserId = sqlParams.userId != null ? Number(sqlParams.userId) : 0; // to fix a bug when invalid userID broke the app
         const selectSql = `
     SELECT
       v.vacation_id,
@@ -70,7 +67,7 @@ function getVacationsBase(sqlParams) {
         return { rows: mapped, total, page, pageSize };
     });
 }
-/* ---------- exported convenient functions ---------- */
+/* ---------- now use "getVacationsBase" to get all kinds of filters  ---------- */
 function getAllVacations(args) {
     return __awaiter(this, void 0, void 0, function* () {
         return getVacationsBase(Object.assign({ whereClause: "", whereParams: [] }, args));
@@ -90,7 +87,7 @@ function getFollowedVacations(args) {
     return __awaiter(this, void 0, void 0, function* () {
         if (!args.userId) {
             const err = new Error("userId is required for getFollowedVacations");
-            err.code = "MISSING_USER";
+            //err.code = "MISSING_USER";
             throw err;
         }
         return getVacationsBase(Object.assign({ whereClause: "EXISTS (SELECT 1 FROM followers f2 WHERE f2.vacation_id = v.vacation_id AND f2.user_id = ?)", whereParams: [args.userId] }, args));
