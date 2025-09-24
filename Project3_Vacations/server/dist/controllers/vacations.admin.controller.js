@@ -25,26 +25,24 @@ function postNewVacation(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const file = req.file;
-            const payload = {
+            const payloadRaw = {
                 destination: req.body.destination,
                 description: req.body.description,
                 start_date: req.body.start_date,
                 end_date: req.body.end_date,
                 price: Number(req.body.price),
-                image_name: file ? file.filename : null,
             };
-            const parsed = zodSchemas_1.vacationCreateSchema.safeParse(payload);
+            // validate
+            const parsed = zodSchemas_1.vacationCreateSchema.safeParse(payloadRaw);
             if (!parsed.success) {
                 if (file)
                     yield promises_1.default.unlink(path_1.default.join(UPLOAD_DIR, file.filename)).catch(() => { });
                 return res.status(400).json({ message: "Validation error", details: parsed.error.format() });
             }
-            if (Date.parse(parsed.data.end_date) < Date.parse(parsed.data.start_date)) {
-                if (file)
-                    yield promises_1.default.unlink(path_1.default.join(UPLOAD_DIR, file.filename)).catch(() => { });
-                return res.status(400).json({ message: "end_date must be >= start_date" });
-            }
-            const id = yield (0, vacations_service_1.createVacation)(parsed.data);
+            // build final payload and include image_name explicitly
+            const finalPayload = Object.assign(Object.assign({}, parsed.data), { image_name: file ? file.filename : null });
+            console.log("DEBUG: finalPayload =", finalPayload);
+            const id = yield (0, vacations_service_1.createVacation)(finalPayload);
             return res.status(201).json({ id, message: "Vacation created" });
         }
         catch (err) {

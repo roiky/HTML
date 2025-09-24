@@ -10,27 +10,31 @@ const UPLOAD_DIR = path.join(process.cwd(), "uploads");
 export async function postNewVacation(req: Request, res: Response, next: NextFunction) {
     try {
         const file = (req as any).file;
-        const payload = {
+
+        const payloadRaw = {
             destination: req.body.destination,
             description: req.body.description,
             start_date: req.body.start_date,
             end_date: req.body.end_date,
             price: Number(req.body.price),
-            image_name: file ? file.filename : null,
         };
 
-        const parsed = vacationCreateSchema.safeParse(payload);
+        // validate
+        const parsed = vacationCreateSchema.safeParse(payloadRaw);
         if (!parsed.success) {
             if (file) await fs.unlink(path.join(UPLOAD_DIR, file.filename)).catch(() => {});
             return res.status(400).json({ message: "Validation error", details: parsed.error.format() });
         }
 
-        if (Date.parse(parsed.data.end_date) < Date.parse(parsed.data.start_date)) {
-            if (file) await fs.unlink(path.join(UPLOAD_DIR, file.filename)).catch(() => {});
-            return res.status(400).json({ message: "end_date must be >= start_date" });
-        }
+        // build final payload and include image_name explicitly
+        const finalPayload = {
+            ...parsed.data,
+            image_name: file ? file.filename : null,
+        };
 
-        const id = await createVacation(parsed.data);
+        console.log("DEBUG: finalPayload =", finalPayload);
+
+        const id = await createVacation(finalPayload);
         return res.status(201).json({ id, message: "Vacation created" });
     } catch (err) {
         next(err);
