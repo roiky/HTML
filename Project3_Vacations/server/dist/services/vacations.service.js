@@ -18,6 +18,10 @@ exports.getUpcomingVacations = getUpcomingVacations;
 exports.getFollowedVacations = getFollowedVacations;
 exports.followVacation = followVacation;
 exports.unfollowVacation = unfollowVacation;
+exports.createVacation = createVacation;
+exports.updateVacation = updateVacation;
+exports.deleteVacation = deleteVacation;
+exports.findVacationById = findVacationById;
 const db_1 = __importDefault(require("../db"));
 function getVacationsBase(sqlParams) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -103,5 +107,63 @@ function unfollowVacation(userId, vacationId) {
     return __awaiter(this, void 0, void 0, function* () {
         const conn = yield (0, db_1.default)();
         yield conn.execute(`DELETE FROM followers WHERE user_id = ? AND vacation_id = ?`, [userId, vacationId]);
+    });
+}
+/* ---------- ADMIN FUNCTIONS = CRUD  ---------- */
+function createVacation(payload) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var _a;
+        const conn = yield (0, db_1.default)();
+        const sql = `
+    INSERT INTO vacations_app.vacations
+      (destination, description, start_date, end_date, price, image_name, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, NOW())
+  `;
+        const params = [
+            payload.destination,
+            payload.description,
+            payload.start_date,
+            payload.end_date,
+            payload.price,
+            (_a = payload.image_name) !== null && _a !== void 0 ? _a : null,
+        ];
+        const [result] = yield conn.execute(sql, params);
+        return result.insertId;
+    });
+}
+function updateVacation(id, payload) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var _a;
+        const conn = yield (0, db_1.default)();
+        const sql = `
+    UPDATE vacations_app.vacations
+    SET destination = ?, description = ?, start_date = ?, end_date = ?, price = ?, image_name = ?
+    WHERE vacation_id = ?
+  `;
+        const params = [
+            payload.destination,
+            payload.description,
+            payload.start_date,
+            payload.end_date,
+            payload.price,
+            (_a = payload.image_name) !== null && _a !== void 0 ? _a : null,
+            id,
+        ];
+        const [result] = yield conn.execute(sql, params);
+        return result.affectedRows > 0;
+    });
+}
+function deleteVacation(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const conn = yield (0, db_1.default)();
+        const [result] = yield conn.execute("DELETE FROM vacations_app.vacations WHERE vacation_id = ?", [id]);
+        return result.affectedRows > 0;
+    });
+}
+function findVacationById(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const conn = yield (0, db_1.default)();
+        const [rows] = yield conn.execute("SELECT * FROM vacations_app.vacations WHERE vacation_id = ?", [id]);
+        return rows && rows[0] ? rows[0] : null;
     });
 }

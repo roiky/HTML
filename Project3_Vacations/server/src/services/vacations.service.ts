@@ -119,3 +119,75 @@ export async function unfollowVacation(userId: number, vacationId: number): Prom
     const conn = await getConnection();
     await conn.execute(`DELETE FROM followers WHERE user_id = ? AND vacation_id = ?`, [userId, vacationId]);
 }
+
+/* ---------- ADMIN FUNCTIONS = CRUD  ---------- */
+
+export async function createVacation(payload: {
+    destination: string;
+    description: string;
+    start_date: string; // ISO string
+    end_date: string;
+    price: number;
+    image_name?: string | null;
+}): Promise<number> {
+    const conn = await getConnection();
+    const sql = `
+    INSERT INTO vacations_app.vacations
+      (destination, description, start_date, end_date, price, image_name, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, NOW())
+  `;
+    const params = [
+        payload.destination,
+        payload.description,
+        payload.start_date,
+        payload.end_date,
+        payload.price,
+        payload.image_name ?? null,
+    ];
+
+    const [result]: any = await conn.execute(sql, params);
+    return result.insertId as number;
+}
+
+export async function updateVacation(
+    id: number,
+    payload: {
+        destination: string;
+        description: string;
+        start_date: string;
+        end_date: string;
+        price: number;
+        image_name?: string | null;
+    }
+): Promise<boolean> {
+    const conn = await getConnection();
+    const sql = `
+    UPDATE vacations_app.vacations
+    SET destination = ?, description = ?, start_date = ?, end_date = ?, price = ?, image_name = ?
+    WHERE vacation_id = ?
+  `;
+    const params = [
+        payload.destination,
+        payload.description,
+        payload.start_date,
+        payload.end_date,
+        payload.price,
+        payload.image_name ?? null,
+        id,
+    ];
+
+    const [result]: any = await conn.execute(sql, params);
+    return result.affectedRows > 0;
+}
+
+export async function deleteVacation(id: number): Promise<boolean> {
+    const conn = await getConnection();
+    const [result]: any = await conn.execute("DELETE FROM vacations_app.vacations WHERE vacation_id = ?", [id]);
+    return result.affectedRows > 0;
+}
+
+export async function findVacationById(id: number) {
+    const conn = await getConnection();
+    const [rows]: any = await conn.execute("SELECT * FROM vacations_app.vacations WHERE vacation_id = ?", [id]);
+    return rows && rows[0] ? rows[0] : null;
+}
