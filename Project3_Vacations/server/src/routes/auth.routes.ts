@@ -6,6 +6,6 @@ const router = Router();
 
 router.post("/register", registerHandler);
 router.post("/login", loginHandler);
-router.put("/setAdmin/:id", setAdminHandler);
+router.put("/setAdmin/:id", setAdminHandler); //needs to be admin but then no-one can set the first admin so for testing - no "requireAdmin" middleware
 
 export default router;
