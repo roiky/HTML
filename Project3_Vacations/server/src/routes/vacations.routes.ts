@@ -17,8 +17,7 @@ router.get("/active", getActiveVacationsHandler);
 router.get("/upcoming", getUpcomingVacationsHandler);
 router.get("/followed", requireAuth, getFollowedVacationsHandler); // requires auth
 
-router.post("/:id/follow", postFollowHandler);
-router.delete("/:id/follow", deleteFollowHandler);
-//router.delete("/:id/follow", requireAuth, deleteFollowHandler);
+router.post("/:id/follow", postFollowHandler); // add requireAuth
+router.delete("/:id/follow", deleteFollowHandler); // add requireAuth
 
 export default router;

@@ -26,7 +26,7 @@ export async function postNewVacation(req: Request, res: Response, next: NextFun
             return res.status(400).json({ message: "Validation error", details: parsed.error.format() });
         }
 
-        // build final payload and include image_name explicitly
+        // add "image_name" after successful validate
         const finalPayload = {
             ...parsed.data,
             image_name: file ? file.filename : null,
@@ -67,38 +67,38 @@ export async function putVacationHandler(req: Request, res: Response, next: Next
         });
 
         if (!parsed.success) {
-            if (file) await fs.unlink(path.join(UPLOAD_DIR, file.filename)).catch(() => {});
+            if (file) await fs.unlink(path.join(UPLOAD_DIR, file.filename)).catch(() => {}); //delete awaiting image
             return res.status(400).json({ message: "Validation error", details: parsed.error.format() });
         }
 
         if (Date.parse(parsed.data.end_date) < Date.parse(parsed.data.start_date)) {
-            if (file) await fs.unlink(path.join(UPLOAD_DIR, file.filename)).catch(() => {});
+            if (file) await fs.unlink(path.join(UPLOAD_DIR, file.filename)).catch(() => {}); //delete awaiting image
             return res.status(400).json({ message: "end_date must be >= start_date" });
         }
 
         // get existing to possibly delete old image
         const existing = await findVacationById(id);
         if (!existing) {
-            if (file) await fs.unlink(path.join(UPLOAD_DIR, file.filename)).catch(() => {});
+            if (file) await fs.unlink(path.join(UPLOAD_DIR, file.filename)).catch(() => {}); //delete awaiting image
             return res.status(404).json({ message: "Vacation not found" });
         }
 
         // if no new image was provided, keep old image_name
         const finalPayload = {
             ...parsed.data, // destination, description, start_date, end_date, price
-            image_name: file ? file.filename : existing.image_name, // אם הגיעה תמונה חדשה — השתמש בה, אחרת השאר את הקיים
+            image_name: file ? file.filename : existing.image_name, // use new image if provided, else use old (existing) image
         };
 
         const ok = await updateVacation(id, finalPayload);
         if (!ok) {
             // cleanup uploaded file if update failed
-            if (file) await fs.unlink(path.join(UPLOAD_DIR, file.filename)).catch(() => {});
+            if (file) await fs.unlink(path.join(UPLOAD_DIR, file.filename)).catch(() => {}); //delete awaiting image
             return res.status(500).json({ message: "Update failed" });
         }
 
         // if new image was provided and there was an old image — delete old file from disk
         if (file && existing.image_name) {
-            await fs.unlink(path.join(UPLOAD_DIR, existing.image_name)).catch(() => {});
+            await fs.unlink(path.join(UPLOAD_DIR, existing.image_name)).catch(() => {}); //delete awaiting image
         }
 
         return res.status(200).json({ message: "Vacation updated" });

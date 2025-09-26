@@ -16,6 +16,7 @@ if (!fs_1.default.existsSync(UPLOAD_DIR)) {
 // storage strategy: keep original extension, prefix timestamp to avoid collisions
 const storage = multer_1.default.diskStorage({
     destination: (_req, _file, cb) => {
+        //the actual part that save the file
         cb(null, UPLOAD_DIR);
     },
     filename: (_req, file, cb) => {

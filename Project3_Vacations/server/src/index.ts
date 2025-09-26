@@ -4,6 +4,7 @@ import logger from "./logger";
 import authRouter from "./routes/auth.routes";
 import vacationsRouter from "./routes/vacations.routes";
 import adminVacationsRouter from "./routes/vacations.admin.routes";
+import reportVacationsRouter from "./routes/reports.routes";
 
 dotenv.config();
 const app = express();
@@ -13,9 +14,10 @@ const PORT = process.env.PORT || 3000;
 app.use("/auth", authRouter);
 app.use("/vac", vacationsRouter);
 app.use("/admin", adminVacationsRouter);
+app.use("/reports", reportVacationsRouter);
 
 app.get("/hc", (req, res, next) => {
-    res.status(200).send("Api is Running!!!");
+    res.status(200).send("Vacations API is running!");
 });
 
 app.listen(PORT, (err) => {

@@ -64,7 +64,7 @@ export async function getFollowedVacationsHandler(req: Request, res: Response, n
 export async function postFollowHandler(req: Request, res: Response, next: NextFunction) {
     try {
         const userId = (req as any).user?.userId;
-        // const userId = Number(req.body.userId);
+        //const userId = Number(req.body.userId);
         if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
         const vacationId = Number(req.params.id);

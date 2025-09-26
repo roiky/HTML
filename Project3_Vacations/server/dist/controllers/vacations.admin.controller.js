@@ -39,7 +39,7 @@ function postNewVacation(req, res, next) {
                     yield promises_1.default.unlink(path_1.default.join(UPLOAD_DIR, file.filename)).catch(() => { });
                 return res.status(400).json({ message: "Validation error", details: parsed.error.format() });
             }
-            // build final payload and include image_name explicitly
+            // add "image_name" after successful validate
             const finalPayload = Object.assign(Object.assign({}, parsed.data), { image_name: file ? file.filename : null });
             console.log("DEBUG: finalPayload =", finalPayload);
             const id = yield (0, vacations_service_1.createVacation)(finalPayload);
@@ -77,19 +77,19 @@ function putVacationHandler(req, res, next) {
             });
             if (!parsed.success) {
                 if (file)
-                    yield promises_1.default.unlink(path_1.default.join(UPLOAD_DIR, file.filename)).catch(() => { });
+                    yield promises_1.default.unlink(path_1.default.join(UPLOAD_DIR, file.filename)).catch(() => { }); //delete awaiting image
                 return res.status(400).json({ message: "Validation error", details: parsed.error.format() });
             }
             if (Date.parse(parsed.data.end_date) < Date.parse(parsed.data.start_date)) {
                 if (file)
-                    yield promises_1.default.unlink(path_1.default.join(UPLOAD_DIR, file.filename)).catch(() => { });
+                    yield promises_1.default.unlink(path_1.default.join(UPLOAD_DIR, file.filename)).catch(() => { }); //delete awaiting image
                 return res.status(400).json({ message: "end_date must be >= start_date" });
             }
             // get existing to possibly delete old image
             const existing = yield (0, vacations_service_1.findVacationById)(id);
             if (!existing) {
                 if (file)
-                    yield promises_1.default.unlink(path_1.default.join(UPLOAD_DIR, file.filename)).catch(() => { });
+                    yield promises_1.default.unlink(path_1.default.join(UPLOAD_DIR, file.filename)).catch(() => { }); //delete awaiting image
                 return res.status(404).json({ message: "Vacation not found" });
             }
             // if no new image was provided, keep old image_name
@@ -98,12 +98,12 @@ function putVacationHandler(req, res, next) {
             if (!ok) {
                 // cleanup uploaded file if update failed
                 if (file)
-                    yield promises_1.default.unlink(path_1.default.join(UPLOAD_DIR, file.filename)).catch(() => { });
+                    yield promises_1.default.unlink(path_1.default.join(UPLOAD_DIR, file.filename)).catch(() => { }); //delete awaiting image
                 return res.status(500).json({ message: "Update failed" });
             }
             // if new image was provided and there was an old image — delete old file from disk
             if (file && existing.image_name) {
-                yield promises_1.default.unlink(path_1.default.join(UPLOAD_DIR, existing.image_name)).catch(() => { });
+                yield promises_1.default.unlink(path_1.default.join(UPLOAD_DIR, existing.image_name)).catch(() => { }); //delete awaiting image
             }
             return res.status(200).json({ message: "Vacation updated" });
         }
