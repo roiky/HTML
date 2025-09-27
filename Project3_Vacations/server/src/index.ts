@@ -5,9 +5,12 @@ import authRouter from "./routes/auth.routes";
 import vacationsRouter from "./routes/vacations.routes";
 import adminVacationsRouter from "./routes/vacations.admin.routes";
 import reportVacationsRouter from "./routes/reports.routes";
+import cors from "cors";
 
 dotenv.config();
 const app = express();
+
+app.use(cors());
 app.use(express.json());
 const PORT = process.env.PORT || 3000;
 

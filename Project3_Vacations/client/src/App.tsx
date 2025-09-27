@@ -3,6 +3,8 @@ import Header from "./components/Header";
 import Data from "./pages/Lecturers";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Lecturers from "./pages/Lecturers";
+import LoginPage from "./pages/Login";
+import RegisterPage from "./pages/Register";
 
 export default function App() {
     return (
@@ -12,6 +14,8 @@ export default function App() {
                 <Routes>
                     <Route path="/" element={<Navigate to="/lecturers" replace />} />
                     <Route path="/lecturers" element={<Lecturers />} />
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegisterPage />} />
                     <Route
                         path="*"
                         element={
