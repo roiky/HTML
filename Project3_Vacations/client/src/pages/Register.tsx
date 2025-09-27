@@ -18,13 +18,23 @@ export default function RegisterPage() {
     const [password, setPassword] = useState("");
     const [serverError, setServerError] = useState<string | null>(null);
     const [submitting, setSubmitting] = useState(false);
-    const [can_submit, setCanSubmit] = useState(true);
+    const [canSubmit, setCanSubmit] = useState(true);
+
+    // NEW: touched flags + submitAttempted
+    const [touched, setTouched] = useState({
+        first_name: false,
+        last_name: false,
+        email: false,
+        password: false,
+    });
+    const [submitAttempted, setSubmitAttempted] = useState(false);
 
     const navigate = useNavigate();
 
     async function onSubmit(e: React.FormEvent) {
         e.preventDefault();
         setServerError(null);
+        setSubmitAttempted(true); // show errors after first submit attempt
 
         const parsed = registerSchema.safeParse({ first_name, last_name, email, password });
         if (!parsed.success) {
@@ -47,37 +57,61 @@ export default function RegisterPage() {
         first_name && last_name && email && password ? setCanSubmit(false) : setCanSubmit(true);
     }, [first_name, last_name, email, password]);
 
+    // small helpers
+    const showError = (field: "first_name" | "last_name" | "email" | "password") => {
+        return touched[field] || submitAttempted;
+    };
+
     return (
-        <div style={{ maxWidth: 480, margin: "30px auto", padding: 16 }}>
+        <div className="card" style={{ maxWidth: 480, margin: "30px auto", padding: 16 }}>
             <h2>Register</h2>
 
             <form onSubmit={onSubmit} style={{ display: "grid", gap: 10 }}>
                 <label>
                     First name
-                    <input value={first_name} onChange={(e) => setFirstName(e.target.value)} />
-                    {!first_name && (
+                    <input
+                        value={first_name}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        onBlur={() => setTouched((t) => ({ ...t, first_name: true }))}
+                    />
+                    {showError("first_name") && !first_name && (
                         <div style={{ color: "red", fontSize: "small", marginBottom: 12 }}>first name is required!</div>
                     )}
                 </label>
 
                 <label>
                     Last name
-                    <input value={last_name} onChange={(e) => setLastName(e.target.value)} />
-                    {!last_name && (
+                    <input
+                        value={last_name}
+                        onChange={(e) => setLastName(e.target.value)}
+                        onBlur={() => setTouched((t) => ({ ...t, last_name: true }))}
+                    />
+                    {showError("last_name") && !last_name && (
                         <div style={{ color: "red", fontSize: "small", marginBottom: 12 }}>last name is required!</div>
                     )}
                 </label>
 
                 <label>
                     Email
-                    <input value={email} onChange={(e) => setEmail(e.target.value)} />
-                    {!email && <div style={{ color: "red", fontSize: "small", marginBottom: 12 }}>email is required!</div>}
+                    <input
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        onBlur={() => setTouched((t) => ({ ...t, email: true }))}
+                    />
+                    {showError("email") && !email && (
+                        <div style={{ color: "red", fontSize: "small", marginBottom: 12 }}>email is required!</div>
+                    )}
                 </label>
 
                 <label>
                     Password
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                    {password.length < 4 && (
+                    <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        onBlur={() => setTouched((t) => ({ ...t, password: true }))}
+                    />
+                    {showError("password") && password.length < 4 && (
                         <div style={{ color: "red", fontSize: "small", marginBottom: 12 }}>password is too short!</div>
                     )}
                 </label>
@@ -86,14 +120,24 @@ export default function RegisterPage() {
 
                 <div style={{ display: "flex", flexDirection: "column", gap: 3, marginTop: 20, alignItems: "center" }}>
                     <div>
-                        <button type="submit" disabled={can_submit}>
+                        <button type="submit" disabled={canSubmit || submitting}>
                             {submitting ? "Registering…" : "Register"}
                         </button>
                     </div>
                     <div>
-                        <a style={{ fontSize: "small" }} onClick={() => navigate("/login")}>
-                            Alredy have an account? Login here!
-                        </a>
+                        <button
+                            type="button"
+                            style={{
+                                fontSize: "small",
+                                background: "transparent",
+                                border: "none",
+                                color: "#06c",
+                                cursor: "pointer",
+                            }}
+                            onClick={() => navigate("/login")}
+                        >
+                            Already have an account? Login here!
+                        </button>
                     </div>
                 </div>
             </form>

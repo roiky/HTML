@@ -41,15 +41,11 @@ export default function LoginPage() {
 
     return (
         <div
+            className="card"
             style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
                 maxWidth: 420,
                 margin: "30px auto",
                 padding: 12,
-                border: "1px solid black",
-                borderRadius: "10px",
             }}
         >
             <h2>Login</h2>
