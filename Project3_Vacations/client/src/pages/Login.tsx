@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { z } from "zod";
 import { useNavigate } from "react-router-dom";
 import { loginApi } from "../services/auth.service";
+import { useAuth } from "../contex/AuthContext";
 
 const loginSchema = z.object({
     email: z.string().email("Invalid email"),
@@ -14,6 +15,7 @@ export default function LoginPage() {
     const [password, setPassword] = useState("");
     const [serverError, setServerError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    const { loginFromToken } = useAuth();
 
     const navigate = useNavigate();
 
@@ -30,7 +32,7 @@ export default function LoginPage() {
         try {
             setLoading(true);
             await loginApi(parsed.data);
-
+            await loginFromToken();
             navigate("/vacations"); // after login - navigate to vacations page!
         } catch (error) {
             setServerError("Login failed");
