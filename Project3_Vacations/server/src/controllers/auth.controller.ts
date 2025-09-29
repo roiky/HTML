@@ -81,3 +81,18 @@ export async function setAdminHandler(req: Request, res: Response, next: NextFun
         next(err);
     }
 }
+
+export function getMeHandler(req: Request, res: Response) {
+    const user = (req as any).user;
+    if (!user) return res.status(401).json({ message: "Unauthorized" });
+
+    return res.json({
+        user: {
+            userId: user.userId,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            email: user.email,
+            role: user.role,
+        },
+    });
+}

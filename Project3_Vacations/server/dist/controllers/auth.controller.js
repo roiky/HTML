@@ -48,6 +48,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.registerHandler = registerHandler;
 exports.loginHandler = loginHandler;
 exports.setAdminHandler = setAdminHandler;
+exports.getMeHandler = getMeHandler;
 const zodSchemas_1 = require("../utils/zodSchemas");
 const usersService = __importStar(require("../services/users.service"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -127,5 +128,19 @@ function setAdminHandler(req, res, next) {
         catch (err) {
             next(err);
         }
+    });
+}
+function getMeHandler(req, res) {
+    const user = req.user;
+    if (!user)
+        return res.status(401).json({ message: "Unauthorized" });
+    return res.json({
+        user: {
+            userId: user.userId,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            email: user.email,
+            role: user.role,
+        },
     });
 }
