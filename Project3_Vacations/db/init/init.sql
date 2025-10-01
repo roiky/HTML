@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `vacations_app`.`followers` (
   CONSTRAINT `fk_followers_vacation` FOREIGN KEY (`vacation_id`) REFERENCES `vacations` (`vacation_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ;
 
--- Seed: example vacations (12+ records)
+-- Seed: vacations (12 records)
 INSERT INTO `vacations_app`.`vacations` (`destination`, `description`, `start_date`, `end_date`, `price`, `image_name`)
 VALUES
 ('Paris, France', 'Explore the city of lights: museums, cafes and the Seine.', '2025-11-05 09:00:00', '2025-11-12 18:00:00', 1299.00, 'paris.jpg'),
@@ -61,7 +61,6 @@ VALUES
 ('Sydney, Australia', 'Harbour views, beaches and city attractions.', '2026-04-10 07:00:00', '2026-04-18 20:00:00', 2099.00, 'sydney.jpg'),
 ('Prague, Czech Republic', 'Historic old town, castles and riverside walks.', '2025-11-02 09:00:00', '2025-11-08 17:00:00', 899.00, 'prague.jpg'),
 ('Lisbon, Portugal', 'Hillside streets, trams, and fresh seafood.', '2025-12-15 10:00:00', '2025-12-21 18:00:00', 999.00, 'lisbon.jpg');
-
 
 -- View: vacations with followers count (convenience)
 DROP VIEW IF EXISTS `vacations_app`.`vw_vacations_with_followers`;
