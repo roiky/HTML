@@ -2,15 +2,15 @@ import api from "./api";
 
 export type FetchArgs = { page?: number; pageSize?: number; filter?: string; userId?: number | null };
 
-export async function fetchVacations({ page = 1, pageSize = 10, filter = "all", userId = null }: FetchArgs) {
-    const { data } = await api.get(`/vac/${filter}`, { params: { page, pageSize, filter, userId } });
+export async function fetchVacations({ filter = "all", userId = null }: FetchArgs) {
+    const { data } = await api.get(`/vac/${filter}`, { params: { filter, userId } });
     return data;
 }
 
 export async function followVacation(userId: number, vacationId: number) {
-    await api.post(`/followers/${vacationId}`, { userId });
+    await api.post(`/vac/${vacationId}/follow`, { userId });
 }
 
 export async function unfollowVacation(userId: number, vacationId: number) {
-    await api.delete(`/followers/${vacationId}`, { data: { userId } });
+    await api.delete(`/vac/${vacationId}/follow`, { data: { userId } });
 }

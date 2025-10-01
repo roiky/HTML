@@ -19,7 +19,6 @@ export default function Header() {
                     "Loading..."
                 ) : user ? (
                     <span>
-                        {"Hey, "}
                         <strong>
                             {user.first_name} {user.last_name}
                         </strong>

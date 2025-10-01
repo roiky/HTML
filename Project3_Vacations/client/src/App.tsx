@@ -6,6 +6,7 @@ import LoginPage from "./pages/Login";
 import RegisterPage from "./pages/Register";
 import Display404 from "./components/404";
 import VacationsPage from "./pages/VacationsPage";
+import { RequireAuth } from "./components/RequireAuth";
 
 export default function App() {
     return (
@@ -16,7 +17,14 @@ export default function App() {
                     <Route path="/" element={<Navigate to="/vacations" replace />} />
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/register" element={<RegisterPage />} />
-                    <Route path="/vacations" element={<VacationsPage />} />
+                    <Route
+                        path="/vacations"
+                        element={
+                            <RequireAuth>
+                                <VacationsPage />
+                            </RequireAuth>
+                        }
+                    />
                     <Route path="*" element={<Display404 />} />
                 </Routes>
             </main>

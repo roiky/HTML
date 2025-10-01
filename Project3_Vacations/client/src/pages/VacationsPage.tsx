@@ -1,4 +1,3 @@
-// src/pages/VacationsPage.tsx
 import React, { useEffect, useState } from "react";
 import VacationCard, { VacationRow } from "../components/VacationCard";
 import { fetchVacations, followVacation, unfollowVacation } from "../services/vacations.service";
@@ -14,14 +13,15 @@ export default function VacationsPage() {
     const [total, setTotal] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(false);
     const [saving, setSaving] = useState<Record<number, boolean>>({});
+    const [nextDiabler, setNextDisabler] = useState<boolean>(false);
+    const [prevDiabler, setPrevDisabler] = useState<boolean>(true);
 
     const [filter, setFilter] = useState<"all" | "upcoming" | "active" | "followed">("all");
 
     async function load() {
         setLoading(true);
         try {
-            // fetchVacations should return: { data: VacationRow[], meta: { total, page, pageSize } }
-            const resp = await fetchVacations({ page, pageSize, filter, userId });
+            const resp = await fetchVacations({ filter, userId });
             const data = resp?.data ?? [];
             const meta = resp?.meta ?? { total: 0, page: page, pageSize };
 
@@ -29,6 +29,10 @@ export default function VacationsPage() {
             setTotal(Number(meta.total ?? 0));
             setPage(Number(meta.page ?? page));
             setPageSize(Number(meta.pageSize ?? pageSize));
+
+            const totalPages = Number((total + pageSize) / pageSize);
+            console.log(resp);
+            console.log(`total: ${total}, page size: ${pageSize}, total pages: ${totalPages}`);
         } catch (err) {
             console.error("Failed to load vacations", err);
             setRows([]);
@@ -40,7 +44,6 @@ export default function VacationsPage() {
 
     useEffect(() => {
         load();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page, pageSize, filter, userId]);
 
     async function handleToggleFollow(vacationId: number, currentlyFollowing: boolean) {
@@ -126,6 +129,18 @@ export default function VacationsPage() {
                         onToggleFollow={handleToggleFollow}
                     />
                 ))}
+            </div>
+
+            <div className="PagesPagination" style={{ textAlign: "center", marginTop: 10 }}>
+                <button disabled={prevDiabler}>Previous</button>
+                <button
+                    onClick={() => {
+                        setPage(2);
+                    }}
+                    disabled={nextDiabler}
+                >
+                    Next
+                </button>
             </div>
         </section>
     );
