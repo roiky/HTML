@@ -6,7 +6,9 @@ import LoginPage from "./pages/Login";
 import RegisterPage from "./pages/Register";
 import Display404 from "./components/404";
 import VacationsPage from "./pages/VacationsPage";
+import AdminPage from "./pages/AdminPage";
 import { RequireAuth } from "./components/RequireAuth";
+import RequireAdmin from "./components/RequireAdmin";
 
 export default function App() {
     return (
@@ -23,6 +25,14 @@ export default function App() {
                             <RequireAuth>
                                 <VacationsPage />
                             </RequireAuth>
+                        }
+                    />{" "}
+                    <Route
+                        path="/adminPage"
+                        element={
+                            <RequireAdmin>
+                                <AdminPage />
+                            </RequireAdmin>
                         }
                     />
                     <Route path="*" element={<Display404 />} />

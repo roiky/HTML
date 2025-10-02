@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import icon from "../assets/navbar_icon.png";
 import { useAuth } from "../contex/AuthContext";
+import { Button } from "@mui/material";
 
 export default function Header() {
     const location = useLocation();
@@ -10,7 +11,7 @@ export default function Header() {
 
     return (
         <header className="header">
-            <div className="brand">
+            <div className="brand" onClick={() => navigate("/vacations")}>
                 <img style={{ width: "2%" }} src={icon}></img>
                 <span className="accent">Vacations Site</span>
             </div>
@@ -19,12 +20,15 @@ export default function Header() {
                     "Loading..."
                 ) : user ? (
                     <span>
-                        <strong>
+                        <strong style={{ margin: 5 }}>
                             {user.first_name} {user.last_name}
                         </strong>
 
-                        {user.role === "admin" && <span style={{ marginLeft: 10, color: "red" }}>[Admin]</span>}
-                        {/* to add - onClick => navigate to admin panel! */}
+                        {user.role === "admin" && (
+                            <Button size="small" variant="contained" color="success" onClick={() => navigate("/adminPage")}>
+                                Go to Admin Panel
+                            </Button>
+                        )}
 
                         <button style={{ marginLeft: 10 }} onClick={logout}>
                             Logout
