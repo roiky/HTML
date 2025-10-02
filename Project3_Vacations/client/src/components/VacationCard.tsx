@@ -15,7 +15,8 @@ export type VacationRow = {
 type Props = {
     item: VacationRow;
     loading?: boolean;
-    onToggleFollow: (vacationId: number, currentlyFollowing: boolean) => Promise<void>;
+    // <-- Make onToggleFollow optional
+    onToggleFollow?: (vacationId: number, currentlyFollowing: boolean) => Promise<void>;
     onEdit?: (id: number) => void;
     onDelete?: (id: number) => void;
 };
@@ -55,13 +56,16 @@ export default function VacationCard({ item, loading = false, onToggleFollow, on
 
                 <div style={styles.actionsRow}>
                     <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                        <button
-                            onClick={() => onToggleFollow(item.vacation_id, !!item.is_following)}
-                            disabled={loading}
-                            style={item.is_following ? styles.btnFollowing : styles.btnFollow}
-                        >
-                            {loading ? "…" : item.is_following ? "Unfollow" : "Follow"}
-                        </button>
+                        {/* only render the Follow/Unfollow button if onToggleFollow was provided */}
+                        {onToggleFollow ? (
+                            <button
+                                onClick={() => onToggleFollow(item.vacation_id, !!item.is_following)}
+                                disabled={loading}
+                                style={item.is_following ? styles.btnFollowing : styles.btnFollow}
+                            >
+                                {loading ? "…" : item.is_following ? "Unfollow" : "Follow"}
+                            </button>
+                        ) : null}
 
                         <div style={styles.followersCount}>{item.followers_count} followers</div>
                     </div>

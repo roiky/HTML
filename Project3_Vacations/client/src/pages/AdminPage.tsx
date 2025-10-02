@@ -1,59 +1,32 @@
-// src/pages/VacationsPage.tsx
+// src/pages/AdminVacationsPage.tsx
 import React, { useEffect, useState } from "react";
 import VacationCard, { VacationRow } from "../components/VacationCard";
-import { fetchVacations, followVacation, unfollowVacation, fetchFollowedVacationIds } from "../services/vacations.service";
+import VacationFormModal from "../components/VacationFormModal";
+import { fetchVacations } from "../services/vacations.service"; // משתמשים בפונקציה קיימת
+import { createVacationAdmin, updateVacationAdmin, deleteVacationAdmin } from "../services/vacations.admin.service";
 import { useAuth } from "../contex/AuthContext";
-import DownloadIcon from "@mui/icons-material/Download";
-import { Button } from "@mui/material";
-import { getCSV } from "../services/vacations.admin.service";
 
-export default function VacationsPage() {
+export default function AdminVacationsPage() {
     const { user } = useAuth();
     const userId = user?.userId ?? null;
 
-    const [rows, setRows] = useState<VacationRow[]>([]);
-    const [page, setPage] = useState<number>(1);
-    const [pageSize, setPageSize] = useState<number>(10);
-    const [total, setTotal] = useState<number>(0);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [saving, setSaving] = useState<Record<number, boolean>>({});
+    // only admins should mount this page (you can still protect route-level)
+    if (user?.role !== "admin") return <div>Not allowed</div>;
 
-    const [filter, setFilter] = useState<"all" | "upcoming" | "active" | "followed">("all");
+    const [rows, setRows] = useState<VacationRow[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [modalMode, setModalMode] = useState<"add" | "edit">("add");
+    const [editing, setEditing] = useState<VacationRow | null>(null);
 
     async function load() {
         setLoading(true);
         try {
-            const resp = await fetchVacations({ filter, userId, page });
-            const data = resp?.data ?? [];
-            const meta = resp?.meta ?? { total: 0, page: page, pageSize };
-
-            const metaTotal = Number(meta.total ?? 0);
-            const metaPage = Number(meta.page ?? page);
-            const metaPageSize = Number(meta.pageSize ?? pageSize);
-
-            let followedIds = new Set<number>(); //to get all the vacations the user is following
-            if (userId) {
-                try {
-                    const ids = await fetchFollowedVacationIds();
-                    followedIds = new Set(ids);
-                } catch (err) {
-                    console.warn("Failed to fetch followed ids:", err);
-                }
-            }
-
-            const synced = (data ?? []).map((r: any) => ({
-                ...r,
-                is_following: userId ? (followedIds.has(Number(r.vacation_id)) ? 1 : 0) : 0,
-            }));
-
-            setRows(synced);
-            setTotal(metaTotal);
-            setPage(metaPage);
-            setPageSize(metaPageSize);
+            const resp = await fetchVacations({ filter: "all", userId: userId, page: 1 });
+            setRows(resp?.data ?? []);
         } catch (err) {
-            console.error("Failed to load vacations", err);
+            console.error("Load failed", err);
             setRows([]);
-            setTotal(0);
         } finally {
             setLoading(false);
         }
@@ -61,98 +34,86 @@ export default function VacationsPage() {
 
     useEffect(() => {
         load();
-    }, [page, filter, userId]);
+    }, []);
 
-    async function handleToggleFollow(vacationId: number, currentlyFollowing: boolean) {
-        if (!userId) {
-            alert("You must be logged in to follow vacations.");
-            return;
-        }
-
-        setSaving((s) => ({ ...s, [vacationId]: true }));
-
-        try {
-            if (currentlyFollowing) {
-                await unfollowVacation(userId, vacationId);
-            } else {
-                await followVacation(userId, vacationId);
-            }
-
-            await load();
-        } catch (err) {
-            console.error("Follow/unfollow failed:", err);
-            alert("Action failed, please try again.");
-        } finally {
-            setSaving((s) => {
-                const copy = { ...s };
-                delete copy[vacationId];
-                return copy;
-            });
-        }
+    function openAdd() {
+        setEditing(null);
+        setModalMode("add");
+        setModalOpen(true);
     }
 
-    const totalPages = Math.max(1, Math.ceil(total / pageSize));
-    const prevDisabled = page <= 1;
-    const nextDisabled = page >= totalPages;
+    function openEdit(item: VacationRow) {
+        setEditing(item);
+        setModalMode("edit");
+        setModalOpen(true);
+    }
+
+    async function handleSave(payload: {
+        destination: string;
+        description: string;
+        start_date: string;
+        end_date: string;
+        price: number;
+        image?: File | null;
+    }) {
+        if (modalMode === "add") {
+            await createVacationAdmin(payload);
+        } else if (modalMode === "edit" && editing) {
+            await updateVacationAdmin(editing.vacation_id, payload);
+        }
+        await load();
+    }
+
+    async function handleDelete(id: number) {
+        const ok = window.confirm("Are you sure you want to delete this vacation?");
+        if (!ok) return;
+        await deleteVacationAdmin(id);
+        await load();
+    }
 
     return (
         <section style={{ padding: 18 }}>
             <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-                <h2>Admin Page</h2>
-
-                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                    <select
-                        value={filter}
-                        onChange={(e) => {
-                            setPage(1);
-                            setFilter(e.target.value as any);
-                        }}
-                    >
-                        <option value="all">All Vacations</option>
-                        <option value="upcoming">Upcoming Vacations</option>
-                        <option value="active">Active Vacations</option>
-                        <option value="followed">Followed Vacations</option>
-                    </select>
-                </div>
-                <div>{loading ? "Loading..." : `[${total} vacations]`}</div>
-                <div>
-                    {" "}
-                    <Button
-                        size="small"
-                        variant="contained"
-                        color="success"
-                        startIcon={<DownloadIcon />}
-                        onClick={() => getCSV()}
-                    >
-                        CSV
-                    </Button>
+                <h2>Admin - Vacations</h2>
+                <div style={{ display: "flex", gap: 8 }}>
+                    <button onClick={openAdd}>Add Vacation</button>
                 </div>
             </header>
 
+            {loading ? <div>Loading...</div> : null}
+
             <div style={{ display: "grid", gap: 12 }}>
                 {rows.map((r) => (
-                    <VacationCard
-                        key={r.vacation_id}
-                        item={r}
-                        loading={!!saving[r.vacation_id]}
-                        onToggleFollow={handleToggleFollow}
-                    />
+                    <div key={r.vacation_id} style={{ position: "relative" }}>
+                        <VacationCard
+                            item={r}
+                            onEdit={() => openEdit(r)}
+                            onDelete={() => handleDelete(r.vacation_id)}
+                            // We don't need follow button here; VacationCard shows it if onToggleFollow provided
+                            // We omit onToggleFollow to hide follow in admin view OR you can pass it if you want
+                        />
+                    </div>
                 ))}
             </div>
 
-            <div className="PagesPagination" style={{ textAlign: "center", marginTop: 10 }}>
-                <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={prevDisabled}>
-                    Previous
-                </button>
-
-                <span style={{ margin: "10px" }}>
-                    {page} / {totalPages}
-                </span>
-
-                <button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={nextDisabled}>
-                    Next
-                </button>
-            </div>
+            <VacationFormModal
+                open={modalOpen}
+                initial={
+                    editing
+                        ? {
+                              destination: editing.destination,
+                              description: editing.description,
+                              start_date: editing.start_date,
+                              end_date: editing.end_date,
+                              price: editing.price,
+                              image_name: editing.image_name ?? null,
+                          }
+                        : null
+                }
+                mode={modalMode}
+                onClose={() => setModalOpen(false)}
+                onSave={handleSave}
+            />
         </section>
     );
 }

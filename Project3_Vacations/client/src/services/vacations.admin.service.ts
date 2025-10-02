@@ -29,16 +29,48 @@ export async function getCSV() {
     }
 }
 
-export async function fetchFollowedVacationIds(): Promise<number[]> {
-    const { data } = await api.get("/vac/followed");
-    const rows = data?.data ?? [];
-    return rows.map((r: any) => Number(r.vacation_id));
+export type CreateVacationPayload = {
+    destination: string;
+    description: string;
+    start_date: string; // ISO or "YYYY-MM-DDTHH:mm" string
+    end_date: string;
+    price: number | string;
+    image?: File | null;
+};
+
+export async function createVacationAdmin(payload: CreateVacationPayload) {
+    const fd = new FormData();
+    fd.append("destination", payload.destination);
+    fd.append("description", payload.description);
+    fd.append("start_date", payload.start_date);
+    fd.append("end_date", payload.end_date);
+    fd.append("price", String(payload.price));
+    if (payload.image) fd.append("image", payload.image);
+
+    // שים לב: api מגדיר baseURL ו־Authorization interceptor
+    const { data } = await api.post("/admin/create", fd, {
+        headers: { "Content-Type": "multipart/form-data" },
+    });
+    return data;
 }
 
-export async function followVacation(userId: number, vacationId: number) {
-    await api.post(`/vac/${vacationId}/follow`, { userId });
+export async function updateVacationAdmin(id: number, payload: CreateVacationPayload) {
+    const fd = new FormData();
+    fd.append("destination", payload.destination);
+    fd.append("description", payload.description);
+    fd.append("start_date", payload.start_date);
+    fd.append("end_date", payload.end_date);
+    fd.append("price", String(payload.price));
+    // image - אם קיים שולחים, אחרת לא שולחים כך השרת ישאיר את הישן
+    if (payload.image) fd.append("image", payload.image);
+
+    const { data } = await api.put(`/admin/${id}`, fd, {
+        headers: { "Content-Type": "multipart/form-data" },
+    });
+    return data;
 }
 
-export async function unfollowVacation(userId: number, vacationId: number) {
-    await api.delete(`/vac/${vacationId}/follow`, { data: { userId } });
+export async function deleteVacationAdmin(id: number) {
+    const { data } = await api.delete(`/admin/${id}`);
+    return data;
 }
