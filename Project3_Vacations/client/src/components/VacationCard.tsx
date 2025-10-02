@@ -4,6 +4,9 @@ import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlin
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
 
+import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
+import ThumbDownOutlinedIcon from "@mui/icons-material/ThumbDownOutlined";
+
 export type VacationRow = {
     vacation_id: number;
     destination: string;
@@ -57,23 +60,27 @@ export default function VacationCard({ item, loading = false, onToggleFollow, on
                     <div style={styles.price}>${Number(item.price).toFixed(2)}</div>
                 </div>
 
+                <div>
+                    <div style={styles.followersCount}>{item.followers_count} followers</div>
+                </div>
+
                 <div style={styles.actionsRow}>
                     <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
                         {onToggleFollow ? (
                             <Button
                                 style={{ fontSize: "12px" }}
-                                startIcon={item.is_following ? <DeleteOutlinedIcon /> : <FavoriteBorderOutlinedIcon />}
+                                //startIcon={item.is_following ? <DeleteOutlinedIcon /> : <FavoriteBorderOutlinedIcon />}
+                                startIcon={item.is_following ? <ThumbDownOutlinedIcon /> : <ThumbUpOutlinedIcon />}
                                 size="small"
-                                variant="contained"
+                                variant="outlined"
                                 color={item.is_following ? "error" : "info"}
                                 disabled={loading}
                                 onClick={() => onToggleFollow(item.vacation_id, !!item.is_following)}
                             >
-                                {loading ? "…" : item.is_following ? "Unfollow" : "Follow"}
+                                {/* {loading ? "…" : item.is_following ? "Unfollow" : "Follow"} */}
+                                {/* {loading ? "…" : item.is_following ? "" : ""} */}
                             </Button>
                         ) : null}
-
-                        <div style={styles.followersCount}>{item.followers_count} followers</div>
                     </div>
 
                     <div style={{ display: "flex", gap: 8 }}>
