@@ -122,7 +122,7 @@ export default function VacationsPage() {
                         <option value="followed">Followed Vacations</option>
                     </select>
                 </div>
-                <div>{loading ? "Loading..." : `${total} items`}</div>
+                <div>{loading ? "Loading..." : `[${total} vacations]`}</div>
             </header>
 
             <div style={{ display: "grid", gap: 12 }}>

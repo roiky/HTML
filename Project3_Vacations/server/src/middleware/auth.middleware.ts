@@ -9,19 +9,9 @@ export interface AuthRequest extends Request {
     user?: any;
 }
 
-declare global {
-    namespace Express {
-        interface Request {
-            user?: any;
-            userId?: number;
-        }
-    }
-}
-
 export function requireAuth(req: Request, res: Response, next: NextFunction) {
     try {
         const authHeader = (req.headers.authorization as string) || "";
-        console.log(authHeader);
         if (!authHeader) return res.status(401).json({ message: "Unauthorized - missing auth header" });
 
         const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : authHeader;
@@ -31,12 +21,23 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
 
         const decoded = jwt.verify(token, secret) as JwtPayload | string;
 
+        const userId =
+            typeof decoded === "object" && decoded !== null
+                ? (decoded as any).userId ?? (decoded as any).user_id ?? (decoded as any).id
+                : undefined;
+
+        if (!userId) {
+            return res.status(401).json({ message: "Unauthorized - token missing userId" });
+        }
+
+        (req as any).userId = Number(userId);
         (req as any).user = decoded;
-        const maybeUserId = (decoded as any)?.userId ?? (decoded as any)?.user_id ?? (decoded as any)?.id;
-        if (maybeUserId) req.userId = Number(maybeUserId);
 
         next();
-    } catch (error) {
+    } catch (error: any) {
+        if (error?.name === "TokenExpiredError") {
+            return res.status(401).json({ message: "Token expired" });
+        }
         return res.status(401).json({ message: "Unauthorized - invalid token" });
     }
 }

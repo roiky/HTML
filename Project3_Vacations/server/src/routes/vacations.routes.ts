@@ -15,9 +15,8 @@ const router = Router();
 router.get("/all", getAllVacationsHandler);
 router.get("/active", getActiveVacationsHandler);
 router.get("/upcoming", getUpcomingVacationsHandler);
-router.get("/followed", requireAuth, getFollowedVacationsHandler); // requires auth
+router.get("/followed", requireAuth, getFollowedVacationsHandler);
 
-router.post("/:id/follow", requireAuth, postFollowHandler); // add requireAuth
-router.delete("/:id/follow", requireAuth, deleteFollowHandler); // add requireAuth
-
+router.post("/:id/follow", requireAuth, postFollowHandler);
+router.delete("/:id/follow", requireAuth, deleteFollowHandler);
 export default router;
