@@ -1,7 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import Header from "./components/Header";
-import Data from "./pages/Lecturers";
-import ProtectedRoute from "./components/ProtectedRoute";
 import LoginPage from "./pages/Login";
 import RegisterPage from "./pages/Register";
 import Display404 from "./components/404";

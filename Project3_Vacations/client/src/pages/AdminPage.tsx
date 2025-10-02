@@ -1,16 +1,19 @@
 // src/pages/AdminVacationsPage.tsx
 import React, { useEffect, useState } from "react";
 import VacationCard, { VacationRow } from "../components/VacationCard";
-import VacationFormModal from "../components/VacationFormModal";
-import { fetchVacations } from "../services/vacations.service"; // משתמשים בפונקציה קיימת
-import { createVacationAdmin, updateVacationAdmin, deleteVacationAdmin } from "../services/vacations.admin.service";
+import VacationFormModalMUI from "../components/VacationFormModal";
+import { fetchVacations } from "../services/vacations.service";
+import { createVacationAdmin, updateVacationAdmin, deleteVacationAdmin, getCSV } from "../services/vacations.admin.service";
+import type { CreateVacationPayload } from "../services/vacations.admin.service";
 import { useAuth } from "../contex/AuthContext";
+import { Button } from "@mui/material";
+import DownloadIcon from "@mui/icons-material/Download";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
 
 export default function AdminVacationsPage() {
     const { user } = useAuth();
     const userId = user?.userId ?? null;
 
-    // only admins should mount this page (you can still protect route-level)
     if (user?.role !== "admin") return <div>Not allowed</div>;
 
     const [rows, setRows] = useState<VacationRow[]>([]);
@@ -22,7 +25,7 @@ export default function AdminVacationsPage() {
     async function load() {
         setLoading(true);
         try {
-            const resp = await fetchVacations({ filter: "all", userId: userId, page: 1 });
+            const resp = await fetchVacations({ filter: "all", userId, page: 1 });
             setRows(resp?.data ?? []);
         } catch (err) {
             console.error("Load failed", err);
@@ -48,19 +51,28 @@ export default function AdminVacationsPage() {
         setModalOpen(true);
     }
 
-    async function handleSave(payload: {
-        destination: string;
-        description: string;
-        start_date: string;
-        end_date: string;
-        price: number;
-        image?: File | null;
-    }) {
-        if (modalMode === "add") {
-            await createVacationAdmin(payload);
-        } else if (modalMode === "edit" && editing) {
-            await updateVacationAdmin(editing.vacation_id, payload);
+    async function handleSave(payload: CreateVacationPayload) {
+        const normalizedPrice = typeof payload.price === "string" ? Number(payload.price) : payload.price;
+
+        if (Number.isNaN(normalizedPrice)) {
+            throw new Error("Invalid price value");
         }
+
+        const finalPayload = {
+            destination: payload.destination,
+            description: payload.description,
+            start_date: payload.start_date,
+            end_date: payload.end_date,
+            price: normalizedPrice,
+            image: (payload as any).image,
+        };
+
+        if (modalMode === "add") {
+            await createVacationAdmin(finalPayload);
+        } else if (modalMode === "edit" && editing) {
+            await updateVacationAdmin(editing.vacation_id, finalPayload);
+        }
+
         await load();
     }
 
@@ -75,12 +87,30 @@ export default function AdminVacationsPage() {
         <section style={{ padding: 18 }}>
             <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                 <h2>Admin - Vacations</h2>
-                <div style={{ display: "flex", gap: 8 }}>
-                    <button onClick={openAdd}>Add Vacation</button>
+                <div style={{ display: "flex", gap: 10 }}>
+                    {" "}
+                    <Button
+                        style={{ fontSize: "12px" }}
+                        size="small"
+                        variant="contained"
+                        color="success"
+                        startIcon={<DownloadIcon />}
+                        onClick={() => getCSV()}
+                    >
+                        CSV
+                    </Button>
+                    <Button
+                        style={{ fontSize: "12px" }}
+                        size="small"
+                        variant="contained"
+                        color="primary"
+                        startIcon={<AddRoundedIcon />}
+                        onClick={openAdd}
+                    >
+                        Add Vacation
+                    </Button>
                 </div>
             </header>
-
-            {loading ? <div>Loading...</div> : null}
 
             <div style={{ display: "grid", gap: 12 }}>
                 {rows.map((r) => (
@@ -88,29 +118,29 @@ export default function AdminVacationsPage() {
                         <VacationCard
                             item={r}
                             onEdit={() => openEdit(r)}
-                            onDelete={() => handleDelete(r.vacation_id)}
-                            // We don't need follow button here; VacationCard shows it if onToggleFollow provided
-                            // We omit onToggleFollow to hide follow in admin view OR you can pass it if you want
+                            onDelete={async () => {
+                                await handleDelete(r.vacation_id);
+                            }}
                         />
                     </div>
                 ))}
             </div>
 
-            <VacationFormModal
+            <VacationFormModalMUI
                 open={modalOpen}
+                mode={modalMode}
                 initial={
                     editing
                         ? {
                               destination: editing.destination,
                               description: editing.description,
-                              start_date: editing.start_date,
-                              end_date: editing.end_date,
+                              start_date: editing.start_date?.slice(0, 10) ?? "",
+                              end_date: editing.end_date?.slice(0, 10) ?? "",
                               price: editing.price,
                               image_name: editing.image_name ?? null,
                           }
                         : null
                 }
-                mode={modalMode}
                 onClose={() => setModalOpen(false)}
                 onSave={handleSave}
             />

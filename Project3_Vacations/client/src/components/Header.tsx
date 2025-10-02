@@ -25,12 +25,24 @@ export default function Header() {
                         </strong>
 
                         {user.role === "admin" && location.pathname !== "/adminPage" && (
-                            <Button size="small" variant="contained" color="success" onClick={() => navigate("/adminPage")}>
+                            <Button
+                                style={{ fontSize: "12px" }}
+                                size="small"
+                                variant="contained"
+                                color="success"
+                                onClick={() => navigate("/adminPage")}
+                            >
                                 Go to Admin Panel
                             </Button>
                         )}
 
-                        <Button size="small" variant="contained" color="error" onClick={logout} style={{ margin: 5 }}>
+                        <Button
+                            style={{ fontSize: "12px", margin: 5 }}
+                            size="small"
+                            variant="contained"
+                            color="error"
+                            onClick={logout}
+                        >
                             Logout
                         </Button>
                     </span>

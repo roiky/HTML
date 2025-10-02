@@ -1,21 +1,10 @@
-// src/components/VacationFormModal.tsx
 import React, { useEffect, useState } from "react";
-import { z } from "zod";
-
-const vacationSchema = z.object({
-    destination: z.string().min(2, "Destination is required"),
-    description: z.string().min(10, "Description must be at least 10 chars"),
-    start_date: z.string().min(1, "Start date is required"),
-    end_date: z.string().min(1, "End date is required"),
-    price: z
-        .union([z.string().regex(/^\d+(\.\d{1,2})?$/), z.number()])
-        .transform((v) => Number(v))
-        .refine((n) => n >= 0 && n <= 10000, "Price must be between 0 and 10000"),
-    // image omitted from schema (handled separately)
-});
+import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Grid, FormHelperText } from "@mui/material";
+import { CreateVacationPayload } from "../services/vacations.admin.service";
 
 type Props = {
     open: boolean;
+    mode: "add" | "edit";
     initial?: {
         destination?: string;
         description?: string;
@@ -24,25 +13,18 @@ type Props = {
         price?: number;
         image_name?: string | null;
     } | null;
-    mode: "add" | "edit";
     onClose: () => void;
-    onSave: (form: {
-        destination: string;
-        description: string;
-        start_date: string;
-        end_date: string;
-        price: number;
-        image?: File | null;
-    }) => Promise<void>;
+    onSave: (payload: CreateVacationPayload) => Promise<void>;
 };
 
-export default function VacationFormModal({ open, initial, mode, onClose, onSave }: Props) {
+export default function VacationFormModalMUI({ open, mode, initial = null, onClose, onSave }: Props) {
     const [destination, setDestination] = useState(initial?.destination ?? "");
     const [description, setDescription] = useState(initial?.description ?? "");
     const [startDate, setStartDate] = useState(initial?.start_date ?? "");
     const [endDate, setEndDate] = useState(initial?.end_date ?? "");
-    const [price, setPrice] = useState(initial?.price?.toString() ?? "0.00");
+    const [price, setPrice] = useState(initial?.price != null ? String(initial.price) : "0.00");
     const [imageFile, setImageFile] = useState<File | null>(null);
+
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [submitting, setSubmitting] = useState(false);
 
@@ -52,7 +34,7 @@ export default function VacationFormModal({ open, initial, mode, onClose, onSave
             setDescription(initial?.description ?? "");
             setStartDate(initial?.start_date ?? "");
             setEndDate(initial?.end_date ?? "");
-            setPrice(initial?.price?.toString() ?? "0.00");
+            setPrice(initial?.price != null ? String(initial.price) : "0.00");
             setImageFile(null);
             setErrors({});
         }
@@ -63,147 +45,136 @@ export default function VacationFormModal({ open, initial, mode, onClose, onSave
         setImageFile(f);
     }
 
-    function todayIsoLocal() {
-        const d = new Date();
-        const tz = d.getTimezoneOffset() * 60000;
-        const local = new Date(d.getTime() - tz);
-        return local.toISOString().slice(0, 16); // YYYY-MM-DDTHH:mm for input type=datetime-local
+    function validate(): boolean {
+        const err: Record<string, string> = {};
+        if (!destination.trim()) err.destination = "Destination is required";
+        if (!description.trim() || description.trim().length < 10) err.description = "Description lenght must be at least 10 ";
+        if (!startDate) err.start_date = "Start date is required";
+        if (!endDate) err.end_date = "End date is required";
+
+        const p = Number(price);
+        if (Number.isNaN(p)) err.price = "Invalid price";
+        else if (p < 0 || p > 10000) err.price = "Price must be between 0 and 10,000";
+
+        if (startDate && endDate) {
+            const s = new Date(startDate);
+            const e = new Date(endDate);
+            if (e.getTime() < s.getTime()) err.end_date = "End date must be equal or after start date";
+        }
+
+        if (mode === "add" && startDate) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const s = new Date(startDate);
+            if (s.getTime() < today.getTime()) err.start_date = "Start date cannot be in the past";
+        }
+
+        setErrors(err);
+        return Object.keys(err).length === 0;
     }
 
     async function handleSubmit(e?: React.FormEvent) {
         e?.preventDefault();
-        setErrors({});
+        if (!validate()) return;
 
-        // local validation with zod first
-        const parsed = vacationSchema.safeParse({
-            destination,
-            description,
-            start_date: startDate,
-            end_date: endDate,
-            price,
-        });
-
-        if (!parsed.success) {
-            const fmt: Record<string, string> = {};
-            const zodErr = parsed.error;
-            for (const k of Object.keys(zodErr)) {
-                fmt[k] = (zodErr as any)[k]?.[0] ?? "Invalid";
-            }
-            setErrors(fmt);
-            return;
-        }
-
-        // Additional business rules:
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-        const now = new Date();
-
-        if (mode === "add") {
-            // can't choose past dates for add
-            if (start.getTime() < now.setSeconds(0, 0)) {
-                setErrors((s) => ({ ...s, start_date: "Start date cannot be in the past" }));
-                return;
-            }
-        }
-
-        if (end.getTime() < start.getTime()) {
-            setErrors((s) => ({ ...s, end_date: "End date must be >= start date" }));
-            return;
-        }
-
-        // build payload and call onSave
         setSubmitting(true);
         try {
             await onSave({
-                destination,
-                description,
+                destination: destination.trim(),
+                description: description.trim(),
                 start_date: startDate,
                 end_date: endDate,
-                price: Number(parsed.data.price),
+                price: Number(price),
                 image: imageFile ?? undefined,
             });
             onClose();
         } catch (err: any) {
-            setErrors({ form: err?.message ?? "Save failed" });
+            setErrors((s) => ({ ...s, form: err?.message ?? "Save failed" }));
         } finally {
             setSubmitting(false);
         }
     }
 
-    if (!open) return null;
-
     return (
-        <div style={modalBackdrop}>
-            <div style={modalBox}>
-                <h3>{mode === "add" ? "Add Vacation" : "Edit Vacation"}</h3>
-                {errors.form && <div style={{ color: "red" }}>{errors.form}</div>}
-                <form onSubmit={handleSubmit} style={{ display: "grid", gap: 8 }}>
-                    <label>
-                        Destination
-                        <input value={destination} onChange={(e) => setDestination(e.target.value)} />
-                        {errors.destination && <div style={{ color: "red" }}>{errors.destination}</div>}
-                    </label>
+        <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+            <DialogTitle>{mode === "add" ? "Create Vacation" : "Edit Vacation"}</DialogTitle>
 
-                    <label>
-                        Description
-                        <textarea value={description} onChange={(e) => setDescription(e.target.value)} />
-                        {errors.description && <div style={{ color: "red" }}>{errors.description}</div>}
-                    </label>
+            <DialogContent dividers>
+                {errors.form && <FormHelperText error>{errors.form}</FormHelperText>}
+                <form id="vacation-form" onSubmit={handleSubmit}>
+                    <Grid container spacing={2} sx={{ mt: 0.5 }}>
+                        <TextField
+                            label="Destination"
+                            value={destination}
+                            onChange={(e) => setDestination(e.target.value)}
+                            fullWidth
+                            error={!!errors.destination}
+                            helperText={errors.destination}
+                            required
+                        />
 
-                    <label>
-                        Start
-                        <input type="datetime-local" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-                        {errors.start_date && <div style={{ color: "red" }}>{errors.start_date}</div>}
-                    </label>
+                        <TextField
+                            label="Description"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            fullWidth
+                            multiline
+                            minRows={3}
+                            error={!!errors.description}
+                            helperText={errors.description}
+                            required
+                        />
 
-                    <label>
-                        End
-                        <input type="datetime-local" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-                        {errors.end_date && <div style={{ color: "red" }}>{errors.end_date}</div>}
-                    </label>
+                        <TextField
+                            label="Start date"
+                            type="date"
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                            InputLabelProps={{ shrink: true }}
+                            fullWidth
+                            error={!!errors.start_date}
+                            helperText={errors.start_date}
+                            required
+                        />
 
-                    <label>
-                        Price
-                        <input value={price} onChange={(e) => setPrice(e.target.value)} />
-                        {errors.price && <div style={{ color: "red" }}>{errors.price}</div>}
-                    </label>
+                        <TextField
+                            label="End date"
+                            type="date"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                            InputLabelProps={{ shrink: true }}
+                            fullWidth
+                            error={!!errors.end_date}
+                            helperText={errors.end_date}
+                            required
+                        />
 
-                    <label>
-                        Image (optional on edit)
+                        <TextField
+                            label="Price"
+                            value={price}
+                            onChange={(e) => setPrice(e.target.value)}
+                            fullWidth
+                            error={!!errors.price}
+                            helperText={errors.price}
+                            required
+                        />
+
                         <input type="file" accept="image/*" onChange={handleFileChange} />
-                    </label>
-
-                    <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 8 }}>
-                        <button type="button" onClick={onClose} disabled={submitting}>
-                            Cancel
-                        </button>
-                        <button type="submit" disabled={submitting}>
-                            {submitting ? "Saving…" : mode === "add" ? "Create" : "Save"}
-                        </button>
-                    </div>
+                        {initial?.image_name && !imageFile ? (
+                            <div style={{ marginTop: 6, color: "#666", fontSize: 13 }}>Current: {initial.image_name}</div>
+                        ) : null}
+                    </Grid>
                 </form>
-            </div>
-        </div>
+            </DialogContent>
+
+            <DialogActions>
+                <Button onClick={onClose} disabled={submitting}>
+                    Cancel
+                </Button>
+                <Button type="submit" form="vacation-form" variant="contained" onClick={() => {}} disabled={submitting}>
+                    {submitting ? "Saving…" : mode === "add" ? "Create" : "Save"}
+                </Button>
+            </DialogActions>
+        </Dialog>
     );
 }
-
-/* basic inline modal styles */
-const modalBackdrop: React.CSSProperties = {
-    position: "fixed",
-    inset: 0,
-    background: "rgba(0,0,0,0.4)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 1000,
-};
-
-const modalBox: React.CSSProperties = {
-    background: "#fff",
-    color: "#111",
-    padding: 20,
-    borderRadius: 8,
-    width: "min(720px, 95%)",
-    maxHeight: "90vh",
-    overflow: "auto",
-};

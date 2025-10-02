@@ -1,4 +1,8 @@
-﻿import React from "react";
+﻿import { Button } from "@mui/material";
+import React from "react";
+import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
 
 export type VacationRow = {
     vacation_id: number;
@@ -15,7 +19,6 @@ export type VacationRow = {
 type Props = {
     item: VacationRow;
     loading?: boolean;
-    // <-- Make onToggleFollow optional
     onToggleFollow?: (vacationId: number, currentlyFollowing: boolean) => Promise<void>;
     onEdit?: (id: number) => void;
     onDelete?: (id: number) => void;
@@ -56,15 +59,18 @@ export default function VacationCard({ item, loading = false, onToggleFollow, on
 
                 <div style={styles.actionsRow}>
                     <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                        {/* only render the Follow/Unfollow button if onToggleFollow was provided */}
                         {onToggleFollow ? (
-                            <button
-                                onClick={() => onToggleFollow(item.vacation_id, !!item.is_following)}
+                            <Button
+                                style={{ fontSize: "12px" }}
+                                startIcon={item.is_following ? <DeleteOutlinedIcon /> : <FavoriteBorderOutlinedIcon />}
+                                size="small"
+                                variant="contained"
+                                color={item.is_following ? "error" : "info"}
                                 disabled={loading}
-                                style={item.is_following ? styles.btnFollowing : styles.btnFollow}
+                                onClick={() => onToggleFollow(item.vacation_id, !!item.is_following)}
                             >
                                 {loading ? "…" : item.is_following ? "Unfollow" : "Follow"}
-                            </button>
+                            </Button>
                         ) : null}
 
                         <div style={styles.followersCount}>{item.followers_count} followers</div>
@@ -72,14 +78,28 @@ export default function VacationCard({ item, loading = false, onToggleFollow, on
 
                     <div style={{ display: "flex", gap: 8 }}>
                         {onEdit && (
-                            <button onClick={() => onEdit(item.vacation_id)} style={styles.btnGhost}>
+                            <Button
+                                style={{ fontSize: "12px" }}
+                                startIcon={<ModeEditOutlinedIcon />}
+                                size="small"
+                                variant="outlined"
+                                //color={"error"}
+                                onClick={() => onEdit(item.vacation_id)}
+                            >
                                 Edit
-                            </button>
+                            </Button>
                         )}
                         {onDelete && (
-                            <button onClick={() => onDelete(item.vacation_id)} style={styles.btnDanger}>
+                            <Button
+                                style={{ fontSize: "12px" }}
+                                startIcon={<DeleteOutlinedIcon />}
+                                size="small"
+                                variant="outlined"
+                                color={"error"}
+                                onClick={() => onDelete(item.vacation_id)}
+                            >
                                 Delete
-                            </button>
+                            </Button>
                         )}
                     </div>
                 </div>
@@ -124,7 +144,6 @@ const styles: Record<string, React.CSSProperties> = {
     btnDanger: { background: "#ff4d4f", color: "#fff", border: "none", padding: "6px 10px", borderRadius: 8, cursor: "pointer" },
 };
 
-/* helper - dd/mm/yyyy hh:mm */
 function formatDate(d: string | Date) {
     const date = typeof d === "string" ? new Date(d) : d;
     if (Number.isNaN(date.getTime())) return "-";
