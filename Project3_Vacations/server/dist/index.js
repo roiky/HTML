@@ -11,11 +11,19 @@ const vacations_routes_1 = __importDefault(require("./routes/vacations.routes"))
 const vacations_admin_routes_1 = __importDefault(require("./routes/vacations.admin.routes"));
 const reports_routes_1 = __importDefault(require("./routes/reports.routes"));
 const cors_1 = __importDefault(require("cors"));
+const path_1 = __importDefault(require("path"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 const PORT = process.env.PORT || 3000;
+const uploadsPath = process.env.UPLOAD_DIR ? path_1.default.resolve(process.env.UPLOAD_DIR) : path_1.default.join(process.cwd(), "uploads"); // הכי בטוח: relative ל־project root
+// public route: http://localhost:3000/uploads/<filename>
+app.use("/uploads", express_1.default.static(uploadsPath, {
+    // optional settings
+    maxAge: "7d",
+    index: false,
+}));
 app.use("/auth", auth_routes_1.default);
 app.use("/vac", vacations_routes_1.default);
 app.use("/admin", vacations_admin_routes_1.default);

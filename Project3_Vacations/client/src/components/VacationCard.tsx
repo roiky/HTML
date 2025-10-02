@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 
 export type VacationRow = {
     vacation_id: number;
@@ -20,6 +20,8 @@ type Props = {
     onDelete?: (id: number) => void;
 };
 
+const BASE_URL = "http://localhost:3000";
+
 export default function VacationCard({ item, loading = false, onToggleFollow, onEdit, onDelete }: Props) {
     const start = formatDate(item.start_date);
     const end = formatDate(item.end_date);
@@ -28,7 +30,7 @@ export default function VacationCard({ item, loading = false, onToggleFollow, on
         <article style={styles.card}>
             <div style={styles.media}>
                 {item.image_name ? (
-                    <img src={`/uploads/${item.image_name}`} alt={item.destination} style={styles.image} />
+                    <img src={`${BASE_URL}/uploads/${item.image_name}`} alt={item.destination} style={styles.image} />
                 ) : (
                     <div style={styles.noImage}>No image</div>
                 )}
