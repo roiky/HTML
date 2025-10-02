@@ -30,9 +30,9 @@ export default function App() {
                     <Route
                         path="/adminPage"
                         element={
-                            <RequireAuth>
+                            <RequireAdmin>
                                 <AdminPage />
-                            </RequireAuth>
+                            </RequireAdmin>
                         }
                     />
                     <Route path="*" element={<Display404 />} />
