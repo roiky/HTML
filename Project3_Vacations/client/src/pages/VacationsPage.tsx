@@ -13,26 +13,30 @@ export default function VacationsPage() {
     const [total, setTotal] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(false);
     const [saving, setSaving] = useState<Record<number, boolean>>({});
-    const [nextDiabler, setNextDisabler] = useState<boolean>(false);
-    const [prevDiabler, setPrevDisabler] = useState<boolean>(true);
 
     const [filter, setFilter] = useState<"all" | "upcoming" | "active" | "followed">("all");
 
     async function load() {
         setLoading(true);
         try {
-            const resp = await fetchVacations({ filter, userId });
+            const resp = await fetchVacations({ filter, userId, page });
             const data = resp?.data ?? [];
             const meta = resp?.meta ?? { total: 0, page: page, pageSize };
 
-            setRows(data);
-            setTotal(Number(meta.total ?? 0));
-            setPage(Number(meta.page ?? page));
-            setPageSize(Number(meta.pageSize ?? pageSize));
+            const metaTotal = Number(meta.total ?? 0);
+            const metaPage = Number(meta.page ?? page);
+            const metaPageSize = Number(meta.pageSize ?? pageSize);
+            const totalPagesLocal = Math.max(1, Math.ceil(metaTotal / metaPageSize));
 
-            const totalPages = Number((total + pageSize) / pageSize);
-            console.log(resp);
-            console.log(`total: ${total}, page size: ${pageSize}, total pages: ${totalPages}`);
+            setRows(data);
+            setTotal(metaTotal);
+            setPage(metaPage);
+            setPageSize(metaPageSize);
+
+            console.log(
+                `RESP meta -> total: ${metaTotal}, pageSize: ${metaPageSize}, page: ${metaPage}, totalPages: ${totalPagesLocal}`
+            );
+            console.log(rows);
         } catch (err) {
             console.error("Failed to load vacations", err);
             setRows([]);
@@ -44,7 +48,7 @@ export default function VacationsPage() {
 
     useEffect(() => {
         load();
-    }, [page, pageSize, filter, userId]);
+    }, [page, filter, userId]);
 
     async function handleToggleFollow(vacationId: number, currentlyFollowing: boolean) {
         if (!userId) {
@@ -72,7 +76,6 @@ export default function VacationsPage() {
             } else {
                 await followVacation(userId, vacationId);
             }
-            // אופציונלי: ניתן לקרוא load() כדי לסנכרן מדויק מול השרת
         } catch (err) {
             // revert on error
             setRows((cur) =>
@@ -97,6 +100,8 @@ export default function VacationsPage() {
     }
 
     const totalPages = Math.max(1, Math.ceil(total / pageSize));
+    const prevDisabled = page <= 1;
+    const nextDisabled = page >= totalPages;
 
     return (
         <section style={{ padding: 18 }}>
@@ -132,12 +137,24 @@ export default function VacationsPage() {
             </div>
 
             <div className="PagesPagination" style={{ textAlign: "center", marginTop: 10 }}>
-                <button disabled={prevDiabler}>Previous</button>
                 <button
                     onClick={() => {
-                        setPage(2);
+                        setPage((p) => Math.max(1, p - 1));
                     }}
-                    disabled={nextDiabler}
+                    disabled={prevDisabled}
+                >
+                    Previous
+                </button>
+
+                <span style={{ margin: "10px" }}>
+                    {page} / {totalPages}
+                </span>
+
+                <button
+                    onClick={() => {
+                        setPage((p) => Math.min(totalPages, p + 1));
+                    }}
+                    disabled={nextDisabled}
                 >
                     Next
                 </button>

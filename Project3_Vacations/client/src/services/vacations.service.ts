@@ -2,8 +2,8 @@ import api from "./api";
 
 export type FetchArgs = { page?: number; pageSize?: number; filter?: string; userId?: number | null };
 
-export async function fetchVacations({ filter = "all", userId = null }: FetchArgs) {
-    const { data } = await api.get(`/vac/${filter}`, { params: { filter, userId } });
+export async function fetchVacations({ filter = "all", userId = null, page = 1 }: FetchArgs) {
+    const { data } = await api.get(`/vac/${filter}`, { params: { filter, userId, page } });
     return data;
 }
 
