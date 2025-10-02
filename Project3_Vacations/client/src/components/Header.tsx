@@ -24,7 +24,7 @@ export default function Header() {
                             {user.first_name} {user.last_name}
                         </strong>
 
-                        {user.role === "admin" && (
+                        {user.role === "admin" && location.pathname !== "/adminPage" && (
                             <Button size="small" variant="contained" color="success" onClick={() => navigate("/adminPage")}>
                                 Go to Admin Panel
                             </Button>
