@@ -3,7 +3,9 @@ import React, { useEffect, useState } from "react";
 import VacationCard, { VacationRow } from "../components/VacationCard";
 import { fetchVacations, followVacation, unfollowVacation, fetchFollowedVacationIds } from "../services/vacations.service";
 import { useAuth } from "../contex/AuthContext";
-import Display404 from "../components/404";
+import DownloadIcon from "@mui/icons-material/Download";
+import { Button } from "@mui/material";
+import { getCSV } from "../services/vacations.admin.service";
 
 export default function VacationsPage() {
     const { user } = useAuth();
@@ -113,6 +115,18 @@ export default function VacationsPage() {
                     </select>
                 </div>
                 <div>{loading ? "Loading..." : `[${total} vacations]`}</div>
+                <div>
+                    {" "}
+                    <Button
+                        size="small"
+                        variant="contained"
+                        color="success"
+                        startIcon={<DownloadIcon />}
+                        onClick={() => getCSV()}
+                    >
+                        CSV
+                    </Button>
+                </div>
             </header>
 
             <div style={{ display: "grid", gap: 12 }}>

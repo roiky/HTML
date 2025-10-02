@@ -4,5 +4,5 @@ import { requireAdmin } from "../middleware/auth.middleware";
 
 const router = Router();
 router.get("/followers", /* requireAdmin, */ getFollowersJsonHandler);
-router.get("/csv", /* requireAdmin, */ getFollowersCsvHandler);
+router.get("/csv", requireAdmin, getFollowersCsvHandler);
 export default router;

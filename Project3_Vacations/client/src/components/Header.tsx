@@ -30,9 +30,9 @@ export default function Header() {
                             </Button>
                         )}
 
-                        <button style={{ marginLeft: 10 }} onClick={logout}>
+                        <Button size="small" variant="contained" color="error" onClick={logout} style={{ margin: 5 }}>
                             Logout
-                        </button>
+                        </Button>
                     </span>
                 ) : (
                     <span>
