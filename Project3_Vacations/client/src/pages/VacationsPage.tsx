@@ -1,6 +1,7 @@
+// src/pages/VacationsPage.tsx
 import React, { useEffect, useState } from "react";
 import VacationCard, { VacationRow } from "../components/VacationCard";
-import { fetchVacations, followVacation, unfollowVacation } from "../services/vacations.service";
+import { fetchVacations, followVacation, unfollowVacation, fetchFollowedVacationIds } from "../services/vacations.service";
 import { useAuth } from "../contex/AuthContext";
 
 export default function VacationsPage() {
@@ -26,17 +27,26 @@ export default function VacationsPage() {
             const metaTotal = Number(meta.total ?? 0);
             const metaPage = Number(meta.page ?? page);
             const metaPageSize = Number(meta.pageSize ?? pageSize);
-            const totalPagesLocal = Math.max(1, Math.ceil(metaTotal / metaPageSize));
 
-            setRows(data);
+            let followedIds = new Set<number>(); //to get all the vacations the user is following
+            if (userId) {
+                try {
+                    const ids = await fetchFollowedVacationIds();
+                    followedIds = new Set(ids);
+                } catch (err) {
+                    console.warn("Failed to fetch followed ids:", err);
+                }
+            }
+
+            const synced = (data ?? []).map((r: any) => ({
+                ...r,
+                is_following: userId ? (followedIds.has(Number(r.vacation_id)) ? 1 : 0) : 0,
+            }));
+
+            setRows(synced);
             setTotal(metaTotal);
             setPage(metaPage);
             setPageSize(metaPageSize);
-
-            console.log(
-                `RESP meta -> total: ${metaTotal}, pageSize: ${metaPageSize}, page: ${metaPage}, totalPages: ${totalPagesLocal}`
-            );
-            console.log(rows);
         } catch (err) {
             console.error("Failed to load vacations", err);
             setRows([]);
@@ -56,39 +66,18 @@ export default function VacationsPage() {
             return;
         }
 
-        // optimistic update
-        setRows((cur) =>
-            cur.map((r) =>
-                r.vacation_id === vacationId
-                    ? {
-                          ...r,
-                          is_following: currentlyFollowing ? 0 : 1,
-                          followers_count: currentlyFollowing ? r.followers_count - 1 : r.followers_count + 1,
-                      }
-                    : r
-            )
-        );
-
         setSaving((s) => ({ ...s, [vacationId]: true }));
+
         try {
             if (currentlyFollowing) {
                 await unfollowVacation(userId, vacationId);
             } else {
                 await followVacation(userId, vacationId);
             }
+
+            await load();
         } catch (err) {
-            // revert on error
-            setRows((cur) =>
-                cur.map((r) =>
-                    r.vacation_id === vacationId
-                        ? {
-                              ...r,
-                              is_following: currentlyFollowing ? 1 : 0,
-                              followers_count: currentlyFollowing ? r.followers_count + 1 : r.followers_count - 1,
-                          }
-                        : r
-                )
-            );
+            console.error("Follow/unfollow failed:", err);
             alert("Action failed, please try again.");
         } finally {
             setSaving((s) => {
@@ -137,12 +126,7 @@ export default function VacationsPage() {
             </div>
 
             <div className="PagesPagination" style={{ textAlign: "center", marginTop: 10 }}>
-                <button
-                    onClick={() => {
-                        setPage((p) => Math.max(1, p - 1));
-                    }}
-                    disabled={prevDisabled}
-                >
+                <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={prevDisabled}>
                     Previous
                 </button>
 
@@ -150,12 +134,7 @@ export default function VacationsPage() {
                     {page} / {totalPages}
                 </span>
 
-                <button
-                    onClick={() => {
-                        setPage((p) => Math.min(totalPages, p + 1));
-                    }}
-                    disabled={nextDisabled}
-                >
+                <button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={nextDisabled}>
                     Next
                 </button>
             </div>

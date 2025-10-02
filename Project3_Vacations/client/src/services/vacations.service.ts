@@ -7,6 +7,12 @@ export async function fetchVacations({ filter = "all", userId = null, page = 1 }
     return data;
 }
 
+export async function fetchFollowedVacationIds(): Promise<number[]> {
+    const { data } = await api.get("/vac/followed");
+    const rows = data?.data ?? [];
+    return rows.map((r: any) => Number(r.vacation_id));
+}
+
 export async function followVacation(userId: number, vacationId: number) {
     await api.post(`/vac/${vacationId}/follow`, { userId });
 }
