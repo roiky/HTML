@@ -80,10 +80,8 @@ function getFollowedVacationsHandler(req, res, next) {
 }
 function postFollowHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        var _a;
         try {
-            const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId;
-            //const userId = Number(req.body.userId);
+            const userId = req.userId;
             if (!userId)
                 return res.status(401).json({ message: "Unauthorized" });
             const vacationId = Number(req.params.id);
@@ -100,10 +98,8 @@ function postFollowHandler(req, res, next) {
 }
 function deleteFollowHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        var _a;
         try {
-            const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId;
-            // const userId = Number(req.body.userId);
+            const userId = req.userId;
             if (!userId)
                 return res.status(401).json({ message: "Unauthorized" });
             const vacationId = Number(req.params.id);

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -9,19 +9,35 @@ export interface AuthRequest extends Request {
     user?: any;
 }
 
-export function requireAuth(req: AuthRequest, res: Response, next: NextFunction) {
-    const authHeader = req.headers.authorization || req.headers["Authorization"];
-    if (!authHeader) return res.status(401).json({ message: "Missing Authorization header" });
+declare global {
+    namespace Express {
+        interface Request {
+            user?: any;
+            userId?: number;
+        }
+    }
+}
 
-    const token = typeof authHeader === "string" ? (authHeader.startsWith("Bearer ") ? authHeader.slice(7) : authHeader) : "";
-    if (!token) return res.status(401).json({ message: "Missing token" });
-
+export function requireAuth(req: Request, res: Response, next: NextFunction) {
     try {
-        const payload = jwt.verify(token, JWT_SECRET) as any;
-        req.user = payload;
+        const authHeader = (req.headers.authorization as string) || "";
+        console.log(authHeader);
+        if (!authHeader) return res.status(401).json({ message: "Unauthorized - missing auth header" });
+
+        const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : authHeader;
+        if (!token) return res.status(401).json({ message: "Unauthorized - missing token" });
+
+        const secret = process.env.JWT_SECRET || "secret";
+
+        const decoded = jwt.verify(token, secret) as JwtPayload | string;
+
+        (req as any).user = decoded;
+        const maybeUserId = (decoded as any)?.userId ?? (decoded as any)?.user_id ?? (decoded as any)?.id;
+        if (maybeUserId) req.userId = Number(maybeUserId);
+
         next();
-    } catch (err) {
-        return res.status(401).json({ message: "Invalid or expired token" });
+    } catch (error) {
+        return res.status(401).json({ message: "Unauthorized - invalid token" });
     }
 }
 

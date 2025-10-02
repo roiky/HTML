@@ -96,7 +96,7 @@ const styles: Record<string, React.CSSProperties> = {
         color: "#111",
         alignItems: "stretch",
     },
-    media: { width: 160, minWidth: 160, height: 110, overflow: "hidden", borderRadius: 8, background: "#f3f3f3" },
+    media: { width: 200, minWidth: 200, height: 160, overflow: "hidden", borderRadius: 8, background: "#f3f3f3" },
     image: { width: "100%", height: "100%", objectFit: "cover", display: "block" },
     noImage: { width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#666" },
     body: { flex: 1, display: "flex", flexDirection: "column", gap: 8 },
