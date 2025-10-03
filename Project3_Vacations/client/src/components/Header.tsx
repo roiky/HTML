@@ -32,7 +32,7 @@ export default function Header() {
                                 color="success"
                                 onClick={() => navigate("/adminPage")}
                             >
-                                Go to Admin Panel
+                                Admin Page
                             </Button>
                         )}
 
