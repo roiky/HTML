@@ -19,20 +19,25 @@ export async function getCSV() {
         window.URL.revokeObjectURL(url);
     } catch (err: any) {
         console.error("Failed to download CSV:", err);
-        if (err?.response?.data) {
-            try {
-                const text = await err.response.data.text?.();
-                console.warn("Server response (text):", text);
-            } catch (_) {}
-        }
         alert("Failed to download CSV — check console for details.");
+    }
+}
+
+export async function getFollowersJSON() {
+    try {
+        const resp = await api.get("/reports/followers");
+
+        const rows = resp.data ?? [];
+        return rows;
+    } catch (err: any) {
+        console.error("Failed to get followers JSON:", err);
     }
 }
 
 export type CreateVacationPayload = {
     destination: string;
     description: string;
-    start_date: string; // ISO or "YYYY-MM-DDTHH:mm" string
+    start_date: string;
     end_date: string;
     price: number | string;
     image?: File | null;
@@ -47,7 +52,6 @@ export async function createVacationAdmin(payload: CreateVacationPayload) {
     fd.append("price", String(payload.price));
     if (payload.image) fd.append("image", payload.image);
 
-    // שים לב: api מגדיר baseURL ו־Authorization interceptor
     const { data } = await api.post("/admin/create", fd, {
         headers: { "Content-Type": "multipart/form-data" },
     });
@@ -61,7 +65,6 @@ export async function updateVacationAdmin(id: number, payload: CreateVacationPay
     fd.append("start_date", payload.start_date);
     fd.append("end_date", payload.end_date);
     fd.append("price", String(payload.price));
-    // image - אם קיים שולחים, אחרת לא שולחים כך השרת ישאיר את הישן
     if (payload.image) fd.append("image", payload.image);
 
     const { data } = await api.put(`/admin/${id}`, fd, {

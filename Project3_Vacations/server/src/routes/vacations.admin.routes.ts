@@ -5,13 +5,10 @@ import { requireAdmin /* or requireAuth then requireAdmin */ } from "../middlewa
 
 const router = Router();
 
-// create: multipart/form-data with optional "image" file
-router.post("/create", /* requireAdmin, */ uploadSingle.single("image"), postNewVacation);
+router.post("/create", requireAdmin, uploadSingle.single("image"), postNewVacation);
 
-// update: multipart/form-data, image optional
-router.put("/:id", /* requireAdmin, */ uploadSingle.single("image"), putVacationHandler);
+router.put("/:id", requireAdmin, uploadSingle.single("image"), putVacationHandler);
 
-// delete
-router.delete("/:id", /* requireAdmin, */ deleteVacationHandler);
+router.delete("/:id", requireAdmin, deleteVacationHandler);
 
 export default router;

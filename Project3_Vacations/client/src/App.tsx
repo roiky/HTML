@@ -5,6 +5,7 @@ import RegisterPage from "./pages/Register";
 import Display404 from "./components/404";
 import VacationsPage from "./pages/VacationsPage";
 import AdminPage from "./pages/AdminPage";
+import ChartPage from "./pages/ChartPage";
 import { RequireAuth } from "./components/RequireAuth";
 import RequireAdmin from "./components/RequireAdmin";
 
@@ -30,6 +31,14 @@ export default function App() {
                         element={
                             <RequireAdmin>
                                 <AdminPage />
+                            </RequireAdmin>
+                        }
+                    />
+                    <Route
+                        path="/chart"
+                        element={
+                            <RequireAdmin>
+                                <ChartPage />
                             </RequireAdmin>
                         }
                     />

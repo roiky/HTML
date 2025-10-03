@@ -3,16 +3,24 @@ import React, { useEffect, useState } from "react";
 import VacationCard, { VacationRow } from "../components/VacationCard";
 import VacationFormModalMUI from "../components/VacationFormModal";
 import { fetchVacations } from "../services/vacations.service";
-import { createVacationAdmin, updateVacationAdmin, deleteVacationAdmin, getCSV } from "../services/vacations.admin.service";
+import {
+    createVacationAdmin,
+    updateVacationAdmin,
+    deleteVacationAdmin,
+    getCSV,
+    getFollowersJSON,
+} from "../services/vacations.admin.service";
 import type { CreateVacationPayload } from "../services/vacations.admin.service";
 import { useAuth } from "../contex/AuthContext";
 import { Button } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import EqualizerOutlinedIcon from "@mui/icons-material/EqualizerOutlined";
+import { useNavigate } from "react-router-dom";
 
 export default function AdminVacationsPage() {
     const { user } = useAuth();
+    const navigate = useNavigate();
     const userId = user?.userId ?? null;
 
     if (user?.role !== "admin") return <div>Not allowed</div>;
@@ -97,7 +105,7 @@ export default function AdminVacationsPage() {
                         variant="contained"
                         color="secondary"
                         startIcon={<EqualizerOutlinedIcon />}
-                        onClick={() => getCSV()}
+                        onClick={() => navigate("/chart")}
                     >
                         Chart
                     </Button>
