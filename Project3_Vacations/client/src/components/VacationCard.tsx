@@ -69,8 +69,6 @@ export default function VacationCard({ item, loading = false, onToggleFollow, on
                         {onToggleFollow ? (
                             <Button
                                 style={{ fontSize: "12px" }}
-                                //startIcon={item.is_following ? <DeleteOutlinedIcon /> : <FavoriteBorderOutlinedIcon />}
-                                startIcon={item.is_following ? <ThumbDownOutlinedIcon /> : <ThumbUpOutlinedIcon />}
                                 size="small"
                                 variant="outlined"
                                 color={item.is_following ? "error" : "info"}
@@ -78,7 +76,7 @@ export default function VacationCard({ item, loading = false, onToggleFollow, on
                                 onClick={() => onToggleFollow(item.vacation_id, !!item.is_following)}
                             >
                                 {/* {loading ? "…" : item.is_following ? "Unfollow" : "Follow"} */}
-                                {/* {loading ? "…" : item.is_following ? "" : ""} */}
+                                {item.is_following ? <ThumbDownOutlinedIcon /> : <ThumbUpOutlinedIcon />}
                             </Button>
                         ) : null}
                     </div>

@@ -125,19 +125,9 @@ export default function RegisterPage() {
                         </button>
                     </div>
                     <div>
-                        <button
-                            type="button"
-                            style={{
-                                fontSize: "small",
-                                background: "transparent",
-                                border: "none",
-                                color: "#06c",
-                                cursor: "pointer",
-                            }}
-                            onClick={() => navigate("/login")}
-                        >
+                        <a style={{ fontSize: "small" }} onClick={() => navigate("/login")}>
                             Already have an account? Login here!
-                        </button>
+                        </a>
                     </div>
                 </div>
             </form>
