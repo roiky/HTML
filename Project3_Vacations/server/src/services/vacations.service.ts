@@ -26,8 +26,10 @@ async function getVacationsBase(sqlParams: {
     pageSize?: number;
 }): Promise<{ rows: VacationRow[]; total: number; page: number; pageSize: number }> {
     const page = Math.max(1, Number(sqlParams.page ?? 1));
-    const pageSize = Math.max(1, Math.min(100, Number(sqlParams.pageSize ?? 10)));
-    const offset = (page - 1) * pageSize;
+    const requestedPageSize = sqlParams.pageSize == null ? 10 : Number(sqlParams.pageSize);
+    const noPagination = requestedPageSize <= 0;
+    const pageSize = noPagination ? 0 : Math.max(1, Math.min(1000, requestedPageSize));
+    const offset = (page - 1) * (pageSize || 0);
 
     const whereSql = sqlParams.whereClause && sqlParams.whereClause.trim() ? `WHERE ${sqlParams.whereClause}` : "";
     const baseParams = Array.isArray(sqlParams.whereParams) ? [...sqlParams.whereParams] : [];
@@ -38,7 +40,9 @@ async function getVacationsBase(sqlParams: {
     const [countRows]: any = await conn.execute(countSql, baseParams);
     const total = Number(countRows[0]?.cnt ?? 0);
 
-    const safeUserId = sqlParams.userId != null ? Number(sqlParams.userId) : 0; // to fix a bug when invalid userID broke the app
+    const safeUserId = sqlParams.userId != null ? Number(sqlParams.userId) : 0;
+
+    const limitClause = noPagination ? "" : `LIMIT ${pageSize} OFFSET ${offset}`;
 
     const selectSql = `
     SELECT
@@ -54,10 +58,11 @@ async function getVacationsBase(sqlParams: {
     FROM vacations v
     ${whereSql}
     ORDER BY v.start_date ASC
-    LIMIT ${pageSize} OFFSET ${offset}
+    ${limitClause}
   `;
 
     const selectParams: any[] = [...baseParams, safeUserId];
+
     const [rows]: any = await conn.execute(selectSql, selectParams);
 
     const mapped: VacationRow[] = (rows || []).map((r: any) => ({
@@ -72,10 +77,13 @@ async function getVacationsBase(sqlParams: {
         is_following: r.is_following ? 1 : 0,
     }));
 
-    return { rows: mapped, total, page, pageSize };
+    return {
+        rows: mapped,
+        total,
+        page: noPagination ? 1 : page,
+        pageSize: noPagination ? total : pageSize,
+    };
 }
-
-/* ---------- now use "getVacationsBase" to get all kinds of filters  ---------- */
 
 export async function getAllVacations(args: BaseArgs) {
     return getVacationsBase({ whereClause: "", whereParams: [], ...args });
@@ -125,7 +133,7 @@ export async function unfollowVacation(userId: number, vacationId: number): Prom
 export async function createVacation(payload: {
     destination: string;
     description: string;
-    start_date: string; // ISO string
+    start_date: string;
     end_date: string;
     price: number;
     image_name?: string | null;

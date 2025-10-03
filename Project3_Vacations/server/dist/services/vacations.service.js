@@ -25,17 +25,20 @@ exports.findVacationById = findVacationById;
 const db_1 = __importDefault(require("../db"));
 function getVacationsBase(sqlParams) {
     return __awaiter(this, void 0, void 0, function* () {
-        var _a, _b, _c, _d;
+        var _a, _b, _c;
         const page = Math.max(1, Number((_a = sqlParams.page) !== null && _a !== void 0 ? _a : 1));
-        const pageSize = Math.max(1, Math.min(100, Number((_b = sqlParams.pageSize) !== null && _b !== void 0 ? _b : 10)));
-        const offset = (page - 1) * pageSize;
+        const requestedPageSize = sqlParams.pageSize == null ? 10 : Number(sqlParams.pageSize);
+        const noPagination = requestedPageSize <= 0;
+        const pageSize = noPagination ? 0 : Math.max(1, Math.min(1000, requestedPageSize));
+        const offset = (page - 1) * (pageSize || 0);
         const whereSql = sqlParams.whereClause && sqlParams.whereClause.trim() ? `WHERE ${sqlParams.whereClause}` : "";
         const baseParams = Array.isArray(sqlParams.whereParams) ? [...sqlParams.whereParams] : [];
         const conn = yield (0, db_1.default)();
         const countSql = `SELECT COUNT(*) AS cnt FROM vacations v ${whereSql}`;
         const [countRows] = yield conn.execute(countSql, baseParams);
-        const total = Number((_d = (_c = countRows[0]) === null || _c === void 0 ? void 0 : _c.cnt) !== null && _d !== void 0 ? _d : 0);
-        const safeUserId = sqlParams.userId != null ? Number(sqlParams.userId) : 0; // to fix a bug when invalid userID broke the app
+        const total = Number((_c = (_b = countRows[0]) === null || _b === void 0 ? void 0 : _b.cnt) !== null && _c !== void 0 ? _c : 0);
+        const safeUserId = sqlParams.userId != null ? Number(sqlParams.userId) : 0;
+        const limitClause = noPagination ? "" : `LIMIT ${pageSize} OFFSET ${offset}`;
         const selectSql = `
     SELECT
       v.vacation_id,
@@ -50,7 +53,7 @@ function getVacationsBase(sqlParams) {
     FROM vacations v
     ${whereSql}
     ORDER BY v.start_date ASC
-    LIMIT ${pageSize} OFFSET ${offset}
+    ${limitClause}
   `;
         const selectParams = [...baseParams, safeUserId];
         const [rows] = yield conn.execute(selectSql, selectParams);
@@ -68,10 +71,14 @@ function getVacationsBase(sqlParams) {
                 is_following: r.is_following ? 1 : 0,
             });
         });
-        return { rows: mapped, total, page, pageSize };
+        return {
+            rows: mapped,
+            total,
+            page: noPagination ? 1 : page,
+            pageSize: noPagination ? total : pageSize,
+        };
     });
 }
-/* ---------- now use "getVacationsBase" to get all kinds of filters  ---------- */
 function getAllVacations(args) {
     return __awaiter(this, void 0, void 0, function* () {
         return getVacationsBase(Object.assign({ whereClause: "", whereParams: [] }, args));

@@ -15,6 +15,7 @@ exports.getUpcomingVacationsHandler = getUpcomingVacationsHandler;
 exports.getFollowedVacationsHandler = getFollowedVacationsHandler;
 exports.postFollowHandler = postFollowHandler;
 exports.deleteFollowHandler = deleteFollowHandler;
+exports.getAllVacationsAdminHandler = getAllVacationsAdminHandler;
 const vacations_service_1 = require("../services/vacations.service");
 function getAllVacationsHandler(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -108,6 +109,19 @@ function deleteFollowHandler(req, res, next) {
             }
             yield (0, vacations_service_1.unfollowVacation)(userId, vacationId);
             return res.status(204).send();
+        }
+        catch (err) {
+            next(err);
+        }
+    });
+}
+function getAllVacationsAdminHandler(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var _a, _b;
+        try {
+            const userId = (_b = (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId) !== null && _b !== void 0 ? _b : null;
+            const result = yield (0, vacations_service_1.getAllVacations)({ userId, pageSize: -1 });
+            res.json({ data: result.rows, meta: { total: result.total, page: result.page, pageSize: result.pageSize } });
         }
         catch (err) {
             next(err);

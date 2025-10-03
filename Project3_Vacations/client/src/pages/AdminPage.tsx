@@ -9,6 +9,7 @@ import { useAuth } from "../contex/AuthContext";
 import { Button } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import EqualizerOutlinedIcon from "@mui/icons-material/EqualizerOutlined";
 
 export default function AdminVacationsPage() {
     const { user } = useAuth();
@@ -25,7 +26,7 @@ export default function AdminVacationsPage() {
     async function load() {
         setLoading(true);
         try {
-            const resp = await fetchVacations({ filter: "all", userId, page: 1 });
+            const resp = await fetchVacations({ filter: "admin", userId });
             setRows(resp?.data ?? []);
         } catch (err) {
             console.error("Load failed", err);
@@ -89,6 +90,16 @@ export default function AdminVacationsPage() {
                 <h2>Admin - Vacations</h2>
                 <div style={{ display: "flex", gap: 10 }}>
                     {" "}
+                    <Button
+                        style={{ fontSize: "12px" }}
+                        size="small"
+                        variant="contained"
+                        color="secondary"
+                        startIcon={<EqualizerOutlinedIcon />}
+                        onClick={() => getCSV()}
+                    >
+                        Chart
+                    </Button>
                     <Button
                         style={{ fontSize: "12px" }}
                         size="small"

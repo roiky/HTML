@@ -95,3 +95,14 @@ export async function deleteFollowHandler(req: Request, res: Response, next: Nex
         next(err);
     }
 }
+
+export async function getAllVacationsAdminHandler(req: Request, res: Response, next: NextFunction) {
+    try {
+        const userId = (req as any).user?.userId ?? null;
+
+        const result = await getAllVacations({ userId, pageSize: -1 });
+        res.json({ data: result.rows, meta: { total: result.total, page: result.page, pageSize: result.pageSize } });
+    } catch (err) {
+        next(err);
+    }
+}
