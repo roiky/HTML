@@ -63,6 +63,7 @@ a:hover {
     position: sticky;
     top: 0;
     backdrop-filter: blur(8px);
+    z-index: 1200;
 }
 
 .brand {

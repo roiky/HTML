@@ -88,6 +88,7 @@ export default function AdminVacationsPage() {
         <section style={{ padding: 18 }}>
             <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                 <h2>Admin - Vacations</h2>
+
                 <div style={{ display: "flex", gap: 10 }}>
                     {" "}
                     <Button
