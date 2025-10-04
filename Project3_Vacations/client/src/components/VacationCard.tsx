@@ -57,7 +57,7 @@ export default function VacationCard({ item, loading = false, onToggleFollow, on
                         </div>
                     </div>
 
-                    <div style={styles.price}>${Number(item.price).toFixed(2)}</div>
+                    <div style={styles.price}>${formatPrice(item.price)}</div>
                 </div>
 
                 <div>
@@ -158,4 +158,10 @@ function formatDate(d: string | Date) {
     const hh = String(date.getHours()).padStart(2, "0");
     const min = String(date.getMinutes()).padStart(2, "0");
     return `${dd}/${mm}/${yyyy} ${hh}:${min}`;
+}
+
+function formatPrice(value: string | number): string {
+    const num = Number(value);
+    if (Number.isNaN(num)) return "-";
+    return num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
