@@ -26,12 +26,15 @@ describe("Vacation - admin functions", function () {
 
     before(async () => {
         const registerRes = await registerViaApi({ first_name: "admin", last_name: "Function_Test", email, password });
+        expect(registerRes.status).to.equal(201);
+        expect(registerRes.data).to.have.property("id");
 
         conn = await getDbConnection();
         userId = registerRes.data.id;
     });
 
     after(async () => {
+        await deleteUserByEmail(email);
         if (conn) await conn.end();
     });
 
@@ -47,6 +50,8 @@ describe("Vacation - admin functions", function () {
 
         if (adminRows[0].role === "admin") {
             const loginRes = await loginViaApi({ email, password });
+            expect(loginRes.status).to.equal(200);
+            expect(loginRes.data).to.have.property("token");
             token = loginRes.data.token;
         }
     });
@@ -65,7 +70,7 @@ describe("Vacation - admin functions", function () {
         expect(vacationRes.status).to.equal(201);
         expect(vacationRes.data.message).to.include("Vacation created");
         expect(vacationRes.data).to.have.property("id");
-        if (vacationRes.data.id > 0) vacationId = vacationRes.data.id;
+        vacationId = vacationRes.data.id;
     });
 
     it("[Update Vacation]-[Put] /admin/{VacationID} - update a vacation", async () => {
