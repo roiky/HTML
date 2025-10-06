@@ -11,9 +11,9 @@ const axiosInstanceApi = axios.create({
 });
 
 describe("API Health-Check", () => {
-    it("GET /hc - API Health-Check", async () => {
+    it("[Health Check] /hc - health check", async () => {
         const res = await axiosInstanceApi.get(`${BASE_URL}/hc`, {});
         expect(res.status).to.equal(200);
-        expect(res.data).to.include("Api is Running");
+        expect(res.data).to.include("Vacations API is running!");
     });
 });

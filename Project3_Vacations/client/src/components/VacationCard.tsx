@@ -157,7 +157,8 @@ function formatDate(d: string | Date) {
     const yyyy = date.getFullYear();
     const hh = String(date.getHours()).padStart(2, "0");
     const min = String(date.getMinutes()).padStart(2, "0");
-    return `${dd}/${mm}/${yyyy} ${hh}:${min}`;
+    //return `${dd}/${mm}/${yyyy} ${hh}:${min}`;
+    return `${dd}/${mm}/${yyyy}`;
 }
 
 function formatPrice(value: string | number): string {
