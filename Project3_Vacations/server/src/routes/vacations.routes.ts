@@ -21,4 +21,5 @@ router.get("/admin", requireAdmin, getAllVacationsAdminHandler);
 
 router.post("/:id/follow", requireAuth, postFollowHandler);
 router.delete("/:id/follow", requireAuth, deleteFollowHandler);
+
 export default router;

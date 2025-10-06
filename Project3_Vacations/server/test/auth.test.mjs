@@ -4,7 +4,7 @@ dotenv.config();
 
 import { randomEmail, registerViaApi, loginViaApi, deleteUserByEmail, BASE_URL } from "./helpers.test.mjs";
 
-let newUserID = 0;
+let newUserID;
 
 describe("Auth API", function () {
     this.timeout(5000);
@@ -20,6 +20,7 @@ describe("Auth API", function () {
 
     after(async () => {
         await deleteUserByEmail(email);
+        console.log(`[User ID: ${newUserID}] Deleted Successfully`);
     });
 
     it("[Register] /auth/register - create user", async () => {
@@ -29,6 +30,7 @@ describe("Auth API", function () {
         expect(res.status).to.equal(201);
         expect(res.data).to.have.property("id");
         expect(res.data.message).to.include("User registered");
+        console.log(`[User ID: ${newUserID}] Register Successfully`);
     });
 
     it("[Login] /auth/login - login with new created user", async () => {
@@ -39,6 +41,7 @@ describe("Auth API", function () {
         expect(token).to.be.a("string");
         //console.log(token);
         //console.log(res.data.user);
+        console.log(`[User ID: ${newUserID}] Login Successfully`);
     });
 
     it("[Register] /auth/register - invalid email", async () => {

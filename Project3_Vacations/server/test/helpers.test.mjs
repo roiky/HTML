@@ -11,8 +11,8 @@ export async function getDbConnection() {
     return mysql2.createConnection({
         host: process.env.DB_HOST || "localhost",
         user: process.env.DB_USER || "root",
-        password: process.env.DB_PASS || process.env.PASSWORD || "",
-        database: process.env.DB_NAME || process.env.DATABASE || "vacations_app",
+        password: process.env.PASSWORD || "root",
+        database: process.env.DATABASE || "vacations_app",
         port: Number(process.env.DB_PORT) || 3306,
     });
 }
@@ -27,7 +27,6 @@ export async function registerViaApi(payload) {
 
 export async function loginViaApi(payload) {
     //const { data } = await axios.post(`${BASE_URL}/auth/login`, payload);
-    // expect(data).to.have.property("token");
     return await axios.post(`${BASE_URL}/auth/login`, payload);
 }
 
@@ -43,6 +42,6 @@ export function axiosWithToken(token) {
 
 export async function deleteUserByEmail(email) {
     const conn = await getDbConnection();
-    await conn.execute(`DELETE FROM users WHERE email = ?`, [email]);
+    await conn.execute(`DELETE FROM vacations_app.users WHERE email = ?`, [email]);
     await conn.end();
 }
