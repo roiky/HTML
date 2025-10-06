@@ -44,11 +44,21 @@ describe("Vacation - user functions", function () {
         const followRes = await axiosWithToken(token).post("/vac/1/follow"); //i assume that the DB have at least 1 vacation in it
         expect(followRes.status).to.equal(204);
         //console.log(`[UserID ${userId}] followed vacation!`);
+        const [followRows] = await conn.execute(`SELECT * FROM vacations_app.followers WHERE user_id = ? AND vacation_id = ?`, [
+            userId,
+            "1",
+        ]);
+        expect(followRows.length).to.be.greaterThan(0);
     });
 
     it("[Unfollow Vacation]-[DELETE] /vac/{id}/follow - unfollow a vacation", async () => {
         const followRes = await axiosWithToken(token).delete("/vac/1/follow"); //i assume that the DB have at least 1 vacation in it
         expect(followRes.status).to.equal(204);
         //console.log(`[${userId}] unfollowed vacation!`);
+        const [followRows] = await conn.execute(`SELECT * FROM vacations_app.followers WHERE user_id = ? AND vacation_id = ?`, [
+            userId,
+            "1",
+        ]);
+        expect(followRows.length).to.equal(0);
     });
 });
