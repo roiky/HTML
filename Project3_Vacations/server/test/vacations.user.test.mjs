@@ -2,8 +2,15 @@ import { expect } from "chai";
 import dotenv from "dotenv";
 dotenv.config();
 
-import mysql2 from "mysql2/promise";
-import { randomEmail, registerViaApi, loginViaApi, deleteUserByEmail, axiosWithToken, BASE_URL } from "./helpers.test.mjs";
+import {
+    randomEmail,
+    registerViaApi,
+    loginViaApi,
+    deleteUserByEmail,
+    axiosWithToken,
+    BASE_URL,
+    getDbConnection,
+} from "./helpers.test.mjs";
 
 describe("Vacation - user functions", function () {
     this.timeout(7000);
@@ -16,20 +23,15 @@ describe("Vacation - user functions", function () {
 
     before(async () => {
         const res = await registerViaApi({ first_name: "User", last_name: "Function_Test", email, password });
-        userId = res.data.id;
         const loginRes = await loginViaApi({ email, password });
+
+        conn = await getDbConnection();
+        userId = res.data.id;
         token = loginRes.data.token;
-        conn = await mysql2.createConnection({
-            host: process.env.DB_HOST || "localhost",
-            user: process.env.DB_USER || "root",
-            password: process.env.PASSWORD || "root",
-            database: process.env.DATABASE || "vacations_app",
-            port: Number(process.env.DB_PORT) || 3306,
-        });
     });
 
     after(async () => {
-        //await deleteUserByEmail(email);
+        await deleteUserByEmail(email);
         if (conn) await conn.end();
     });
 
