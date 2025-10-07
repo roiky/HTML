@@ -24,17 +24,34 @@ describe("Vacation - admin functions", function () {
     let vacationId;
     let conn;
 
+    // regular user (should be blocked from admin functions)
+    const regularEmail = randomEmail();
+    let regularUserId;
+    let regularUserToken;
+
     before(async () => {
         const registerRes = await registerViaApi({ first_name: "admin", last_name: "Function_Test", email, password });
+        const regularUserRes = await registerViaApi({
+            first_name: "user",
+            last_name: "should_be_blocked",
+            email: regularEmail,
+            password,
+        });
         expect(registerRes.status).to.equal(201);
         expect(registerRes.data).to.have.property("id");
 
         conn = await getDbConnection();
         userId = registerRes.data.id;
+        regularUserId = regularUserRes.data.id;
+        const regularUserLoginRes = await loginViaApi({ email: regularEmail, password });
+        expect(regularUserLoginRes.status).to.equal(200);
+        expect(regularUserLoginRes.data).to.have.property("token");
+        regularUserToken = regularUserLoginRes.data.token;
     });
 
     after(async () => {
         await deleteUserByEmail(email);
+        await deleteUserByEmail(regularEmail);
         if (conn) await conn.end();
     });
 
@@ -91,6 +108,55 @@ describe("Vacation - admin functions", function () {
         expect(vacationRows.length).to.equal(1);
         expect(vacationRows[0]).to.have.property("destination", payload.destination);
         expect(vacationRows[0]).to.have.property("description", payload.description);
+    });
+
+    it("[Unauthorized Create]- try to create vacation with user role", async () => {
+        const payload = {
+            destination: "roei_test_dest",
+            description: "roei_test_desc",
+            start_date: "1995-01-01",
+            end_date: "2026-01-01",
+            price: 99.99,
+            // no image
+        };
+        try {
+            const unautVacationRes = await axiosWithToken(regularUserToken).post("/admin/create", payload);
+            throw new Error("Unauthorize to create vacation");
+        } catch (err) {
+            expect(err.response.status).to.equal(403);
+            expect(err.response.data).to.have.property("message");
+            expect(err.response.data.message).to.include("Admin role required");
+        }
+    });
+
+    it("[Unauthorized Edit]- try to edit vacation with user role", async () => {
+        const payload = {
+            destination: "updated_roei_test_dest",
+            description: "updated_roei_test_desc",
+            start_date: "1995-01-01",
+            end_date: "2029-01-01",
+            price: 999.99,
+            // no image
+        };
+        try {
+            const unautVacationRes = await axiosWithToken(regularUserToken).put(`/admin/${vacationId}`, payload);
+            throw new Error("Unauthorize to edit vacation");
+        } catch (err) {
+            expect(err.response.status).to.equal(403);
+            expect(err.response.data).to.have.property("message");
+            expect(err.response.data.message).to.include("Admin role required");
+        }
+    });
+
+    it("[Unauthorized Delete]- try to create vacation with user role", async () => {
+        try {
+            const unautVacationRes = await axiosWithToken(regularUserToken).delete(`/admin/${vacationId}`);
+            throw new Error("Unauthorize to delete vacation");
+        } catch (err) {
+            expect(err.response.status).to.equal(403);
+            expect(err.response.data).to.have.property("message");
+            expect(err.response.data.message).to.include("Admin role required");
+        }
     });
 
     it("[Delete Vacation]-[Delete] /admin/{VacationID} - delete a vacation", async () => {
