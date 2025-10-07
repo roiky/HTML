@@ -6,7 +6,7 @@ import { randomEmail, registerViaApi, loginViaApi, deleteUserByEmail, BASE_URL }
 
 let newUserID;
 
-describe("Auth API", function () {
+describe("Auth - register and login", function () {
     this.timeout(5000);
 
     const email = randomEmail();
