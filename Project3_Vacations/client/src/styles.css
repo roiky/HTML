@@ -235,7 +235,7 @@ select:focus {
     white-space: nowrap;
 }
 .table td select {
-    min-width: 100px; /* אפשר 170–180 אם צריך */
+    min-width: 100px;
 }
 .table tbody tr:hover {
     background: #fafafa;
@@ -244,7 +244,6 @@ select:focus {
     border-bottom: none;
 }
 
-/* Tiles / Grid (אם תשתמש) */
 .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));

@@ -1,4 +1,3 @@
-// src/pages/VacationsPage.tsx
 import React, { useEffect, useState } from "react";
 import VacationCard, { VacationRow } from "../components/VacationCard";
 import { fetchVacations, followVacation, unfollowVacation, fetchFollowedVacationIds } from "../services/vacations.service";

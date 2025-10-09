@@ -1,4 +1,3 @@
-// src/pages/Register.tsx
 import React, { useEffect, useState } from "react";
 import { z } from "zod";
 import { useNavigate } from "react-router-dom";

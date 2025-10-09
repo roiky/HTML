@@ -1,4 +1,3 @@
-// src/pages/AdminVacationsPage.tsx
 import React, { useEffect, useState } from "react";
 import VacationCard, { VacationRow } from "../components/VacationCard";
 import VacationFormModalMUI from "../components/VacationFormModal";
