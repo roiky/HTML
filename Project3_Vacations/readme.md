@@ -22,3 +22,40 @@ This app demonstrates:
 
 3. PUT /auth/setAdmin/:id
    Path param: id — set given user to admin (used for tests).
+
+## Vacations (user)
+
+1. GET /vac/all
+   Query: page, pageSize
+
+2. GET /vac/active
+
+3. GET /vac/upcoming
+
+4. GET /vac/followed (requires auth)
+
+5. POST /vac/:id/follow (auth)
+
+6. DELETE /vac/:id/follow (auth)
+
+## Vacations (admin)
+
+(Require requireAuth + requireAdmin)
+
+1. POST /admin/create
+   (fields: destination, description, start_date, end_date, price, image(file) )
+
+2. PUT /admin/:id
+   Update vacation. Image optional.
+
+3. DELETE /admin/:id
+
+4. GET /vac/admin (optional)
+   Return all vacations for admin (non-paginated, use it in the admin page).
+
+## Reports (admin)
+
+1. GET /reports/followers
+
+2. GET /reports/csv
+   (attachment download)
