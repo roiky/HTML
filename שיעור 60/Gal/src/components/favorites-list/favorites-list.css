@@ -1,0 +1,18 @@
+.controls {
+  margin-bottom: 1rem;
+}
+
+.car-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.car-card {
+  background-color: #f4f4f4;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 8px;
+  width: 250px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+}
