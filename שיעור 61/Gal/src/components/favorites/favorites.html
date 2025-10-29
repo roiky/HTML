@@ -1,0 +1,5 @@
+<div>
+    <button (click)="clearFavorites()"> Clear? </button>
+    <h1>{{this.favoritesCars.favorites.length}}</h1>
+    <app-car *ngFor="let car of this.favoritesCars.favorites" [car]="car"></app-car>
+</div>
