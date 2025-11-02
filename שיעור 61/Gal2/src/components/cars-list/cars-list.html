@@ -1,0 +1,15 @@
+<div class="controls">
+    <button (click)="toggleList()">
+        {{ showList ? 'Hide' : 'Show' }} Cars
+    </button>
+
+    <input type="text" placeholder="Filter by model" [(ngModel)]="filterText" />
+    <button (click)="setDiscount(10)">10%</button>
+    <button (click)="setDiscount(20)">20%</button>
+    <button (click)="setDiscount(30)">30%</button>
+</div>
+
+<div *ngIf="showList" class="car-list">
+    <app-car *ngFor="let car of cars | filterByModel: filterText" [car]="car" [d]="discountNumber"
+        [carBgColor]="this.settingsService.getStyleIbject().bg"></app-car>
+</div>

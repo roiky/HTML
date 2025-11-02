@@ -1,0 +1,27 @@
+<div style="height: 98vh" [style.background]="themeBackground">
+  <div>
+    <button (click)="toggleBackground('red')">Red</button>
+    <button (click)="toggleBackground('white')">White</button>
+  </div>
+  <div style="display: flex; justify-content: center">
+    <h1>{{ title }}</h1>
+
+    <!-- <button (click)="NameOfFunction???" > Tomer is here! </button> -->
+  </div>
+  <div>
+    <nav class="navbar">
+      <div class="navbar-logo">MyApp</div>
+      <div class="navbar-links">
+        <a routerLink="/home" routerLinkActive="active">Home</a>
+        <a routerLink="/users-list" routerLinkActive="active">Users List</a>
+        <a routerLink="/cars-page" routerLinkActive="active">Cars</a>
+        <a routerLink="/cars-favorites" routerLinkActive="active">Cars Favorites</a>
+        <a routerLink="/show-header" routerLinkActive="active">Show Header</a>
+        <a routerLink="/settings" routerLinkActive="active">Settings</a>
+        <a routerLink="/countries" routerLinkActive="active">Countries</a>
+      </div>
+    </nav>
+    <hr />
+    <router-outlet></router-outlet>
+  </div>
+</div>

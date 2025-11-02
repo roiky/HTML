@@ -1,0 +1,25 @@
+<div>
+    <h1 class="headerSlr"> Users </h1>
+    <div style="background-color: red;">
+        {{errorMessage}}
+    </div>
+    <div>
+        <h1>
+            Edit Panel {{selectedUserIndex > -1 ? selectedUserIndex : '' }}
+        </h1>
+        <input type="text" placeholder="user name" [(ngModel)]="userName" />
+        <input type="text" placeholder="age" [(ngModel)]="age" />
+        <input type="text" placeholder="phone" [(ngModel)]="phone" />
+        <button (click)="saveUser()"> Save </button>
+        <button (click)="clear()"> Clear </button>
+    </div>
+
+    <div> {{isLoading}}</div>
+    <ul>
+        <li [ngStyle]="{'cursor': 'pointer', 'background':selectedUserIndex === currentIndex ? 'yellow' : 'none' }"
+            (click)="setSelectedUser(currentIndex)" *ngFor="let user of listOfUsers; let currentIndex = index">
+            {{user?.name?.first}} {{user?.name?.last}} {{ user?.dob?.age}}
+            {{user.phone}}
+        </li>
+    </ul>
+</div>

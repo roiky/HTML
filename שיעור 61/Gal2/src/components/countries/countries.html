@@ -1,0 +1,6 @@
+<p>{{ showMessage }}</p>
+<button (click)="addString()">Add String</button>
+<div>
+  <!-- <p *ngFor="let country of listOfCountries">{{ country?.name?.common }}</p> -->
+  <app-country-card *ngFor="let country of listOfCountries" [country]="country"></app-country-card>
+</div>
