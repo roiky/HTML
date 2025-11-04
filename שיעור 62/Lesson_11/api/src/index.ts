@@ -191,8 +191,8 @@ io.on("connection", (socket: Socket) => {
       message: "You have been removed from the room by admin"
     });
     
-    // Notify everyone else in the room
-    socket.to(room).emit("user-removed-notification", {
+    // Notify everyone in the room (including admin) with updated users list
+    io.to(room).emit("user-removed-notification", {
       username: targetUsername,
       room,
       users: roomUsers[room] ? Array.from(roomUsers[room]) : [],
