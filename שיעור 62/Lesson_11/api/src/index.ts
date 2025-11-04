@@ -44,6 +44,11 @@ const roomUsers: RoomUsers = {};
 const roomMessages: RoomMessages = {};
 const roomSockets: RoomSockets = {};
 
+// Helper to get current open rooms (rooms with active users)
+const getOpenRooms = (): string[] => {
+  return Object.keys(roomUsers);
+};
+
 io.on("connection", (socket: Socket) => {
   console.log(`User connected: ${socket.id}`);
 
@@ -84,13 +89,17 @@ io.on("connection", (socket: Socket) => {
       users: Array.from(roomUsers[room]),
     });
     
-    // Send confirmation, current users, and message history to the joining user
+    // Send confirmation, current users, message history, and current rooms to the joining user
     socket.emit("room-joined", {
       room,
       username,
       users: Array.from(roomUsers[room]),
       history: roomMessages[room],
+      rooms: getOpenRooms(),
     });
+
+    // Update rooms list to all clients (used by admin UI)
+    io.emit("rooms-list", { rooms: getOpenRooms() });
   });
 
   // Send message
@@ -144,6 +153,9 @@ io.on("connection", (socket: Socket) => {
       room,
       users: roomUsers[room] ? Array.from(roomUsers[room]) : [],
     });
+
+    // Update rooms list after potential room change
+    io.emit("rooms-list", { rooms: getOpenRooms() });
   });
 
   // Remove user (admin only)
@@ -197,13 +209,66 @@ io.on("connection", (socket: Socket) => {
       room,
       users: roomUsers[room] ? Array.from(roomUsers[room]) : [],
     });
-    
+
     // Confirm to admin
     socket.emit("remove-user-success", {
       message: `User ${targetUsername} has been removed from the room`
     });
-    
+
     console.log(`Admin ${adminUsername} removed ${targetUsername} from room ${room}`);
+
+    // Update rooms list after potential room change
+    io.emit("rooms-list", { rooms: getOpenRooms() });
+  });
+
+  // Provide current rooms list (admin UI)
+  socket.on("get-rooms", () => {
+    socket.emit("rooms-list", { rooms: getOpenRooms() });
+  });
+
+  // Delete a room (admin only)
+  socket.on("delete-room", (data: { adminUsername: string; room: string }) => {
+    const { adminUsername, room } = data;
+
+    // Check admin privileges
+    if (adminUsername !== "admin") {
+      socket.emit("delete-room-error", { message: "Only admin can delete rooms" });
+      return;
+    }
+
+    if (!roomUsers[room] || roomUsers[room].size === 0) {
+      // If no active users tracked, still clean up any persisted state
+      delete roomUsers[room];
+      delete roomSockets[room];
+      delete roomMessages[room];
+      io.emit("rooms-list", { rooms: getOpenRooms() });
+      socket.emit("delete-room-success", { message: `Room ${room} deleted` });
+      console.log(`Admin ${adminUsername} deleted empty room ${room}`);
+      return;
+    }
+
+    // Notify and disconnect all users in the room
+    const usersInRoom = Array.from(roomUsers[room]);
+    for (const username of usersInRoom) {
+      const targetSocket = roomSockets[room] ? roomSockets[room][username] : undefined;
+      if (targetSocket) {
+        targetSocket.emit("room-deleted", {
+          room,
+          message: "admin deleted the room",
+        });
+        targetSocket.leave(room);
+      }
+    }
+
+    // Cleanup room data
+    delete roomUsers[room];
+    delete roomSockets[room];
+    delete roomMessages[room];
+
+    // Update rooms list and inform admin
+    io.emit("rooms-list", { rooms: getOpenRooms() });
+    socket.emit("delete-room-success", { message: `Room ${room} deleted` });
+    console.log(`Admin ${adminUsername} deleted room ${room}`);
   });
 
   // Handle disconnect

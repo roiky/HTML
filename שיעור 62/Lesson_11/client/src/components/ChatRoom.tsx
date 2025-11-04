@@ -20,6 +20,7 @@ const ChatRoom: React.FC<{ user: User; onLogout: () => void }> = ({
 }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [users, setUsers] = useState<string[]>([]);
+  const [rooms, setRooms] = useState<string[]>([]);
   const [socket, setSocket] = useState<Socket | null>(null);
   const [historyLoaded, setHistoryLoaded] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -31,13 +32,19 @@ const ChatRoom: React.FC<{ user: User; onLogout: () => void }> = ({
       console.log("Connected to server");
       newSocket.emit("join-room", { room: user.room, username: user.username });
       setHistoryLoaded(false); // Reset when joining a new room
+      if (user.username === "admin") {
+        newSocket.emit("get-rooms");
+      }
     });
 
-    newSocket.on("room-joined", (data: { users: string[]; history?: Message[] }) => {
+    newSocket.on("room-joined", (data: { users: string[]; history?: Message[]; rooms?: string[] }) => {
       setUsers(data.users);
       if (data.history && data.history.length > 0) {
         setMessages(data.history);
         setHistoryLoaded(true);
+      }
+      if (data.rooms) {
+        setRooms(data.rooms);
       }
     });
 
@@ -88,6 +95,15 @@ const ChatRoom: React.FC<{ user: User; onLogout: () => void }> = ({
       onLogout();
     });
 
+    newSocket.on("room-deleted", (data: { room: string; message: string }) => {
+      // If this client is in the deleted room, return to main page
+      if (data.room === user.room) {
+        alert(data.message);
+        newSocket.close();
+        onLogout();
+      }
+    });
+
     newSocket.on("remove-user-success", (data: { message: string }) => {
       // Admin confirmation
       console.log(data.message);
@@ -95,6 +111,18 @@ const ChatRoom: React.FC<{ user: User; onLogout: () => void }> = ({
 
     newSocket.on("remove-user-error", (data: { message: string }) => {
       // Admin error handling
+      alert(data.message);
+    });
+
+    newSocket.on("rooms-list", (data: { rooms: string[] }) => {
+      setRooms(data.rooms);
+    });
+
+    newSocket.on("delete-room-success", (data: { message: string }) => {
+      console.log(data.message);
+    });
+
+    newSocket.on("delete-room-error", (data: { message: string }) => {
       alert(data.message);
     });
 
@@ -123,6 +151,17 @@ const ChatRoom: React.FC<{ user: User; onLogout: () => void }> = ({
         username: user.username,
         message: message.trim(),
       });
+    }
+  };
+
+  const handleDeleteRoom = (roomName: string) => {
+    if (socket && user.username === "admin") {
+      if (window.confirm(`Delete room "${roomName}"?`)) {
+        socket.emit("delete-room", {
+          adminUsername: user.username,
+          room: roomName,
+        });
+      }
     }
   };
 
@@ -163,6 +202,29 @@ const ChatRoom: React.FC<{ user: User; onLogout: () => void }> = ({
 
       <div className="chat-main">
         <aside className="users-sidebar">
+          {user.username === "admin" && (
+            <div className="admin-rooms-panel">
+              <h3>Open Rooms</h3>
+              {rooms.length === 0 ? (
+                <p className="empty-rooms">No open rooms</p>
+              ) : (
+                <ul className="rooms-list">
+                  {rooms.map((roomName, idx) => (
+                    <li key={idx} className={roomName === user.room ? "current-room" : ""}>
+                      <span>{roomName}</span>
+                      <button
+                        className="delete-room-button"
+                        onClick={() => handleDeleteRoom(roomName)}
+                        title={`Delete ${roomName}`}
+                      >
+                        🗑️
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
           <h3>👥 Users Online</h3>
           <ul className="users-list">
             {users.map((username, index) => (
